@@ -1,10 +1,12 @@
 package com.likelion.catdogpia.domain.entity.cart;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cart {
 
     @Id
@@ -14,6 +16,12 @@ public class Cart {
     // 상품 개수
     @Column(nullable = false)
     private Integer productCnt;
+
+    @Builder
+    public Cart(Long id, Integer productCnt) {
+        this.id = id;
+        this.productCnt = productCnt;
+    }
 
     // 회원
 //    @ManyToOne(fetch = FetchType.LAZY)
