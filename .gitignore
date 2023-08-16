@@ -12,6 +12,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
+application-secret.yml
 # AWS User-specific
 .idea/**/aws.xml
 
