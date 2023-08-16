@@ -12,13 +12,12 @@ import lombok.NoArgsConstructor;
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
     private Long categoryId;
 
     @Column(length = 30, nullable = false)
     private String name;
 
-    @Column(name = "use_yn", length = 1,nullable = false)
+    @Column(length = 1, nullable = false)
     private Character useYn;
 
     @Builder
