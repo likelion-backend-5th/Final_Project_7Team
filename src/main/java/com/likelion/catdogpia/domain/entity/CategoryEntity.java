@@ -15,14 +15,14 @@ public class CategoryEntity {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(nullable = false)
+    @Column(length = 30, nullable = false)
     private String name;
 
-    @Column(name = "use_yn", nullable = false)
-    private String useYn;
+    @Column(name = "use_yn", length = 1,nullable = false)
+    private Character useYn;
 
     @Builder
-    public CategoryEntity(Long categoryId, String name, String useYn) {
+    public CategoryEntity(Long categoryId, String name, Character useYn) {
         this.categoryId = categoryId;
         this.name = name;
         this.useYn = useYn;
