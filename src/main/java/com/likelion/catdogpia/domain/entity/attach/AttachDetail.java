@@ -12,13 +12,12 @@ import lombok.NoArgsConstructor;
 public class AttachDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attach_detail_id")
     private Long attachDetailId;
 
-    @Column(name = "file_url", length = 100, nullable = false)
+    @Column(length = 100, nullable = false)
     private String fileUrl;
 
-    @Column(name = "file_size", nullable = false)
+    @Column(nullable = false)
     private Integer fileSize;
 
     @Column(nullable = false, length = 260)

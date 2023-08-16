@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class Attach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attach_id")
     private Long attachId;
 
     @CreatedDate
