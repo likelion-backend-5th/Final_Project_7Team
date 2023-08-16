@@ -3,9 +3,11 @@ package com.likelion.catdogpia.domain.entity.user;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@SuperBuilder
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -13,30 +15,30 @@ public class Member extends BaseEntity {
     @Column(name = "login_id")
     private Long memberId;
 
-    @Column(name = "login_id", nullable = false, unique = true)
+    @Column(name = "login_id", length = 20, nullable = false, unique = true)
     private String loginId;
 
-    @Column(nullable = false)
+    @Column(length = 20, nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(length = 30, nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(length = 60, nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(length = 30, nullable = false, unique = true)
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+    @Column(length = 11, nullable = false, unique = true)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(length = 5, nullable = false)
     private String role;
 
-    @Column(name = "social_login")
-    private String socialLogin;
+    @Column(name = "social_login", length = 1)
+    private Character socialLogin;
 
-    @Column(name = "blacklist_yn", nullable = false)
-    private String blackListYn;
+    @Column(name = "blacklist_yn", length = 1, nullable = false)
+    private Character blackListYn;
 }
