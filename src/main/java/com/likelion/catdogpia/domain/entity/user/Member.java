@@ -12,10 +12,9 @@ import lombok.experimental.SuperBuilder;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "login_id")
     private Long memberId;
 
-    @Column(name = "login_id", length = 20, nullable = false, unique = true)
+    @Column(length = 20, nullable = false, unique = true)
     private String loginId;
 
     @Column(length = 20, nullable = false)
@@ -37,10 +36,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "social_login", length = 1)
+    @Column(length = 1)
     private Character socialLogin;
 
-    @Column(name = "blacklist_yn", length = 1, nullable = false)
+    @Column(length = 1, nullable = false)
     private Character blackListYn;
 
     @Builder
