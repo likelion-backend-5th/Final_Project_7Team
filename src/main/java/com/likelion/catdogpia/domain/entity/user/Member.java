@@ -34,11 +34,26 @@ public class Member extends BaseEntity {
     private String phone;
 
     @Column(length = 5, nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "social_login", length = 1)
     private Character socialLogin;
 
     @Column(name = "blacklist_yn", length = 1, nullable = false)
     private Character blackListYn;
+
+    @Builder
+    public Member(Long memberId, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn) {
+        this.memberId = memberId;
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.nickname = nickname;
+        this.phone = phone;
+        this.role = role;
+        this.socialLogin = socialLogin;
+        this.blackListYn = blackListYn;
+    }
 }
