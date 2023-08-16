@@ -15,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 public class Article extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
     private Long articleId;
 
     @Column(length = 50, nullable = false)
@@ -24,10 +23,10 @@ public class Article extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "view_cnt", nullable = false)
+    @Column(nullable = false)
     private Integer viewCnt;
 
-    @Column(name = "like_cnt", nullable = false)
+    @Column(nullable = false)
     private Integer likeCnt;
 
     @Builder
