@@ -1,4 +1,4 @@
-package com.likelion.catdogpia.domain.entity;
+package com.likelion.catdogpia.domain.entity.cart;
 
 import jakarta.persistence.*;
 import lombok.Getter;
