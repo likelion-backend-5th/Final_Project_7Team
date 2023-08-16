@@ -3,6 +3,7 @@ package com.likelion.catdogpia.domain.entity.community;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -19,4 +20,10 @@ public class Comment extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
+
+    @Builder
+    public Comment(Long commentId, String content) {
+        this.commentId = commentId;
+        this.content = content;
+    }
 }
