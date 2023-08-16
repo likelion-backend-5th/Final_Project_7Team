@@ -24,7 +24,7 @@ public class Cart {
 
     // 회원
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    private User user;
+//    private Member member;
 
     // 상품 옵션
 //    @ManyToOne(fetch = FetchType.LAZY)
