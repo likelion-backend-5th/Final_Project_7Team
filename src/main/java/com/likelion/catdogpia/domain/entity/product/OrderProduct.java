@@ -13,7 +13,7 @@ public class OrderProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 주문
+    // 주문1
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "order_id")
 //    private Orders order;

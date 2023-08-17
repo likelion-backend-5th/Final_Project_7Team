@@ -18,7 +18,7 @@ public class QnA extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Self-Reference
+    // Self -Reference
     private Long ParentQnaId;
 
     @ManyToOne(fetch = FetchType.LAZY)

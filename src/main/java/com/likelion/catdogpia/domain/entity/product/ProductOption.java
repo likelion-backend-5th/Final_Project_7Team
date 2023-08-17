@@ -2,7 +2,6 @@ package com.likelion.catdogpia.domain.entity.product;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity

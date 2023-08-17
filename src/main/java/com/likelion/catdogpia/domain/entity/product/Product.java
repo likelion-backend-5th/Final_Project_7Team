@@ -15,7 +15,7 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 카테고리
+    // 카테고리1
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name ="category_id")
 //    private Categoty categoty;
