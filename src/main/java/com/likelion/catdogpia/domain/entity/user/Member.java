@@ -17,6 +17,8 @@ import com.likelion.catdogpia.domain.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,8 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @Entity
+@SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
