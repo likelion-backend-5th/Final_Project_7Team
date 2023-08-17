@@ -31,23 +31,24 @@ public class Attach {
     private List<AttachDetail> attachDetailList = new ArrayList<>();
 
     //상품 연관관계
-    @OneToOne
-    @JoinColumn(name = "product_id")
+    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
     private Product product;
 
     //커뮤니티 글 연관관계
-    @OneToOne
-    @JoinColumn(name = "article_id")
+    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
     private Article article;
 
     //리뷰 연관관계
-    @OneToOne
-    @JoinColumn(name = "review_id")
+    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
     private Review review;
 
     @Builder
-    public Attach(Long id, LocalDateTime createdAt) {
+    public Attach(Long id, LocalDateTime createdAt, List<AttachDetail> attachDetailList, Product product, Article article, Review review) {
         this.id = id;
         this.createdAt = createdAt;
+        this.attachDetailList = attachDetailList;
+        this.product = product;
+        this.article = article;
+        this.review = review;
     }
 }

@@ -25,14 +25,14 @@ public class AttachDetail {
 
     //파일 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attach_id")
     private Attach attach;
 
     @Builder
-    public AttachDetail(Long id, String fileUrl, Integer fileSize, String realname) {
+    public AttachDetail(Long id, String fileUrl, Integer fileSize, String realname, Attach attach) {
         this.id = id;
         this.fileUrl = fileUrl;
         this.fileSize = fileSize;
         this.realname = realname;
+        this.attach = attach;
     }
 }
