@@ -24,8 +24,6 @@ public class QnA extends BaseEntity {
     private Long id;
 
     // Self -Reference
-    private Long ParentQnaId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_qna_id")
     private QnA parent;
