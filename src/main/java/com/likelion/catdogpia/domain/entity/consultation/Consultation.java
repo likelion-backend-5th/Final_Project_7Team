@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +30,6 @@ public class Consultation extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private LocalDateTime deletedAt;
-
     //== 연관관계 ==/
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn("member_id")
@@ -46,10 +43,9 @@ public class Consultation extends BaseEntity {
     private List<Consultation> consultationList = new ArrayList<>();
 
     @Builder
-    public Consultation(Long id, String subject, String content, LocalDateTime deletedAt) {
+    public Consultation(Long id, String subject, String content) {
         this.id = id;
         this.subject = subject;
         this.content = content;
-        this.deletedAt = deletedAt;
     }
 }

@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Getter
@@ -30,17 +28,14 @@ public class Notion extends BaseEntity {
 
     private int likeCnt;
 
-    private LocalDateTime deletedAt;
-
     //private List<Member> memberList = new ArrayList<>();
 
     @Builder
-    public Notion(Long id, String title, String content, int viewCnt, int likeCnt, LocalDateTime deletedAt) {
+    public Notion(Long id, String title, String content, int viewCnt, int likeCnt) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCnt = viewCnt;
         this.likeCnt = likeCnt;
-        this.deletedAt = deletedAt;
     }
 }
