@@ -23,6 +23,11 @@ public class AttachDetail {
     @Column(nullable = false, length = 260)
     private String realname;
 
+    //파일 연관관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attach_id")
+    private Attach attach;
+
     @Builder
     public AttachDetail(Long id, String fileUrl, Integer fileSize, String realname) {
         this.id = id;
