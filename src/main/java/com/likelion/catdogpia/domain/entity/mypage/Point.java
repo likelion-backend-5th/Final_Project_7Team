@@ -35,6 +35,7 @@ public class Point {
     private LocalDateTime usedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder

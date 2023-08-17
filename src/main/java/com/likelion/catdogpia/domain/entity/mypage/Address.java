@@ -37,6 +37,7 @@ public class Address {
     private String phone;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder

@@ -29,6 +29,7 @@ public class Pet {
     private Integer weight;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
