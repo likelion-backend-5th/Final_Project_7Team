@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private Long id;
 
     @Column(length = 20, nullable = false, unique = true)
     private String loginId;
@@ -43,8 +43,8 @@ public class Member extends BaseEntity {
     private Character blackListYn;
 
     @Builder
-    public Member(Long memberId, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn) {
-        this.memberId = memberId;
+    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn) {
+        this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.name = name;
