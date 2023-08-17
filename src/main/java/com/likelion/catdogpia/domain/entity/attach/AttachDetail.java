@@ -25,6 +25,7 @@ public class AttachDetail {
 
     //파일 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attach_id")
     private Attach attach;
 
     @Builder
