@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Table(name ="product_option")
 public class ProductOption {
     @Id

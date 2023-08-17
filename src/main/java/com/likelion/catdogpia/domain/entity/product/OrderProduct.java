@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Table(name ="order_product")
 public class OrderProduct {
     @Id
