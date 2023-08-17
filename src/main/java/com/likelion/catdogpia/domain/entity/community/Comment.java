@@ -34,8 +34,10 @@ public class Comment extends BaseEntity {
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-    public Comment(Long id, String content) {
+    public Comment(Long id, String content, Article article, List<Report> reportList) {
         this.id = id;
         this.content = content;
+        this.article = article;
+        this.reportList = reportList;
     }
 }

@@ -47,7 +47,7 @@ public class Article extends BaseEntity {
 
     //파일 연관관계
     @OneToOne
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "attach_id")
     private Attach attach;
 
     //회원 연관관계
@@ -60,11 +60,16 @@ public class Article extends BaseEntity {
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-    public Article(Long id, String title, String content, Integer viewCnt, Integer likeCnt) {
+    public Article(Long id, String title, String content, Integer viewCnt, Integer likeCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member, List<Report> reportList) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCnt = viewCnt;
         this.likeCnt = likeCnt;
+        this.category = category;
+        this.commentList = commentList;
+        this.attach = attach;
+        this.member = member;
+        this.reportList = reportList;
     }
 }
