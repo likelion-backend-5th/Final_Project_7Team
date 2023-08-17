@@ -24,8 +24,6 @@ public class QnA extends BaseEntity {
     private Long id;
 
     // Self -Reference
-    private Long ParentQnaId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_qna_id")
     private QnA parent;
@@ -50,9 +48,8 @@ public class QnA extends BaseEntity {
     private String content;
 
     @Builder
-    public QnA(Long id, Long parentQnaId, QnA parent, List<QnA> children, Product product, Member member, String title, String content) {
+    public QnA(Long id, QnA parent, List<QnA> children, Product product, Member member, String title, String content) {
         this.id = id;
-        ParentQnaId = parentQnaId;
         this.parent = parent;
         this.children = children;
         this.product = product;
