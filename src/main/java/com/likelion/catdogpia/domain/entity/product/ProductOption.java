@@ -3,6 +3,7 @@ package com.likelion.catdogpia.domain.entity.product;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,7 +28,7 @@ public class ProductOption {
     private int stock;
 
     @OneToMany(mappedBy = "productOption")
-    private List<OrderProduct> orderProductList;
+    private List<OrderProduct> orderProductList = new ArrayList<>();
 
 
     @Builder

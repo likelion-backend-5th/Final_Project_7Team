@@ -25,11 +25,11 @@ public class QnA extends BaseEntity {
 
     // Self -Reference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_qna_id")
-    private QnA parent;
+    @JoinColumn(name = "qna_id")
+    private QnA qna;
 
-    @OneToMany(mappedBy = "parent")
-    private List<QnA> children = new ArrayList<>();
+    @OneToMany(mappedBy = "qna", cascade = CascadeType.ALL)
+    private List<QnA> qnAList = new ArrayList<>();
 
     // 상품
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,10 +48,10 @@ public class QnA extends BaseEntity {
     private String content;
 
     @Builder
-    public QnA(Long id, QnA parent, List<QnA> children, Product product, Member member, String title, String content) {
+    public QnA(Long id, QnA qna, List<QnA> qnAList, Product product, Member member, String title, String content) {
         this.id = id;
-        this.parent = parent;
-        this.children = children;
+        this.qna = qna;
+        this.qnAList = qnAList;
         this.product = product;
         this.member = member;
         this.title = title;
