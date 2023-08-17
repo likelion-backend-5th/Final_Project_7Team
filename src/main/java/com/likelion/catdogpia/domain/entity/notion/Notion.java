@@ -26,16 +26,13 @@ public class Notion extends BaseEntity {
 
     private int viewCnt;
 
-    private int likeCnt;
-
     //private List<Member> memberList = new ArrayList<>();
 
     @Builder
-    public Notion(Long id, String title, String content, int viewCnt, int likeCnt) {
+    public Notion(Long id, String title, String content, int viewCnt) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCnt = viewCnt;
-        this.likeCnt = likeCnt;
     }
 }
