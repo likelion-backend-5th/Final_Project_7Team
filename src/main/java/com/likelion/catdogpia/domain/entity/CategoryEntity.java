@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;
+    private Long id;
 
     @Column(length = 30, nullable = false)
     private String name;
@@ -21,8 +21,8 @@ public class CategoryEntity {
     private Character useYn;
 
     @Builder
-    public CategoryEntity(Long categoryId, String name, Character useYn) {
-        this.categoryId = categoryId;
+    public CategoryEntity(Long id, String name, Character useYn) {
+        this.id = id;
         this.name = name;
         this.useYn = useYn;
     }
