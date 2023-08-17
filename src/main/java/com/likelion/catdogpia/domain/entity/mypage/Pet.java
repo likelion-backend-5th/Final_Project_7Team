@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,12 +28,16 @@ public class Pet {
     @Column(nullable = false)
     private Integer weight;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    public Pet(Long id, String name, String breed, Integer weight) {
+    public Pet(Long id, String name, String breed, Integer weight, Member member) {
         this.id = id;
         this.name = name;
         this.breed = breed;
         this.weight = weight;
+        this.member = member;
     }
-
 }

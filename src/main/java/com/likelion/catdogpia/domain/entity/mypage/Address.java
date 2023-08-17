@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.AccessLevel;
@@ -35,13 +36,18 @@ public class Address {
     @Column(nullable = false, length = 11)
     private String phone;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    public Address(Long id, String address, Character defaultAddress, String addressName, String name, String phone) {
+    public Address(Long id, String address, Character defaultAddress, String addressName, String name, String phone, Member member) {
         this.id = id;
         this.address = address;
         this.defaultAddress = defaultAddress;
         this.addressName = addressName;
         this.name = name;
         this.phone = phone;
+        this.member = member;
     }
 }

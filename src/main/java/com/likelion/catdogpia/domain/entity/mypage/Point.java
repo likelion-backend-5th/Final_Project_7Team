@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Point {
     
     // 적립금
     @Column(nullable = false)
-    private Integer point;
+    private int point;
     
     // 적립 내용
     @Column(nullable = false, length = 150)
@@ -33,13 +34,17 @@ public class Point {
     @Column(nullable = false)
     private LocalDateTime usedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    public Point(Long id, String status, Integer point, String pointSource, LocalDateTime usedAt) {
+    public Point(Long id, String status, int point, String pointSource, LocalDateTime usedAt, Member member) {
         this.id = id;
         this.status = status;
         this.point = point;
         this.pointSource = pointSource;
         this.usedAt = usedAt;
+        this.member = member;
     }
-
 }
