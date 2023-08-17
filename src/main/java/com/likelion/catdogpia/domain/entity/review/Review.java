@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
     private Long id;
 
     //  회원
