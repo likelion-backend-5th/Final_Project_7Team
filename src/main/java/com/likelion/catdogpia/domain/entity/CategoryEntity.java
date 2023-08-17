@@ -35,11 +35,11 @@ public class CategoryEntity {
     private List<CategoryEntity> categoryEntityList = new ArrayList<>();
 
     //상품 연관관계
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<Product> productList = new ArrayList<>();
 
     //커뮤니티 연관관계
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<Article> articleList = new ArrayList<>();
 
     @Builder
