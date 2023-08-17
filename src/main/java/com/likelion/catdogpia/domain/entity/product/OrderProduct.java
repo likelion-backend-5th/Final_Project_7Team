@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 @Table(name ="order_product")
 public class OrderProduct {
@@ -36,4 +35,14 @@ public class OrderProduct {
 
     private LocalDateTime shippedAt;
 
+
+    @Builder
+    public OrderProduct(Long id, ProductOption productOption, int quantity, String orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt) {
+        this.id = id;
+        this.productOption = productOption;
+        this.quantity = quantity;
+        this.orderStatus = orderStatus;
+        this.receivedAt = receivedAt;
+        this.shippedAt = shippedAt;
+    }
 }

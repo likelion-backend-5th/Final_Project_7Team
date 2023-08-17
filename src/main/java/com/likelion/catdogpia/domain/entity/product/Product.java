@@ -2,10 +2,7 @@ package com.likelion.catdogpia.domain.entity.product;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -41,4 +38,13 @@ public class Product extends BaseEntity {
 
     @Column(length = 10, nullable = false)
     private String status;
+
+    @Builder
+    public Product(Long id, String name, int price, String content, String status) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.content = content;
+        this.status = status;
+    }
 }

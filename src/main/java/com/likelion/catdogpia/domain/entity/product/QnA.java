@@ -2,10 +2,7 @@ package com.likelion.catdogpia.domain.entity.product;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -14,7 +11,6 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 @Table(name ="qna")
 public class QnA extends BaseEntity {
@@ -48,4 +44,15 @@ public class QnA extends BaseEntity {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @Builder
+    public QnA(Long id, Long parentQnaId, QnA parent, List<QnA> children, Product product, String title, String content) {
+        this.id = id;
+        ParentQnaId = parentQnaId;
+        this.parent = parent;
+        this.children = children;
+        this.product = product;
+        this.title = title;
+        this.content = content;
+    }
 }

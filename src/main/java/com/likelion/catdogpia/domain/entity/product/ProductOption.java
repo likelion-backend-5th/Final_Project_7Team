@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 @Table(name ="product_option")
 public class ProductOption {
@@ -29,4 +28,12 @@ public class ProductOption {
     private int stock;
 
 
+    @Builder
+    public ProductOption(Long id, Product product, String size, String color, int stock) {
+        this.id = id;
+        this.product = product;
+        this.size = size;
+        this.color = color;
+        this.stock = stock;
+    }
 }
