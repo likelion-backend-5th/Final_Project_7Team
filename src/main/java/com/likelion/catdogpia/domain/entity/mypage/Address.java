@@ -36,10 +36,10 @@ public class Address {
     private String phone;
 
     @Builder
-    public Address(Long id, String address, Character default_address, String addressName, String name, String phone) {
+    public Address(Long id, String address, Character defaultAddress, String addressName, String name, String phone) {
         this.id = id;
         this.address = address;
-        this.defaultAddress = default_address;
+        this.defaultAddress = defaultAddress;
         this.addressName = addressName;
         this.name = name;
         this.phone = phone;
