@@ -96,7 +96,7 @@ public class Member extends BaseEntity {
 
     //주문 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Orders> ordersList = new ArrayList<>();
+    private List<Orders> orderList = new ArrayList<>();
 
     //적립금 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -115,7 +115,7 @@ public class Member extends BaseEntity {
     private List<QnA> qnAList = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notion> notionList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> ordersList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList) {
+    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notion> notionList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> orderList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
@@ -134,7 +134,7 @@ public class Member extends BaseEntity {
         this.commentList = commentList;
         this.articleList = articleList;
         this.reviewList = reviewList;
-        this.ordersList = ordersList;
+        this.orderList = orderList;
         this.pointList = pointList;
         this.cartList = cartList;
         this.wishLists = wishLists;
