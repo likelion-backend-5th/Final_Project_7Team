@@ -32,7 +32,7 @@ public class CategoryEntity {
     private CategoryEntity parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
-    private List<CategoryEntity> categoryEntityList = new ArrayList<>();
+    private List<CategoryEntity> categoryList = new ArrayList<>();
 
     //상품 연관관계
     @OneToMany(mappedBy = "category")
@@ -43,12 +43,13 @@ public class CategoryEntity {
     private List<Article> articleList = new ArrayList<>();
 
     @Builder
-    public CategoryEntity(Long id, String name, Character useYn, CategoryEntity parentCategory, List<CategoryEntity> categoryEntityList, List<Product> productList, List<Article> articleList) {
+
+    public CategoryEntity(Long id, String name, Character useYn, CategoryEntity parentCategory, List<CategoryEntity> categoryList, List<Product> productList, List<Article> articleList) {
         this.id = id;
         this.name = name;
         this.useYn = useYn;
         this.parentCategory = parentCategory;
-        this.categoryEntityList = categoryEntityList;
+        this.categoryList = categoryList;
         this.productList = productList;
         this.articleList = articleList;
     }
