@@ -19,7 +19,7 @@ public class Review {
     @Column(name = "review_id")
     private Long id;
 
-    // 회원
+    //  회원
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "member_id")
 //    private Member member;
