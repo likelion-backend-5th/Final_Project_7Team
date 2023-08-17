@@ -31,15 +31,15 @@ public class Attach {
     private List<AttachDetail> attachDetailList = new ArrayList<>();
 
     //상품 연관관계
-    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "attach")
     private Product product;
 
     //커뮤니티 글 연관관계
-    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "attach")
     private Article article;
 
     //리뷰 연관관계
-    @OneToOne(mappedBy = "attach", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "attach")
     private Review review;
 
     @Builder
