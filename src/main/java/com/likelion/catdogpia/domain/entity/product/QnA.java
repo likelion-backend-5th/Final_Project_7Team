@@ -5,6 +5,8 @@ import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Table(name ="qna")
+@SQLDelete(sql ="UPDATE qna SET deleted_at = NOW() WHERE id=?")
+@Where(clause = "deleted_at IS NULL")
 public class QnA extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

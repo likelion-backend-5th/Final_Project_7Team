@@ -7,12 +7,16 @@ import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Table(name ="review")
+@SQLDelete(sql ="UPDATE review SET deleted_at = NOW() WHERE id=?")
+@Where(clause = "deleted_at IS NULL")
 public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
