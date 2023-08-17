@@ -16,14 +16,16 @@ public class Cart {
 
     // 상품 개수
     @Column(nullable = false)
-    private Integer productCnt;
+    private int productCnt;
 
     // 회원
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="member_id")
     private Member member;
 
     // 상품 옵션
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="product_option_id")
     private ProductOption productOption;
 
     @Builder
