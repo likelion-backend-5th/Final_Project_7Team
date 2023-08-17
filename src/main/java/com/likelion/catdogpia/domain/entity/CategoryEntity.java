@@ -27,7 +27,6 @@ public class CategoryEntity {
 
     //카테고리(대분류-중분류) 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id")
     private CategoryEntity parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
@@ -42,9 +41,13 @@ public class CategoryEntity {
     private List<Article> articleList = new ArrayList<>();
 
     @Builder
-    public CategoryEntity(Long id, String name, Character useYn) {
+    public CategoryEntity(Long id, String name, Character useYn, CategoryEntity parentCategory, List<CategoryEntity> categoryEntityList, List<Product> productList, List<Article> articleList) {
         this.id = id;
         this.name = name;
         this.useYn = useYn;
+        this.parentCategory = parentCategory;
+        this.categoryEntityList = categoryEntityList;
+        this.productList = productList;
+        this.articleList = articleList;
     }
 }
