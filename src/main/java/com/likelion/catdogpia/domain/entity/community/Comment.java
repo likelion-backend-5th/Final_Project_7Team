@@ -30,7 +30,7 @@ public class Comment extends BaseEntity {
     private Article article;
 
     //신고 연관관계
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment")
     private List<Report> reportList = new ArrayList<>();
 
     @Builder

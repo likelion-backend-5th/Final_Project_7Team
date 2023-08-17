@@ -42,7 +42,7 @@ public class Article extends BaseEntity {
     private CategoryEntity category;
 
     //댓글 연관관계
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article")
     private List<Comment> commentList = new ArrayList<>();
 
     //파일 연관관계
@@ -56,11 +56,10 @@ public class Article extends BaseEntity {
     private Member member;
 
     //신고 연관관계
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article")
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-
     public Article(Long id, String title, String content, int viewCnt, int likeCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member, List<Report> reportList) {
         this.id = id;
         this.title = title;
