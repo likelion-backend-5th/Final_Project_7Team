@@ -18,16 +18,22 @@ public class AttachDetail {
     private String fileUrl;
 
     @Column(nullable = false)
-    private Integer fileSize;
+    private int fileSize;
 
     @Column(nullable = false, length = 260)
     private String realname;
 
+    //파일 연관관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attach_id")
+    private Attach attach;
+
     @Builder
-    public AttachDetail(Long id, String fileUrl, Integer fileSize, String realname) {
+    public AttachDetail(Long id, String fileUrl, int fileSize, String realname, Attach attach) {
         this.id = id;
         this.fileUrl = fileUrl;
         this.fileSize = fileSize;
         this.realname = realname;
+        this.attach = attach;
     }
 }
