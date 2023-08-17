@@ -46,12 +46,13 @@ public class QnA extends BaseEntity {
     private String content;
 
     @Builder
-    public QnA(Long id, Long parentQnaId, QnA parent, List<QnA> children, Product product, String title, String content) {
+    public QnA(Long id, Long parentQnaId, QnA parent, List<QnA> children, Product product, Member member, String title, String content) {
         this.id = id;
         ParentQnaId = parentQnaId;
         this.parent = parent;
         this.children = children;
         this.product = product;
+        this.member = member;
         this.title = title;
         this.content = content;
     }

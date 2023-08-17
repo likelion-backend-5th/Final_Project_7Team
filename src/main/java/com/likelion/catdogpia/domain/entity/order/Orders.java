@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.order;
 
+import com.likelion.catdogpia.domain.entity.product.OrderProduct;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -46,10 +48,13 @@ public class Orders {
 
     private LocalDateTime cancelAt;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderProduct> orderProductList;
+
     @Builder
-    public Orders(Long id, String name, String phone, String address, String request, String cardCompany,
-                  int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt) {
+    public Orders(Long id, Member member, String name, String phone, String address, String request, String cardCompany, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, List<OrderProduct> orderProductList) {
         this.id = id;
+        this.member = member;
         this.name = name;
         this.phone = phone;
         this.address = address;
@@ -58,5 +63,6 @@ public class Orders {
         this.totalAmount = totalAmount;
         this.orderAt = orderAt;
         this.cancelAt = cancelAt;
+        this.orderProductList = orderProductList;
     }
 }

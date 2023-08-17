@@ -40,8 +40,11 @@ public class Review extends BaseEntity {
     private int rating;
 
     @Builder
-    public Review(Long id, String description, int rating) {
+    public Review(Long id, Member member, OrderProduct orderProduct, Attach attach, String description, int rating) {
         this.id = id;
+        this.member = member;
+        this.orderProduct = orderProduct;
+        this.attach = attach;
         this.description = description;
         this.rating = rating;
     }

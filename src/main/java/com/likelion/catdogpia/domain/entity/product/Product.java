@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,12 +41,24 @@ public class Product extends BaseEntity {
     @Column(length = 10, nullable = false)
     private String status;
 
+    @OneToMany(mappedBy = "product")
+    private List<ProductOption> productOptionList;
+
+    @OneToMany(mappedBy = "qna")
+    private List<QnA> qnAList;
+
     @Builder
-    public Product(Long id, String name, int price, String content, String status) {
+
+    public Product(Long id, CategoryEntity category, Attach attach, String name,
+                   int price, String content, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
+        this.category = category;
+        this.attach = attach;
         this.name = name;
         this.price = price;
         this.content = content;
         this.status = status;
+        this.productOptionList = productOptionList;
+        this.qnAList = qnAList;
     }
 }
