@@ -24,7 +24,7 @@ public class Point {
     
     // 적립금
     @Column(nullable = false)
-    private Integer point;
+    private int point;
     
     // 적립 내용
     @Column(nullable = false, length = 150)
@@ -39,7 +39,7 @@ public class Point {
     private Member member;
 
     @Builder
-    public Point(Long id, String status, Integer point, String pointSource, LocalDateTime usedAt, Member member) {
+    public Point(Long id, String status, int point, String pointSource, LocalDateTime usedAt, Member member) {
         this.id = id;
         this.status = status;
         this.point = point;
