@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.order;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,9 +19,9 @@ public class Orders {
     private Long id;
 
     // 회원
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false, length = 20)
     private String name;

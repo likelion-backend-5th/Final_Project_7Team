@@ -1,6 +1,7 @@
 package com.likelion.catdogpia.domain.entity.product;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -34,9 +35,9 @@ public class QnA extends BaseEntity {
     private Product product;
 
     // 멤버
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(length = 50, nullable = false)
     private String title;

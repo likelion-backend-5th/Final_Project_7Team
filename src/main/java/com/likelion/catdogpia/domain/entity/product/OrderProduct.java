@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.product;
 
+import com.likelion.catdogpia.domain.entity.order.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -13,10 +14,10 @@ public class OrderProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 주문1
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id")
-//    private Orders order;
+    // 주문
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Orders order;
 
     // 상품 옵션
     @ManyToOne(fetch = FetchType.LAZY)

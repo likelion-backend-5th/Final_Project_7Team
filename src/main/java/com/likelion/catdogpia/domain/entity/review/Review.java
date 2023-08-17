@@ -1,6 +1,9 @@
 package com.likelion.catdogpia.domain.entity.review;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
+import com.likelion.catdogpia.domain.entity.attach.Attach;
+import com.likelion.catdogpia.domain.entity.product.OrderProduct;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -16,19 +19,19 @@ public class Review extends BaseEntity {
     private Long id;
 
     //  회원
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     // 주문 상품
-//    @OneToOne
-//    @JoinColumn(name = "order_product_id")
-//    private OrderProduct orderProduct;
+    @OneToOne
+    @JoinColumn(name = "order_product_id")
+    private OrderProduct orderProduct;
 
     // 파일
-//    OneToOne
-//    @JoinColumn(name = "attach_id")
-//    private Attach attach;
+    @OneToOne
+    @JoinColumn(name = "attach_id")
+    private Attach attach;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;

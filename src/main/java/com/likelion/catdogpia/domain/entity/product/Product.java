@@ -1,6 +1,8 @@
 package com.likelion.catdogpia.domain.entity.product;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
+import com.likelion.catdogpia.domain.entity.CategoryEntity;
+import com.likelion.catdogpia.domain.entity.attach.Attach;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,15 +17,15 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 카테고리1
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name ="category_id")
-//    private Categoty categoty;
+    // 카테고리
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="category_id")
+    private CategoryEntity category;
 
     // 파일
-//    @OneToOne
-//    @JoinColumn(name = "attach_id")
-//    private Attach attach;
+    @OneToOne
+    @JoinColumn(name = "attach_id")
+    private Attach attach;
 
     @Column(length = 40, nullable = false)
     private String name;
