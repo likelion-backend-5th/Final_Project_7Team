@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -15,6 +17,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @SuperBuilder
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE notion SET deleted_at = C WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Notion extends BaseEntity {
 
     @Id
