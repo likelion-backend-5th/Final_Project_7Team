@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 public class Attach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long attachId;
+    private Long id;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public Attach(Long attachId, LocalDateTime createdAt) {
-        this.attachId = attachId;
+    public Attach(Long id, LocalDateTime createdAt) {
+        this.id = id;
         this.createdAt = createdAt;
     }
 }
