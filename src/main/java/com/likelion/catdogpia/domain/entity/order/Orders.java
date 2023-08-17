@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Builder
 @Table(name ="orders")
 public class Orders {
@@ -47,7 +46,17 @@ public class Orders {
 
     private LocalDateTime cancelAt;
 
-
-
-
+    @Builder
+    public Orders(Long id, String name, String phone, String address, String request, String cardCompany,
+                  int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.request = request;
+        this.cardCompany = cardCompany;
+        this.totalAmount = totalAmount;
+        this.orderAt = orderAt;
+        this.cancelAt = cancelAt;
+    }
 }

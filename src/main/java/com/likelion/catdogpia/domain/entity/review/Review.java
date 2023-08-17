@@ -1,19 +1,16 @@
 package com.likelion.catdogpia.domain.entity.review;
 
+import com.likelion.catdogpia.domain.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @Table(name ="review")
-public class Review {
+public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
@@ -40,13 +37,10 @@ public class Review {
     @Column(nullable = false)
     private int rating;
 
-
-
-
-
-
-
-
-
-
+    @Builder
+    public Review(Long id, String description, int rating) {
+        this.id = id;
+        this.description = description;
+        this.rating = rating;
+    }
 }
