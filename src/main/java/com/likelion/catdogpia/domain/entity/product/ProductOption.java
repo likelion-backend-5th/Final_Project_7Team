@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class ProductOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

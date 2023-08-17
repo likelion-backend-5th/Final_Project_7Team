@@ -11,12 +11,11 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @Table(name ="qna")
 public class QnA extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "qna_id")
     private Long id;
 
     // Self-Reference
