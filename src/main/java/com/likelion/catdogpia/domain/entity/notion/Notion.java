@@ -17,7 +17,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @SuperBuilder
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE notion SET deleted_at = C WHERE id = ?")
+@SQLDelete(sql = "UPDATE notion SET deleted_at = now() WHERE id = ?")
 @Where(clause = "deleted_at is null")
 public class Notion extends BaseEntity {
 

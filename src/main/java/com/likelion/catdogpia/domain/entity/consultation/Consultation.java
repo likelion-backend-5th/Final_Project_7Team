@@ -20,7 +20,7 @@ import static jakarta.persistence.FetchType.*;
 @SuperBuilder
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE consultation SET deleted_at = C WHERE id = ?")
+@SQLDelete(sql = "UPDATE consultation SET deleted_at = now() WHERE id = ?")
 @Where(clause = "deleted_at is null")
 public class Consultation extends BaseEntity {
 
