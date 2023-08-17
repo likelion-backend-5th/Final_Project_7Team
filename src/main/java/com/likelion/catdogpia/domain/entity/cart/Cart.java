@@ -1,5 +1,7 @@
 package com.likelion.catdogpia.domain.entity.cart;
 
+import com.likelion.catdogpia.domain.entity.product.ProductOption;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,20 +16,23 @@ public class Cart {
 
     // 상품 개수
     @Column(nullable = false)
-    private Integer productCnt;
-
-    @Builder
-    public Cart(Long id, Integer productCnt) {
-        this.id = id;
-        this.productCnt = productCnt;
-    }
+    private int productCnt;
 
     // 회원
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="member_id")
+    private Member member;
 
     // 상품 옵션
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private ProductOption productOption;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="product_option_id")
+    private ProductOption productOption;
 
+    @Builder
+    public Cart(Long id, int productCnt, Member member, ProductOption productOption) {
+        this.id = id;
+        this.productCnt = productCnt;
+        this.member = member;
+        this.productOption = productOption;
+    }
 }
