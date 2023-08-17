@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,13 +34,16 @@ public class Point {
     @Column(nullable = false)
     private LocalDateTime usedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
     @Builder
-    public Point(Long id, String status, Integer point, String pointSource, LocalDateTime usedAt) {
+    public Point(Long id, String status, Integer point, String pointSource, LocalDateTime usedAt, Member member) {
         this.id = id;
         this.status = status;
         this.point = point;
         this.pointSource = pointSource;
         this.usedAt = usedAt;
+        this.member = member;
     }
-
 }
