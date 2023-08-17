@@ -15,14 +15,14 @@ import lombok.experimental.SuperBuilder;
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Builder
-    public Comment(Long commentId, String content) {
-        this.commentId = commentId;
+    public Comment(Long id, String content) {
+        this.id = id;
         this.content = content;
     }
 }
