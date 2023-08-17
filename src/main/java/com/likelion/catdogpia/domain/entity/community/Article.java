@@ -31,10 +31,10 @@ public class Article extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private Integer viewCnt;
+    private int viewCnt;
 
     @Column(nullable = false)
-    private Integer likeCnt;
+    private int likeCnt;
 
     //카테고리 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
@@ -60,7 +60,8 @@ public class Article extends BaseEntity {
     private List<Report> reportList = new ArrayList<>();
 
     @Builder
-    public Article(Long id, String title, String content, Integer viewCnt, Integer likeCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member, List<Report> reportList) {
+
+    public Article(Long id, String title, String content, int viewCnt, int likeCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member, List<Report> reportList) {
         this.id = id;
         this.title = title;
         this.content = content;
