@@ -2,6 +2,7 @@ package com.likelion.catdogpia.domain.entity.community;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.report.Report;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,6 +37,11 @@ public class Comment extends BaseEntity {
     //신고 연관관계
     @OneToMany(mappedBy = "comment")
     private List<Report> reportList = new ArrayList<>();
+
+    //멤버 연관관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Builder
     public Comment(Long id, String content, Article article, List<Report> reportList) {

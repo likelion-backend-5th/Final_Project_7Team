@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -49,7 +50,7 @@ public class Orders {
     private LocalDateTime cancelAt;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderProduct> orderProductList;
+    private List<OrderProduct> orderProductList = new ArrayList<>();
 
     @Builder
     public Orders(Long id, Member member, String name, String phone, String address, String request, String cardCompany, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, List<OrderProduct> orderProductList) {

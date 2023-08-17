@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -46,10 +47,10 @@ public class Product extends BaseEntity {
     private String status;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductOption> productOptionList;
+    private List<ProductOption> productOptionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "qna")
-    private List<QnA> qnAList;
+    @OneToMany(mappedBy = "product")
+    private List<QnA> qnAList = new ArrayList<>();
 
     @Builder
 
