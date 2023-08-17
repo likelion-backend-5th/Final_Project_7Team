@@ -25,7 +25,7 @@ public class QnA extends BaseEntity {
     @JoinColumn(name = "parent_qna_id")
     private QnA parent;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent")
     private List<QnA> children = new ArrayList<>();
 
     // 상품
