@@ -2,64 +2,48 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <!-- Header -->
-<nav th:fragment="header" class="navbar navbar-expand-lg navbar-light shadow">
-    <div class="container d-flex justify-content-between align-items-center">
-
-        <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
-            CatDogPia
-        </a>
-
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between"
-             id="templatemo_main_nav">
-            <div class="flex-fill">
-                <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">의류</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html">잡화</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="shop.html">커뮤니티</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">고객센터</a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 검색, 장바구니, 마이페이지 icon -->
-            <div class="navbar align-self-center d-flex">
-                <!-- search modal -->
-                <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="inputMobileSearch" placeholder="Search ...">
-                        <div class="input-group-text">
-                            <i class="fa fa-fw fa-search"></i>
-                        </div>
-                    </div>
+<!-- Header Section Begin -->
+<header th:fragment="header" class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="header__logo">
+                    <a href="./index.html"><img src="img/logo.png" alt=""></a>
                 </div>
-                <!-- search modal end -->
-                <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
-                        <img class="header-icon" src="img/header/search_icon.png" alt="">
-                </a>
-                <a class="nav-icon position-relative text-decoration-none" href="#">
-                    <img class="header-icon" src="img/header/cart-icon.png" alt="">
-                </a>
-                <a class="nav-icon position-relative text-decoration-none" href="#">
-                    <img class="header-icon" src="img/header/mypage-icon.png" alt="">
-                </a>
+            </div>
+            <div class="col-lg-6">
+                <nav class="header__menu">
+                    <ul>
+                        <li class="active"><a href="./index.html">의류</a></li>
+                        <li><a href="./shop-grid.html">잡화</a></li>
+                        <li><a href="#">커뮤니티</a>
+                            <ul class="header__menu__dropdown">
+                                <li><a href="./shop-details.html">Shop Details</a></li>
+                                <li><a href="./shoping-cart.html">Shoping Cart</a></li>
+                                <li><a href="./checkout.html">Check Out</a></li>
+                                <li><a href="./blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="./blog.html">고객센터</a></li>
+<!--                        <li><a href="./contact.html">Contact</a></li>-->
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__cart">
+                    <ul>
+                        <li><a href="#"><img class="header-wish" src="img/header/heart-icon.png" alt=""><span>1</span></a></li>
+                        <li><a href="#"><img class="header-cart" src="img/header/cart-icon.png" alt=""><span>3</span></a></li>
+                        <li><a href="#"><img class="header-mypage-icon" src="img/header/mypage-icon.png" alt=""> Login</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-
+        <div class="humberger__open">
+            <i class="fa fa-bars"></i>
+        </div>
     </div>
-</nav>
-<!-- Close Header -->
+</header>
+<!-- Header Section End -->
 
 </html>
