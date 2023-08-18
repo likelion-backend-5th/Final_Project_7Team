@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Header -->
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-light shadow">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+            CatDogPia
+        </a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between"
+             id="templatemo_main_nav">
+            <div class="flex-fill">
+                <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">의류</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">잡화</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="shop.html">커뮤니티</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">고객센터</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 검색, 장바구니, 마이페이지 icon -->
+            <div class="navbar align-self-center d-flex">
+                <!-- search modal -->
+                <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="inputMobileSearch" placeholder="Search ...">
+                        <div class="input-group-text">
+                            <i class="fa fa-fw fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- search modal end -->
+                <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
+                        <img class="header-icon" src="img/header/search_icon.png" alt="">
+                </a>
+                <a class="nav-icon position-relative text-decoration-none" href="#">
+                    <img class="header-icon" src="img/header/cart-icon.png" alt="">
+                </a>
+                <a class="nav-icon position-relative text-decoration-none" href="#">
+                    <img class="header-icon" src="img/header/mypage-icon.png" alt="">
+                </a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!-- Close Header -->
+
+</html>

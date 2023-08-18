@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lagn="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>캣독피아</title>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1, user-scalable=yes,initial-scale=1.0"/>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{css/templatemo.css}">
+    <link rel="stylesheet" th:href="@{css/header.css}">
+    <link rel="stylesheet" th:href="@{css/index.css}">
+
+    <link rel="stylesheet"
+          th:href="@{https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap}">
+    <link rel="stylesheet" th:href="@{css/fontawesome.min.css}">
+
+</head>
+
+<body>
+    <!-- 공통 header fragment -->
+    <header th:replace="common/fragments/header :: header"></header>
+    <!-- 매 페이지마다 교체될 본문 영역 -->
+    <th:block layout:fragment="content"></th:block>
+    <!-- 공통 footer fragment -->
+    <footer th:replace="common/fragments/footer :: footer"></footer>
+</body>
+</html>
