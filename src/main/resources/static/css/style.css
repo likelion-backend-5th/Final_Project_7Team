@@ -129,7 +129,7 @@ ol {
     right: 0;
     height: 4px;
     width: 80px;
-    background: #7fad39;
+    background: #ADC2A9;
     content: "";
     margin: 0 auto;
 }
@@ -470,7 +470,7 @@ ol {
 }
 
 .header__menu ul li.active a {
-    color: #7fad39;
+    color: #99A799;
 }
 
 .header__menu ul li:hover .header__menu__dropdown {
@@ -480,7 +480,7 @@ ol {
 }
 
 .header__menu ul li:hover > a {
-    color: #7fad39;
+    color: #ADC2A9;
 }
 
 .header__menu ul li:last-child {
@@ -855,7 +855,7 @@ ol {
     bottom: -2px;
     width: 100%;
     height: 2px;
-    background: #7fad39;
+    background: #ADC2A9;
     content: "";
     opacity: 0;
 }
