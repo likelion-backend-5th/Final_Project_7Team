@@ -8,12 +8,12 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../../static/assets/css/tailwind.output.css" />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../static/assets/js/init-alpine.js"></script>
+    <script src="../../../js/init-alpine.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
@@ -22,25 +22,18 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
       defer
     ></script>
-    <script src="../../../static/assets/js/charts-lines.js" defer></script>
-    <script src="../../../static/assets/js/charts-pie.js" defer></script>
+    <script src="../../../js/charts-lines.js" defer></script>
+    <script src="../../../js/charts-pie.js" defer></script>
   </head>
   <body>
     <!-- 공통코드 인클루드 스크립트-->
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">   
-      $(document).ready( function() {
-        $("#sidebar").load("../../common/fragments/admin-sidebar.html");  // 원하는 파일 경로를 삽입하면 된다
-        $("#header").load("../../common/fragments/admin-header.html");  // 원하는 파일 경로를 삽입하면 된다
-      });
-    </script>
-
+    <div th:include="common/fragments/admin-header :: header"></div>
     <div
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen}"
     >
     <!-- 사이드바 -->
-    <div id="sidebar"></div>
+      <div th:include="common/fragments/admin-sidebar :: sidebar"></div>
     <!-- 메인 -->
       <div class="flex flex-col flex-1 w-full">
         <!-- 헤더 -->
