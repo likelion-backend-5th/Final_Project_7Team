@@ -11,10 +11,4 @@ public class MainController {
         return "page/index.html";
     }
 
-//    테스트용
-    @GetMapping("/test")
-    public String test() {
-        return "page/content-test.html";
-    }
-
 }
