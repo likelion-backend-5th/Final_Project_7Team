@@ -10,9 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,6 +28,8 @@ public class AdminService {
 
     // 사용자 상세 조회
     public MemberDto findMember(Long memberId) {
-        return null;
+        // 관리자인지 확인하는 로직 필요
+
+        return memberRepository.findByMember(memberId);
     }
 }

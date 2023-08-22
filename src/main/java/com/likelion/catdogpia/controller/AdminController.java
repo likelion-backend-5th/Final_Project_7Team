@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.controller;
 
+import com.likelion.catdogpia.domain.dto.admin.MemberDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
 import com.likelion.catdogpia.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,13 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    // 관리자 메인 페이지
     @GetMapping("/main")
     public String mainPage() {
         return "/page/admin/index";
     }
 
+    // 관리자 회원관리 목록 페이지
     @GetMapping("/members")
     public String memberList(
             Model model,
@@ -42,9 +45,18 @@ public class AdminController {
         return "/page/admin/members";
     }
 
+    // 관리자 회원 관리 상세 페이지
     @GetMapping("/members/{memberId}")
     public String memberDetails(@PathVariable Long memberId, Model model) {
-        model.addAttribute("member", adminService.findMember(memberId));
+
+        MemberDto member = adminService.findMember(memberId);
+        // 회원을 찾을 수 없으면 404에러 페이지로 보냄
+        if(member == null) {
+            return "/page/admin/404-error-page";
+        }
+
+        member.changeFormat(member);
+        model.addAttribute("member", member);
         return "/page/admin/member-detail";
     }
 }
