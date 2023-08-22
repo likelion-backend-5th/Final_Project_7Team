@@ -84,4 +84,14 @@ public class SignupController {
         response.put("duplicate", isDuplicate);
         return response;
     }
+
+    //이메일 중복확인
+    @GetMapping("/checkDuplicateEmail")
+    @ResponseBody
+    public Map<String, Boolean> checkDuplicateEmail(@RequestParam("email") String email) {
+        boolean isDuplicate = service.emailExists(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("duplicate", isDuplicate);
+        return response;
+    }
 }
