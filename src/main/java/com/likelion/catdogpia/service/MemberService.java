@@ -116,4 +116,16 @@ public class MemberService implements UserDetailsManager {
 
         return number;
     }
+
+    //아이디 찾기
+    public String findId(String name, String email) {
+        Optional<Member> optionalMember = memberRepository.findByNameAndEmail(name, email);
+
+        if(optionalMember.isEmpty())
+            return "입력하신 회원 정보로 가입된 아이디가 존재하지 않습니다.";
+
+        Member member = optionalMember.get();
+        String loginId = member.getLoginId();
+        return "입력하신 회원 정보로 가입된 아이디는 " + loginId + " 입니다.";
+    }
 }
