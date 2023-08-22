@@ -56,6 +56,7 @@ function emailVerification() {
                 message.style.color = "gray";
                 return false;
             } else {
+                message.innerText = "";
                 return new Promise((resolve, reject) => {
                     document.getElementById("emailVerificationFields").style.display = "block";
                     $.ajax({
