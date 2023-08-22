@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CatDogPia</title>
     <!-- JS -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/findIdPw.js"></script>
     <!-- CSS -->
     <link rel="stylesheet" href="/css/find-page.css">
@@ -25,18 +25,23 @@
     <br>
     <form action="/find/password" method="post" id="findPwForm">
         <div class="textForm">
+            <input type="text" class="loginId" id="loginId" name="loginId" required placeholder="아이디">
+        </div>
+        <div class="textForm">
             <input type="text" class="name" id="name" name="name" required placeholder="이름">
         </div>
         <div class="textForm">
             <input type="email" class="email" id="email" name="email" required placeholder="이메일">
-            <button type="button" id="verifyBtn" class = "find-btn">인증</button>
-        </div>
-        <div class="textForm">
-            <input type="text" id="verificationCodeInput" placeholder="인증번호">
-            <button type="button" id="checkCodeBtn" class = "find-btn">확인</button>
         </div>
         <div class="findBtnDiv">
-            <button type="button" class="findBtn">비밀번호 찾기</button>
+            <button type="button" class="findBtn" id="findBtn" onclick="findPw()">비밀번호 찾기</button>
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeModalButton" onclick="closeModal()">&times;</span>
+                <p id="modalMessage"></p>
+                <button type="button" class="findBtn" id="getPwBtn" onclick="getTempPw()">임시 비밀번호 받기</button>
+            </div>
         </div>
     </form>
 </div>

@@ -81,3 +81,8 @@ input {
     font-weight: bold;
     cursor: pointer;
 }
+
+#getPwBtn {
+    margin: 10px auto;
+    display: block;
+}
