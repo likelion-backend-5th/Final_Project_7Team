@@ -74,4 +74,14 @@ public class SignupController {
         response.put("duplicate", isDuplicate);
         return response;
     }
+
+    //닉네임 중복확인
+    @GetMapping("/checkDuplicateNickname")
+    @ResponseBody
+    public Map<String, Boolean> checkDuplicateNickname(@RequestParam("nickname") String nickname) {
+        boolean isDuplicate = service.nicknameExists(nickname);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("duplicate", isDuplicate);
+        return response;
+    }
 }

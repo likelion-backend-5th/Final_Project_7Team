@@ -74,4 +74,9 @@ public class MemberService implements UserDetailsManager {
     public boolean userExists(String loginId) {
         return this.memberRepository.existsByLoginId(loginId);
     }
+
+    //닉네임 중복확인
+    public boolean nicknameExists(String nickname) {
+        return this.memberRepository.existsByNickname(nickname);
+    }
 }
