@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404-Error-Page</title>
+    <title>500-Error-Page</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <link rel="stylesheet" href="../../../../css/tailwind.output.css" />
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="../../../../js/init-alpine.js"></script>
   </head>
   <body>
   <!-- 헤더-->
@@ -24,7 +24,7 @@
     >
       <!-- 사이드바 -->
       <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
-      <!-- 404 에러 페이지 -->
+      <!-- 500 에러 페이지 -->
 
         <main class="h-full w-full pb-16 overflow-y-auto">
           <div class="container flex flex-col items-center px-6 mx-auto">
@@ -40,12 +40,11 @@
               ></path>
             </svg>
             <h1 class="text-6xl font-semibold text-gray-700 dark:text-gray-200">
-              404 Error
+              500 Error
             </h1>
             <p class="text-gray-700 dark:text-gray-300 text-center">
-              죄송합니다. 페이지를 찾을 수 없습니다.<br>
-              존재하지 않는 주소를 입력하셨거나<br>
-              요청하신 페이지의 주소가 변경, 삭제되어 찾을 수 없습니다.
+              죄송합니다. 서버에러가 발생하였습니다.<br>
+              다시 요청해주세요.
             </p>
 
             <a class="text-purple-600 hover:underline dark:text-purple-300 mt-6"
