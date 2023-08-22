@@ -1,17 +1,17 @@
 package com.likelion.catdogpia.domain.dto.admin;
 
 import com.likelion.catdogpia.domain.entity.user.Role;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class MemberDto {
 
-    //private Long id;
+    private Long id;
     private String name;
     private String loginId;
     private String nickname;
@@ -28,7 +28,8 @@ public class MemberDto {
     private String formatAmount;
 
     @Builder
-    public MemberDto(String name, String loginId, String nickname, String phone, String email, String address, Role role, LocalDateTime createdAt, char blackListYn, Long totalPoint, Long totalReportCnt, Long totalAmount) {
+    public MemberDto(Long id, String name, String loginId, String nickname, String phone, String email, String address, Role role, LocalDateTime createdAt, char blackListYn, Long totalPoint, Long totalReportCnt, Long totalAmount) {
+        this.id = id;
         this.name = name;
         this.loginId = loginId;
         this.nickname = nickname;
@@ -43,6 +44,7 @@ public class MemberDto {
         this.totalAmount = totalAmount;
     }
 
+    // 금액 포맷 맞추기
     public void changeFormat(MemberDto memberDto){
         this.formatPoint = String.format("%,d원", memberDto.totalPoint);
         this.formatAmount = String.format("%,d원", memberDto.totalAmount);

@@ -107,7 +107,6 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="pl-10 py-3" style="width: 20%;">주소</th>
-<!--                      <th class="pl-10 py-3" style="width: 15%;">비밀번호</th>-->
                       <th class="pl-10 py-3" style="width: 15%;">ROLE</th>
                       <th class="pl-10 py-3" style="width: 15%;">적립금</th>
                       <th class="pl-10 py-3" style="width: 15%;">누적 구매금액</th>
@@ -136,7 +135,7 @@
           </div>
           <div class="col text-center">
             <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                  th:onclick="|location.href='@{/admin/members/{memberId}/modify-form}'|"
+                  th:onclick="|location.href='@{/admin/members/{memberId}/modify-form (memberId=${member.id})}'|"
             >
               변경
             </button>

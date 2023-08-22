@@ -1,6 +1,7 @@
 package com.likelion.catdogpia.repository;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -63,5 +64,4 @@ public class QueryRepository {
             return null;
         }
     }
-
 }
