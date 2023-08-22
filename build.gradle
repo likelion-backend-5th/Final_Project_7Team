@@ -31,6 +31,9 @@ dependencies {
 	/* Thymeleaf Layout */
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
+	/* Email Verification */
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

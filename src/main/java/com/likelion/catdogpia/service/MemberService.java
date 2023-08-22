@@ -84,4 +84,36 @@ public class MemberService implements UserDetailsManager {
     public boolean emailExists(String email) {
         return this.memberRepository.existsByEmail(email);
     }
+
+    //이메일 인증
+    public static void createNumber() {
+        number = (int)(Math.random()*(90000)) + 10000;
+    }
+
+    public MimeMessage createMail(String email) {
+        createNumber();
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        try {
+            message.setFrom("thecatdogpia@gmail.com");
+            message.setRecipients(MimeMessage.RecipientType.TO, email);
+            message.setSubject("Catdogpia 회원가입 이메일 인증");
+            String body = "";
+            body += "<h2>" + "CatDogPia 이메일 인증" + "</h2>";
+            body += "<h3>" + "캣독피아에 등록한 이메일 주소가 올바른지 확인하기 위한 인증번호입니다.\n" +
+                    "아래의 인증번호를 복사하여 이메일 인증을 완료해 주세요." + "</h3>";
+            body += "<h1> " + number + "</h1>";
+            message.setText(body, "UTF-8", "html");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+    public int sendMail(String email) {
+        MimeMessage message = createMail(email);
+        javaMailSender.send(message);
+
+        return number;
+    }
 }

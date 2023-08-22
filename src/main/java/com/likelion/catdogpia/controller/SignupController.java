@@ -94,4 +94,13 @@ public class SignupController {
         response.put("duplicate", isDuplicate);
         return response;
     }
+
+    //이메일 인증
+    @PostMapping("/email")
+    @ResponseBody
+    public String verifyEmail(String email) {
+        int number = service.sendMail(email);
+        String num = "" + number;
+        return num;
+    }
 }
