@@ -48,4 +48,21 @@ public class LoginController {
     public String findPwForm() {
         return "/page/login/findPw-form";
     }
+
+    //비밀번호찾기 (계정 확인)
+    @GetMapping("/findPassword")
+    @ResponseBody
+    public Map<String, String> findPassword(@RequestParam("loginId")String loginId, @RequestParam("name")String name, @RequestParam("email")String email) {
+        String message = service.findPassword(loginId, name, email);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", message);
+        return response;
+    }
+
+    //비밀번호찾기 (임시 비밀번호 발급)
+    @PostMapping("/tempPassword")
+    @ResponseBody
+    public String sendTempPassword(String email) {
+        return service.sendTempPassword(email);
+    }
 }

@@ -142,4 +142,10 @@ public class Member extends BaseEntity {
         this.wishLists = wishLists;
         this.qnAList = qnAList;
     }
+
+    //임시 비밀번호 세팅
+    @Builder
+    public void setTempPassword(String password) {
+        this.password = password;
+    }
 }
