@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>CatDogPia</title>
+  <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+</head>
+<body>
+<div class="add-address-container">
+  <p>배송지 입력</p>
+  <table>
+    <tr>
+      <th>배송지명</th>
+      <td><input class="address-input" placeholder="배송지명을 입력해주세요"></td>
+    </tr>
+    <tr>
+      <th>수령인</th>
+      <td><input class="address-input" placeholder="수령인 이름을 입력해주세요"></td>
+    </tr>
+    <tr>
+      <th>휴대폰번호</th>
+      <td><input class="address-input" placeholder="-없이 번호만 입력해주세요"></td>
+    </tr>
+    <tr>
+      <th>주소</th>
+      <td>
+        <input class="address-input"><button>검색</button>
+        <div>
+          <input type="checkbox"><label>기본 배송지 설정</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th>배송 요청사항 (선택)</th>
+      <td><input class="address-input" placeholder="배송 요청사항을 입력해주세요"></td>
+    </tr>
+  </table>
+  <button>등록</button>
+</div>
+</div>
+</body>
+</html>

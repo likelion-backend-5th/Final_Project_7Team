@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container order-detail-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <p class="mypage-title">주문 상세</p>
+    <ul class="order-detail-ul">
+        <li>주문번호</li>
+        <li>2023082193480239</li>
+        <li>주문일자</li>
+        <li>2023.08.21 00:04</li>
+    </ul>
+
+    <p class="mypage-title">상품 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>상품정보</th>
+            <th>주문금액</th>
+            <th>주문 상태</th>
+        </tr>
+        <tr>
+            <td>나풀 블라우스</td>
+            <td>30000원</td>
+            <td>배송완료 <button onclick="location.href='/mypage/exchange-refund'">교환/반품</button></td>
+        </tr>
+    </table>
+
+    <p class="mypage-title">배송지 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>이름</th>
+            <th>연락처</th>
+            <th>배송지 주소</th>
+            <th>요청사항</th>
+        </tr>
+        <tr>
+            <td>어금지</td>
+            <td>010-1234-5678</td>
+            <td>서울시 송파구 잠실동 111-11</td>
+            <td>문 앞에 두고 가주세요!</td>
+        </tr>
+    </table>
+
+    <p class="mypage-title">결제 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>상품 합계</th>
+            <th>할인 합계</th>
+            <th>최종 결제 금액</th>
+            <th>결제 수단</th>
+        </tr>
+        <tr>
+            <td>65000원</td>
+            <td>0원</td>
+            <td>65000원</td>
+            <td>현대카드</td>
+        </tr>
+    </table>
+</div>
+</div>
+</body>
+</html>

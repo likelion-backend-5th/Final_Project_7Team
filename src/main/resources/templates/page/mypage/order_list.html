@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <ul class="order-state">
+        <li>전체 0</li>
+        <li>입금/결제 0</li>
+        <li>배송중 1</li>
+        <li>배송완료 5</li>
+        <li>취소/교환/반품 1</li>
+    </ul>
+    <table class="mypage-table order-list-table">
+        <tr>
+            <th width="15%">주문일자</th>
+            <th width="15%">주문번호</th>
+            <th width="35%">상품정보</th>
+            <th width="15%">주문금액(수량)</th>
+            <th width="20%">주문 상태</th>
+        </tr>
+        <tr>
+            <td>2023.08.21</td>
+            <td><a href="/mypage/order-detail">20230821394810</a></td>
+            <td>나풀 불라우스 (L/blue)</td>
+            <td>20000원 (1개)</td>
+            <td>구매 확정 / 후기 작성</td>
+        </tr>
+        <tr>
+            <td>2023.08.21</td>
+            <td><a href="/mypage/order-detail">20230821394810</a></td>
+            <td>나풀 불라우스 (L/blue)</td>
+            <td>20000원 (1개)</td>
+            <td>구매 확정 / 후기 작성</td>
+        </tr>
+    </table>
+</div>
+</div>
+</body>
+</html>

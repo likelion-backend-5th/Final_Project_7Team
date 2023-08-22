@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+<!--    <p class="mypage-title">리뷰 내역</p>-->
+    <div class="review-box">
+        <div class="content-box">
+            <p>상품명</p>
+            <p>옵션</p>
+            <div class="rating"><span>평점부분</span></div>
+            <p>리뷰 내용</p>
+            <p>작성일자</p>
+        </div>
+        <div class="img-box">
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
