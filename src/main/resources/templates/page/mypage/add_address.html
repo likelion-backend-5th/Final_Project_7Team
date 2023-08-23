@@ -5,38 +5,46 @@
   <meta charset="UTF-8">
   <title>CatDogPia</title>
   <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+  <script src="/js/mypage.js"></script>
+  <!-- 카카오 주소 API -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
 <div class="add-address-container">
   <p>배송지 입력</p>
+  <form action="/mypage/add-address" method="post" id="addressForm">
   <table>
     <tr>
       <th>배송지명</th>
-      <td><input class="address-input" placeholder="배송지명을 입력해주세요"></td>
+      <td><input class="address-input" name="addressName" placeholder="배송지명을 입력해주세요"></td>
     </tr>
     <tr>
       <th>수령인</th>
-      <td><input class="address-input" placeholder="수령인 이름을 입력해주세요"></td>
+      <td><input class="address-input" name="name" placeholder="수령인 이름을 입력해주세요"></td>
     </tr>
     <tr>
       <th>휴대폰번호</th>
-      <td><input class="address-input" placeholder="-없이 번호만 입력해주세요"></td>
+      <td><input class="address-input" name="phone" placeholder="-없이 번호만 입력해주세요"></td>
     </tr>
     <tr>
       <th>주소</th>
       <td>
-        <input class="address-input"><button>검색</button>
+        <input id="address" name="address" class="address-input"><input type="button" onclick="execDaumPostcode()" value="주소 검색"><br>
+        <input id="detailAddress" name="detailAddress" class="address-input" placeholder="상세 주소를 입력해주세요">
         <div>
-          <input type="checkbox"><label>기본 배송지 설정</label>
+          <input type="checkbox" name="defaultAddress" value="Y"><label>기본 배송지 설정</label>
         </div>
       </td>
     </tr>
     <tr>
       <th>배송 요청사항 (선택)</th>
-      <td><input class="address-input" placeholder="배송 요청사항을 입력해주세요"></td>
+      <td><input class="address-input" name="request" placeholder="배송 요청사항을 입력해주세요"></td>
     </tr>
   </table>
-  <button>등록</button>
+    <button type="button" onclick="submitAndClose()">등록</button>
+  </form>
+
+
 </div>
 </div>
 </body>

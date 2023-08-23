@@ -1,13 +1,16 @@
 package com.likelion.catdogpia.controller;
 
 
+import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
 import com.likelion.catdogpia.service.AddressService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MypageController {
@@ -65,16 +68,22 @@ public class MypageController {
     // 배송지 관리 페이지
     @GetMapping("/mypage/address")
     public String addressPage(Model model) {
-        // 로그인 여부 확인
         // 배송지 리스트
-//        addressService.readAllAddress()
+//        model.addAttribute("addressList", addressService.readAllAddress());
         return "page/mypage/address.html";
     }
 
     // 배송지 등록 페이지
     @GetMapping("/mypage/add-address")
-    public String editAddressPage(Model model) {
+    public String addAddressPage(Model model) {
         return "page/mypage/add_address.html";
+    }
+
+    // 배송지 등록
+    @PostMapping("/mypage/add-address")
+    public String postAddAddress(AddressFormDto dto) {
+        addressService.saveAddress("testtest", dto);
+        return "redirect:/mypage/address";
     }
 
     // 리뷰 관리
