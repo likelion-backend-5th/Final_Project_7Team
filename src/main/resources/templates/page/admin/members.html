@@ -336,6 +336,7 @@
           searchMembers();
         }
       });
+    });
 
     function searchMembers() {
       let filter = $('#filter').val();
@@ -366,7 +367,6 @@
     // 회원 삭제
       $("#deleteBtn").click(function () {
         let memberId = $("#deleteId").val();
-        alert(memberId)
 
         $.ajax({
           url: `/admin/members/${memberId}/delete`,
@@ -381,6 +381,5 @@
           }
         });
       });
-    });
   </script>
 </html>
