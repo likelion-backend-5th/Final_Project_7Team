@@ -11,7 +11,7 @@
 <body>
 <div layout:fragment="content" class="mypage-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
-    <table class="mypage-table">
+    <table class="mypage-table mypage-address-table">
         <tr>
             <th width="15%">배송지명</th>
             <th width="10%">수령인</th>
@@ -19,21 +19,22 @@
             <th width="15%">연락처</th>
             <th width="15%"></th>
         </tr>
-        <tr>
-            <td>집</td>
-            <td>김이름</td>
-            <td>제주도</td>
-            <td>010-1234-5678</td>
+        <tr th:each="address : ${addressList}">
             <td>
-                <button>수정</button>
-                <button>삭제</button>
+                <div th:text="${address.addressName}"></div>
             </td>
-        </tr>
-        <tr>
-            <td>회사</td>
-            <td>김이름</td>
-            <td>서울</td>
-            <td>010-1234-5678</td>
+            <td>
+                <div th:text="${address.name}"></div>
+            </td>
+            <td>
+                <div class="td-address">
+                    <span class="default-address" th:if="${address.defaultAddress.toString().equals('Y')}">기본 배송지</span>
+                    <div th:text="${address.address}"></div>
+                </div>
+            </td>
+            <td>
+                <div th:text="${address.phone}"></div>
+            </td>
             <td>
                 <button>수정</button>
                 <button>삭제</button>

@@ -202,6 +202,20 @@ ul.order-state li {
 
 /* ======================================================================= */
 /* 배송지 관리 */
+.td-address {
+    display: flex;
+    align-items: center;
+}
+
+.td-address span {
+    margin-right: 15px;
+    width: 100px;
+    height: 30px;
+    color: #99A799;
+    font-weight: bold;
+    border: 1px solid #99A799;
+}
+
 
 /* 배송지 등록 */
 .add-address-container {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -67,9 +68,8 @@ public class MypageController {
 
     // 배송지 관리 페이지
     @GetMapping("/mypage/address")
-    public String addressPage(Model model) {
-        // 배송지 리스트
-//        model.addAttribute("addressList", addressService.readAllAddress());
+    public String addressPage(Model model, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
+        model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
         return "page/mypage/address.html";
     }
 
