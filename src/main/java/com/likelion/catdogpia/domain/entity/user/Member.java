@@ -20,6 +20,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 @Entity
 @SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE id = ?")
 @Where(clause = "deleted_at is null")
+@EntityListeners(AuditingEntityListener.class)
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,7 @@ public class Member extends BaseEntity {
     @Column(length = 20, nullable = false, unique = true)
     private String loginId;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 100, nullable = false)
     private String password;
 
     @Column(length = 30, nullable = false)

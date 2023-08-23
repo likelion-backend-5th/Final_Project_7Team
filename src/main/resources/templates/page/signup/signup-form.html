@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatDogPia</title>
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/signup.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/signup-page.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div layout:fragment="content" class="signup-form">
+    <div class="titleText">
+        <h2>회원가입</h2>
+        <hr>
+    </div>
+    <br>
+    <form action="/signup" method="post" id="signupForm">
+        <div class="textForm">
+            <label for="loginId">아이디</label>
+            <input type="text" class="loginId" id="loginId" name="loginId" required maxlength="12" placeholder="아이디는 영문, 숫자 조합 8~15자리로 입력해주세요">
+            <button type="button" class="signup-btn" onclick="checkDuplicateId()">중복확인</button>
+            <br>
+            <span id="id-validation-message"></span>
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="password">비밀번호</label>
+            <input type="password" class="password" id="password" name="password" required oninput="passwordVal()" maxlength="20" placeholder="영문, 숫자, 특수문자 조합 8~20자리로 입력해주세요">
+            <br>
+            <span id="pw-validation-message"></span>
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="checkPassword">비밀번호 확인</label>
+            <input type="password" class="password" id="checkPassword" name="checkPassword" required oninput="passwordCheckVal()" maxlength="20" placeholder="입력하신 비밀번호를 한 번 더 입력해주세요">
+            <br>
+            <span id="cpw-validation-message"></span>
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="name">이름</label>
+            <input type="text" class="name" id="name" name="name" required placeholder="성함을 적어주세요">
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="phone">휴대폰 번호</label>
+            <input type="tel" class="phone" id="phone" name="phone" required oninput="phoneVal()" maxlength="11" placeholder="사용하시는 휴대폰 번호를 입력해주세요">
+            <br>
+            <span id="phone-validation-message"></span>
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="email">이메일</label>
+            <input type="email" class="email" id="email" name="email" required oninput="toggleEmailButton()" placeholder="사용하시는 이메일 주소를 입력해주세요">
+            <button type="button" class="signup-btn" id = "emailBtn" onclick="emailVerification()" disabled>인증번호 전송</button>
+            <div id="emailVerificationFields" style="display: none;">
+                <label for="verificationCodeInput"></label>
+                <input type="text" id="verificationCodeInput" placeholder="인증번호">
+                <button type="button" id="verifyCodeButton" class = "signup-btn" onclick="verifyCode()">이메일 인증</button>
+            </div>
+            <br>
+            <span id="email-verification-message"></span>
+            <input type="text" id="verificationCode" name="verificationCode" style="display: none" value="486">
+        </div>
+        <hr>
+        <div class="textForm">
+            <label for="nickname">닉네임</label>
+            <input type="text" class="nickname" id="nickname" name="nickname" required maxlength="10" placeholder="사용하실 닉네임을 입력해주세요">
+            <button type="button" class="signup-btn" onclick="checkDuplicateNickname()">중복확인</button>
+            <br>
+            <span id="nickname-duplicate-message"></span>
+        </div>
+        <div class="signupBtn">
+            <button type="button" class="btn-signup" onclick="checkAndSubmit()">가입하기</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
