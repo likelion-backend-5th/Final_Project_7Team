@@ -87,6 +87,7 @@ public class AdminController {
         return resultMap;
     }
 
+    // 회원 삭제
     @PostMapping("/members/{memberId}/delete")
     public String memberRemove(@PathVariable Long memberId) {
         log.info("delete");
@@ -94,4 +95,24 @@ public class AdminController {
         return "redirect:/admin/members";
     }
 
+    // 상품 목록
+    @GetMapping("/products")
+    public String productList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword
+    ) {
+        model.addAttribute("productList", adminService.findProductList(pageable, filter, keyword));
+        model.addAttribute("filter",filter);
+        model.addAttribute("keyword",keyword);
+        return "/page/admin/products";
+    }
+
+    // 상품 상세
+    @GetMapping("/products/{productId}")
+    public String productDetails(@PathVariable Long productId, Model model) {
+
+        return "/page/admin/product-detail";
+    }
 }

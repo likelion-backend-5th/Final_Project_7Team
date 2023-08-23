@@ -2,6 +2,7 @@ package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
+import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.MemberRepository;
 import com.likelion.catdogpia.repository.QueryRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,4 +62,13 @@ public class AdminService {
         // 회원 삭제
         memberRepository.delete(findMember);
     }
+
+    // 상품 목록
+    public Page<ProductListDto> findProductList(Pageable pageable, String filter, String keyword) {
+        // 관리자 인지 확인하는 로직 필요
+
+        // 목록 조회
+        return queryRepository.findByProductAndFilterAndKeyword(pageable, filter, keyword);
+    }
 }
+
