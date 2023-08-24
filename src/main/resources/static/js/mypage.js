@@ -1,4 +1,4 @@
-// 프로필 (profile.html) =================================================
+// 프로필 (profile.html) =======================================================
 // 회원 정보 수정
 function openProfilePopup() {
     window.open("/mypage/edit-profile", "회원 정보 수정", "width=600, height=600")
@@ -10,35 +10,34 @@ function openPetPopup() {
 }
 
 
-// 배송지 (address) =================================================
+// 배송지 (address) ==========================================================
 // 배송지 등록 버튼 클릭
 function openAddressPopup() {
-    // window.open("팝업될 문서 경로","팝업될 문서 이름","옵션(위치, bar표시, 크기 등)");
     open("/mypage/add-address", "배송지 입력", "width=600, height=600, left=0, top=0")
 }
 
 // 배송지 등록 (post)
-function submitAndClose() {
+function submitAddress() {
     const form = document.getElementById('addressForm')
     const formData = new FormData(form)
     fetch("/mypage/add-address", {
-            method: "post",
-            body: formData,
-        })
-        .then(response=> {
-            if(response.ok) {
-                self.close();
-                alert("등록되었습니다.")
-                opener.parent.location.reload();
+        method: "post",
+        body: formData,
+    })
+        .then(response => {
+                if (response.ok) {
+                    self.close();
+                    alert("등록되었습니다.")
+                    opener.parent.location.reload();
+                }
             }
-        }
-    )
+        )
 }
 
 // 주소 API
 function execDaumPostcode() {
     new daum.Postcode({
-        oncomplete: function(data) {
+        oncomplete: function (data) {
             // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
             // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
@@ -48,11 +47,11 @@ function execDaumPostcode() {
 
             // 법정동명이 있을 경우 추가한다. (법정리는 제외)
             // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-            if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
                 extraRoadAddr += data.bname;
             }
             // 건물명이 있고, 공동주택일 경우 추가한다.
-            if(data.buildingName !== '' && data.apartment === 'Y'){
+            if (data.buildingName !== '' && data.apartment === 'Y') {
                 extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
             }
 
@@ -61,4 +60,40 @@ function execDaumPostcode() {
 
         }
     }).open();
+}
+
+function deleteAddress(addressId) {
+    if ( !confirm('배송지를 삭제하시겠습니까?') ) {
+        return false;
+    }
+
+    fetch("/mypage/address/delete/" + addressId, {
+        method: "post",
+    }).then(response => {
+            if (response.ok) {
+                alert('삭제되었습니다');
+                location.reload()
+            }
+        }
+    )
+}
+
+function openEditAddressPopup(addressId) {
+    open("/mypage/address/update/"+addressId, "배송지 수정", "width=600, height=600, left=0, top=0")
+}
+
+function updateAddress(addressId) {
+    const form = document.getElementById('addressForm')
+    const formData = new FormData(form)
+    fetch("/mypage/address/update/" + addressId, {
+        method: "post",
+        body: formData
+    }).then(response => {
+            if (response.ok) {
+                alert('수정되었습니다');
+                self.close();
+                opener.parent.location.reload();
+            }
+        }
+    )
 }

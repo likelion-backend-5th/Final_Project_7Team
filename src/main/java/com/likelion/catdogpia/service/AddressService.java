@@ -13,10 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,6 +34,13 @@ public class AddressService {
         Page<AddressResponseDto> response = addressPage.map(AddressResponseDto::fromEntity);
 
         return response;
+    }
+
+    // 배송지 1개 조회 (수정 페이지)
+    public AddressResponseDto readAddress(Long addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // (작성자 본인 맞는지 확인)
+        return AddressResponseDto.fromEntity(address);
     }
 
     // 배송지 등록
@@ -57,4 +63,34 @@ public class AddressService {
         addressRepository.save(dto.toEntity(member));
     }
 
+    @Transactional
+    // 배송지 수정
+    public void updateAddress(Long addressId, AddressFormDto dto) {
+
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 기본 배송지 여부 체크X => N으로 저장
+        if (dto.getDefaultAddress() == null) {
+            dto.setDefaultAddress('N');
+        } else {
+            // 기본 배송지 여부 체크O => 이미 기본 배송지로 등록된 배송지가 존재한다면 N으로 변경
+            // (추후 수정)
+            Optional<Address> optionalAddress = addressRepository.findDefaultAddressesByMemberId(1L);
+            if (optionalAddress.isPresent()) {
+                optionalAddress.get().updateDefaultAddress('N');
+            }
+        }
+
+        address.updateAddress(dto);
+
+    }
+
+    // 배송지 삭제
+    public void deleteAddress(String loginId, Long addressId) {
+        Member member = addressRepository.findById(addressId).get().getMember();
+        if(!member.getLoginId().equals(loginId)) {
+            new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        addressRepository.deleteById(addressId);
+    }
 }

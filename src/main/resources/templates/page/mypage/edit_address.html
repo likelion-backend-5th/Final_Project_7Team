@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CatDogPia</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <!-- 카카오 주소 API -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<div class="add-address-container">
+    <p>배송지 입력</p>
+    <form id="addressForm">
+        <table>
+            <tr>
+                <th>배송지명</th>
+                <td><input class="address-input" name="addressName" th:value="${address.addressName}"
+                           placeholder="배송지명을 입력해주세요"></td>
+            </tr>
+            <tr>
+                <th>수령인</th>
+                <td><input class="address-input" name="name" th:value="${address.name}" placeholder="수령인 이름을 입력해주세요">
+                </td>
+            </tr>
+            <tr>
+                <th>휴대폰번호</th>
+                <td><input class="address-input" name="phone" th:value="${address.phone}" placeholder="-없이 번호만 입력해주세요">
+                </td>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <td>
+                    <input id="address" name="address" class="address-input" th:value="${address.address}"><input
+                        type="button" onclick="execDaumPostcode()" value="주소 검색"><br>
+                    <input id="detailAddress" name="detailAddress" class="address-input"
+                           th:value="${address.detailAddress}" placeholder="상세 주소를 입력해주세요">
+                    <div>
+                        <th:block th:if="${address.defaultAddress.toString().equals('Y')}">
+                            <input type="checkbox" name="defaultAddress" value="Y" checked="checked">
+                        </th:block>
+                        <th:block th:if="${address.defaultAddress.toString().equals('N')}">
+                            <input type="checkbox" name="defaultAddress" value="Y">
+                        </th:block>
+                        <label>기본 배송지 설정</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>배송 요청사항 (선택)</th>
+                <td><input class="address-input" name="request" th:value="${address.request}" placeholder="배송 요청사항을 입력해주세요"></td>
+            </tr>
+        </table>
+        <button type="button" th:addressId="${address.id}" th:onclick="updateAddress(this.getAttribute('addressId'))">수정</button>
+    </form>
+</div>
+</body>
+</html>

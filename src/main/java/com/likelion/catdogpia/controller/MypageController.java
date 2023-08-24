@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -83,6 +81,27 @@ public class MypageController {
     @PostMapping("/mypage/add-address")
     public String postAddAddress(AddressFormDto dto) {
         addressService.saveAddress("testtest", dto);
+        return "redirect:/mypage/address";
+    }
+
+    // 배송지 수정 팝업 페이지
+    @GetMapping("/mypage/address/update/{addressId}")
+    public String updateAddressPage(@PathVariable Long addressId, Model model) {
+        model.addAttribute("address", addressService.readAddress(addressId));
+        return "page/mypage/edit_address.html";
+    }
+
+    // 배송지 수정
+    @PostMapping("/mypage/address/update/{addressId}")
+    public String updateAddress(@PathVariable Long addressId, AddressFormDto dto) {
+        addressService.updateAddress(addressId, dto);
+        return "redirect:/mypage/address";
+    }
+
+    @PostMapping("/mypage/address/delete/{addressId}")
+    public String deleteAddress(@PathVariable Long addressId) {
+        log.info("delete addressId값 = " + addressId);
+        addressService.deleteAddress("testtest", addressId);
         return "redirect:/mypage/address";
     }
 

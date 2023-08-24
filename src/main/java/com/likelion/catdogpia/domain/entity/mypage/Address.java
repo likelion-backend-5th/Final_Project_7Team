@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class Address {
     // 배송지 주소
     @Column(nullable = false, length = 100)
     private String address;
+
+    // 상세 주소
+    @Column(length = 50)
+    private String detailAddress;
 
     // 기본 배송지 여부
     @Column(nullable = false, length = 1)
@@ -45,9 +50,10 @@ public class Address {
     private Member member;
 
     @Builder
-    public Address(Long id, String address, Character defaultAddress, String addressName, String name, String phone, String request, Member member) {
+    public Address(Long id, String address, String detailAddress, Character defaultAddress, String addressName, String name, String phone, String request, Member member) {
         this.id = id;
         this.address = address;
+        this.detailAddress = detailAddress;
         this.defaultAddress = defaultAddress;
         this.addressName = addressName;
         this.name = name;
@@ -56,7 +62,17 @@ public class Address {
         this.member = member;
     }
 
-    // 기본 배송지 여부 변경 메소드
+    public void updateAddress(AddressFormDto dto) {
+        this.address = dto.getAddress();
+        this.detailAddress = dto.getDetailAddress();
+        this.defaultAddress = dto.getDefaultAddress();
+        this.addressName = dto.getAddressName();
+        this.name = dto.getName();
+        this.phone = dto.getPhone();
+        this.request = dto.getRequest();
+    }
+
+    // 기본 배송지 여부 변경
     public void updateDefaultAddress(Character defaultAddress) {
         this.defaultAddress = defaultAddress;
     }

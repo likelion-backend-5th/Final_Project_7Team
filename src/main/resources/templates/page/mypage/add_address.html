@@ -12,7 +12,7 @@
 <body>
 <div class="add-address-container">
   <p>배송지 입력</p>
-  <form action="/mypage/add-address" method="post" id="addressForm">
+  <form id="addressForm">
   <table>
     <tr>
       <th>배송지명</th>
@@ -41,7 +41,7 @@
       <td><input class="address-input" name="request" placeholder="배송 요청사항을 입력해주세요"></td>
     </tr>
   </table>
-    <button type="button" onclick="submitAndClose()">등록</button>
+    <button type="button" onclick="submitAddress()">등록</button>
   </form>
 
 

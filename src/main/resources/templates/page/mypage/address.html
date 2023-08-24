@@ -36,14 +36,13 @@
                 <div th:text="${address.phone}"></div>
             </td>
             <td>
-                <button>수정</button>
-                <button>삭제</button>
+                <button th:addressId="${address.id}" th:onclick="openEditAddressPopup(this.getAttribute('addressId'))">수정</button>
+                <button type="button" th:addressId="${address.id}" th:onclick="deleteAddress(this.getAttribute('addressId'))">삭제</button>
             </td>
         </tr>
     </table>
     <button type="button" onclick="openAddressPopup()">배송지 등록</button>
 </div>
-
 
 </body>
 </html>

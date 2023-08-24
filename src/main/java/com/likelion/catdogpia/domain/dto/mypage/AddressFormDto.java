@@ -2,11 +2,13 @@ package com.likelion.catdogpia.domain.dto.mypage;
 
 import com.likelion.catdogpia.domain.entity.mypage.Address;
 import com.likelion.catdogpia.domain.entity.user.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class AddressFormDto {
 
     // 배송지 주소
@@ -32,7 +34,8 @@ public class AddressFormDto {
 
     public Address toEntity(Member member) {
         return Address.builder()
-                .address(address+" "+detailAddress)
+                .address(address)
+                .detailAddress(detailAddress)
                 .defaultAddress(defaultAddress)
                 .addressName(addressName)
                 .name(name)

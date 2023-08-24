@@ -8,8 +8,14 @@ import lombok.Getter;
 @Builder
 public class AddressResponseDto {
 
+    // 배송지 id
+    private Long id;
+
     // 배송지 주소
     private String address;
+
+    // 배송지 상세 주소
+    private String detailAddress;
 
     // 기본 배송지 여부
     private Character defaultAddress;
@@ -28,7 +34,9 @@ public class AddressResponseDto {
 
     public static AddressResponseDto fromEntity(Address entity) {
         return AddressResponseDto.builder()
+                .id(entity.getId())
                 .address(entity.getAddress())
+                .detailAddress(entity.getDetailAddress())
                 .defaultAddress(entity.getDefaultAddress())
                 .addressName(entity.getAddressName())
                 .name(entity.getName())
