@@ -52,7 +52,7 @@
                 <td><input class="address-input" name="request" th:value="${address.request}" placeholder="배송 요청사항을 입력해주세요"></td>
             </tr>
         </table>
-        <button type="button" th:addressId="${address.id}" th:onclick="updateAddress(this.getAttribute('addressId'))">수정</button>
+        <button type="button" th:onclick="updateAddress([[${address.id}]])">수정</button>
     </form>
 </div>
 </body>

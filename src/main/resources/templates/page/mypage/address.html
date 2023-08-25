@@ -36,8 +36,8 @@
                 <div th:text="${address.phone}"></div>
             </td>
             <td>
-                <button th:addressId="${address.id}" th:onclick="openEditAddressPopup(this.getAttribute('addressId'))">수정</button>
-                <button type="button" th:addressId="${address.id}" th:onclick="deleteAddress(this.getAttribute('addressId'))">삭제</button>
+                <button th:onclick="openEditAddressPopup([[${address.id}]])">수정</button>
+                <button type="button" th:onclick="deleteAddress([[${address.id}]])">삭제</button>
             </td>
         </tr>
     </table>
