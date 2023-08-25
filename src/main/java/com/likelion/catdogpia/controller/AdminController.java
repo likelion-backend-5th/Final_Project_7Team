@@ -1,16 +1,25 @@
 package com.likelion.catdogpia.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.admin.ProductDto;
+import com.likelion.catdogpia.domain.dto.admin.ProductOptionDto;
+import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -114,5 +123,34 @@ public class AdminController {
     public String productDetails(@PathVariable Long productId, Model model) {
 
         return "/page/admin/product-detail";
+    }
+
+    // 상품 등록 페이지
+    @GetMapping("/products/create-form")
+    public String productCreateForm(Model model) {
+        model.addAttribute("categoryList", adminService.findCategory());
+        model.addAttribute("productDto", new ProductDto());
+        return "/page/admin/product-create";
+    }
+
+    // 상품 등록
+    @PostMapping(value = "/products/create")
+    public String productCreate(
+            @RequestParam("mainImg") MultipartFile mainImg,
+            @RequestParam("detailImg") MultipartFile detailImg,
+            @RequestParam("productDto") String productDto
+    ) throws IOException {
+
+        log.info("product : " + productDto);
+        log.info("mainImg :" + mainImg.getOriginalFilename());
+        log.info("detailImg :" + detailImg.getOriginalFilename());
+        // json -> productDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
+        log.info("product toString : " + product.toString());
+
+        adminService.createProduct(product, mainImg, detailImg);
+
+        return "redirect:/admin/products";
     }
 }
