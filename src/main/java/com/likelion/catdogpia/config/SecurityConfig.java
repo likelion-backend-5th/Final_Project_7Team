@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authHttp -> authHttp
                                 .requestMatchers("/authorize").authenticated()
+                                .requestMatchers("/signout").authenticated()
                                 //.requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().permitAll()
                 )

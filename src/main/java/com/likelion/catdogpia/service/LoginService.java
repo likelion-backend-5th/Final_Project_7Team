@@ -139,4 +139,10 @@ public class LoginService {
 
         return "임시 비밀번호 발급 메일 전송 완료";
     }
+
+    //로그아웃
+    @Transactional
+    public void logout(String loginId) {
+        refreshTokenRepository.deleteByLoginId(loginId);
+    }
 }

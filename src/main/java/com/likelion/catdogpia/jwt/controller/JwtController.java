@@ -52,4 +52,29 @@ public class JwtController {
         }
         return response;
     }
+
+    //로그아웃
+    @GetMapping("/signout")
+    public Map<String, String> logout(@RequestHeader("Authorization") String accessToken, HttpServletResponse httpResponse) {
+        Map<String, String> response = new HashMap<>();
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+            // Refresh Token DB 삭제
+            loginService.logout(loginId);
+
+            // Refresh Token 쿠키 삭제
+            Cookie refreshTokenCookie = new Cookie("RefreshToken", null);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setMaxAge(0);
+            refreshTokenCookie.setPath("/");
+            httpResponse.addCookie(refreshTokenCookie);
+
+            response.put("result", "성공");
+        }
+        return response;
+    }
 }
