@@ -1,30 +1,58 @@
 package com.likelion.catdogpia.controller;
 
-import com.likelion.catdogpia.service.MemberService;
+import com.likelion.catdogpia.jwt.JwtTokenProvider;
+import com.likelion.catdogpia.jwt.domain.JwtTokenResponseDto;
+import com.likelion.catdogpia.service.LoginService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
-    private final MemberService service;
-
-    public LoginController(MemberService service) {
-        this.service = service;
-    }
+    private final LoginService loginService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     //로그인 UI
     @GetMapping("/login")
     public String loginForm() {
         return "/page/login/login-form";
+    }
+
+    //로그인
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginJwt(@RequestParam("loginId")String loginId, @RequestParam("password")String password, HttpServletResponse httpResponse) {
+        String result = loginService.login(loginId, password);
+        if (result.equals("fail")) {
+            Map<String, String> response = new HashMap<>();
+            response.put("result", "fail");
+            return ResponseEntity.ok(response);
+        }
+        JwtTokenResponseDto jwt = jwtTokenProvider.createTokensByLogin(loginId);
+        String accessToken = jwt.getAccessToken();
+        String refreshToken = jwt.getRefreshToken();
+
+        //AccessToken LocalStorage
+        Map<String, String> response = new HashMap<>();
+        response.put("result", "success");
+        response.put("accessToken", accessToken);
+
+        //RefreshToken Cookie
+        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge(24*60*60);
+        refreshTokenCookie.setPath("/");
+        httpResponse.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok(response);
     }
 
     //아이디찾기 UI
@@ -37,7 +65,7 @@ public class LoginController {
     @GetMapping("/findId")
     @ResponseBody
     public Map<String, String> findId(@RequestParam("name")String name, @RequestParam("email")String email) {
-        String message = service.findId(name, email);
+        String message = loginService.findId(name, email);
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
         return response;
@@ -53,7 +81,7 @@ public class LoginController {
     @GetMapping("/findPassword")
     @ResponseBody
     public Map<String, String> findPassword(@RequestParam("loginId")String loginId, @RequestParam("name")String name, @RequestParam("email")String email) {
-        String message = service.findPassword(loginId, name, email);
+        String message = loginService.findPassword(loginId, name, email);
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
         return response;
@@ -63,6 +91,6 @@ public class LoginController {
     @PostMapping("/tempPassword")
     @ResponseBody
     public String sendTempPassword(String email) {
-        return service.sendTempPassword(email);
+        return loginService.sendTempPassword(email);
     }
 }

@@ -10,6 +10,24 @@
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/findIdPw.js"></script>
+    <script>
+        const accessToken = localStorage.getItem('accessToken');
+        const endpoint = '/find/password';
+
+        $.ajax({
+            url: endpoint,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', error);
+            }
+        });
+    </script>
     <!-- CSS -->
     <link rel="stylesheet" href="/css/find-page.css">
     <!-- Favicon -->

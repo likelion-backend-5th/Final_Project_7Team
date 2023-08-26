@@ -6,16 +6,15 @@ import com.likelion.catdogpia.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.SecureRandom;
 import java.util.Optional;
 
 @Slf4j
@@ -24,12 +23,10 @@ public class MemberService implements UserDetailsManager {
     private final MemberRepository memberRepository;
     private final JavaMailSender javaMailSender;
     private static int number;
-
-    private final PasswordEncoder passwordEncoder;
-    public MemberService(MemberRepository memberRepository, JavaMailSender javaMailSender, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public MemberService(MemberRepository memberRepository, JavaMailSender javaMailSender) {
         this.memberRepository = memberRepository;
         this.javaMailSender = javaMailSender;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -120,97 +117,5 @@ public class MemberService implements UserDetailsManager {
         javaMailSender.send(message);
 
         return number;
-    }
-
-    //아이디 찾기
-    public String findId(String name, String email) {
-        Optional<Member> optionalMember = memberRepository.findByNameAndEmail(name, email);
-
-        if(optionalMember.isEmpty())
-            return "입력하신 회원 정보로 가입된 아이디가 존재하지 않습니다.";
-
-        Member member = optionalMember.get();
-        String loginId = member.getLoginId();
-        return "입력하신 회원 정보로 가입된 아이디는 " + loginId + " 입니다.";
-    }
-
-    //비밀번호 찾기 (계정 확인 메시지)
-    public String findPassword(String loginId, String name, String email) {
-        Optional<Member> optionalMember = memberRepository.findByLoginIdAndNameAndEmail(loginId, name, email);
-
-        if(optionalMember.isEmpty())
-            return "입력하신 회원 정보로 가입된 계정이 존재하지 않습니다.";
-
-        return "입력하신 이메일로 임시 비밀번호를 발급합니다.";
-    }
-
-    //비밀번호 찾기 (임시 비밀번호 생성 및 DB 저장)
-    private static char getRandomChar(String characters, SecureRandom random) {
-        int randomIndex = random.nextInt(characters.length());
-        return characters.charAt(randomIndex);
-    }
-
-    public String createPassword(String email) {
-        String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String digits = "0123456789";
-        String specialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-
-        SecureRandom random = new SecureRandom();
-        StringBuilder passwordBuilder = new StringBuilder();
-
-        passwordBuilder.append(getRandomChar(characters, random));
-        passwordBuilder.append(getRandomChar(digits, random));
-        passwordBuilder.append(getRandomChar(specialCharacters, random));
-
-        String allCharacters = characters + digits + specialCharacters;
-        for (int i = passwordBuilder.length(); i < 8; i++) {
-            passwordBuilder.append(getRandomChar(allCharacters, random));
-        }
-
-        char[] tempPassword = passwordBuilder.toString().toCharArray();
-        for (int i = 0; i < tempPassword.length; i++) {
-            int randomIndex = random.nextInt(tempPassword.length);
-            char temp = tempPassword[i];
-            tempPassword[i] = tempPassword[randomIndex];
-            tempPassword[randomIndex] = temp;
-        }
-
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if(optionalMember.isEmpty())
-            return "입력하신 회원 정보로 가입된 계정이 존재하지 않습니다.";
-
-        Member member = optionalMember.get();
-        member.setTempPassword(passwordEncoder.encode(new String(tempPassword)));
-        memberRepository.save(member);
-        return new String(tempPassword);
-    }
-
-    //메일생성
-    public MimeMessage createPasswordMail(String email) {
-        String password = createPassword(email);
-        MimeMessage message = javaMailSender.createMimeMessage();
-
-        try {
-            message.setFrom("thecatdogpia@gmail.com");
-            message.setRecipients(MimeMessage.RecipientType.TO, email);
-            message.setSubject("[CatDogPia] 임시 비밀번호 발급");
-            String body = "";
-            body += "<h2>" + "CatDogPia 임시 비밀번호" + "</h2>";
-            body += "<h3>" + "회원님께서 요청하신 임시 비밀번호가 발급되었습니다." + "</h3>";
-            body += "<h3>" + "아래의 임시비밀번호를 사용하여 캣독피아에 로그인 후 새로운 비밀번호로 변경하시기 바랍니다." + "</h3>";
-            body += "<h1> " + password + "</h1>";
-            message.setText(body, "UTF-8", "html");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        return message;
-    }
-
-    //임시 비밀번호 발급 메일 전송
-    public String sendTempPassword(String email) {
-        MimeMessage message = createPasswordMail(email);
-        javaMailSender.send(message);
-
-        return "임시 비밀번호 발급 메일 전송 완료";
     }
 }
