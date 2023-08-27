@@ -25,19 +25,12 @@
             <th width="15%">주문금액(수량)</th>
             <th width="20%">주문 상태</th>
         </tr>
-        <tr>
-            <td>2023.08.21</td>
-            <td><a href="/mypage/order-detail">20230821394810</a></td>
-            <td>나풀 불라우스 (L/blue)</td>
-            <td>20000원 (1개)</td>
-            <td>구매 확정 / 후기 작성</td>
-        </tr>
-        <tr>
-            <td>2023.08.21</td>
-            <td><a href="/mypage/order-detail">20230821394810</a></td>
-            <td>나풀 불라우스 (L/blue)</td>
-            <td>20000원 (1개)</td>
-            <td>구매 확정 / 후기 작성</td>
+        <tr th:each="order : ${orderList}">
+            <td th:text="${order.orderAt}">2023.08.21</td>
+            <td><a href="/mypage/order-detail/${order.id}" th:text="${order.id}">20230821394810</a></td>
+            <td th:text="${order.name}">나풀 불라우스 (L/blue)</td>
+            <td th:text="${order.price}">20000원 <span th:text="'('+${order.quantity}+'개)'">(1개)</span></td>
+            <td th:text="${order.orderStatus}">구매 확정 / 후기 작성</td>
         </tr>
     </table>
 </div>
