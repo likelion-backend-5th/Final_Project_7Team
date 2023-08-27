@@ -40,9 +40,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
-
     @Column(length = 10, nullable = false)
     private String status;
 
@@ -55,13 +52,12 @@ public class Product extends BaseEntity {
     @Builder
 
     public Product(Long id, CategoryEntity category, Attach attach, String name,
-                   int price, String content, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
+                   int price, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
         this.category = category;
         this.attach = attach;
         this.name = name;
         this.price = price;
-        this.content = content;
         this.status = status;
         this.productOptionList = productOptionList;
         this.qnAList = qnAList;
