@@ -13,8 +13,11 @@
     <p class="mypage-title">주문 상세</p>
     <ul class="order-detail-ul">
         <li>주문번호</li>
+        <!-- 추후 productList에 값이 존재할 때 주석 제거 -->
+        <!--            <li th:text="${productList.content[0].id}">2023082193480239</li>-->
         <li>2023082193480239</li>
         <li>주문일자</li>
+        <!--            <li th:text="${productList.content[0].orderAt}">2023.08.21 00:04</li>-->
         <li>2023.08.21 00:04</li>
     </ul>
 
@@ -22,13 +25,17 @@
     <table class="mypage-table">
         <tr>
             <th>상품정보</th>
+            <th>옵션</th>
             <th>주문금액</th>
             <th>주문 상태</th>
         </tr>
-        <tr>
-            <td>나풀 블라우스</td>
-            <td>30000원</td>
-            <td>배송완료 <button onclick="location.href='/mypage/exchange-refund'">교환/반품</button></td>
+        <tr th:each="product :${productList}">
+            <td th:text="${product.name}">나풀 블라우스</td>
+            <td th:text="${product.size}+','+${product.color}">M, blue</td>
+            <td th:text="${product.price}">30000원</td>
+            <td th:text="${product.orderStatus}">배송완료
+                <button onclick="location.href='/mypage/exchange-refund'">교환/반품</button>
+            </td>
         </tr>
     </table>
 
@@ -41,10 +48,10 @@
             <th>요청사항</th>
         </tr>
         <tr>
-            <td>어금지</td>
-            <td>010-1234-5678</td>
-            <td>서울시 송파구 잠실동 111-11</td>
-            <td>문 앞에 두고 가주세요!</td>
+            <td th:text="${testDetail.name}">어금지</td>
+            <td th:text="${testDetail.phone}">010-1234-5678</td>
+            <td th:text="${testDetail.address}">서울시 송파구 잠실동 111-11</td>
+            <td th:text="${testDetail.request}">문 앞에 두고 가주세요!</td>
         </tr>
     </table>
 
@@ -58,9 +65,9 @@
         </tr>
         <tr>
             <td>65000원</td>
-            <td>0원</td>
-            <td>65000원</td>
-            <td>현대카드</td>
+            <td th:text="${testDetail.point}+'원'">0원</td>
+            <td th:text="${testDetail.totalAmount}+'원'">65000원</td>
+            <td th:text="${testDetail.cardCompany}">비씨카드</td>
         </tr>
     </table>
 </div>

@@ -2,6 +2,7 @@ package com.likelion.catdogpia.controller;
 
 
 import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
 import com.likelion.catdogpia.service.AddressService;
 import com.likelion.catdogpia.service.OrderHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,12 @@ public class MypageController {
     }
 
     // 주문 상세 페이지
-    @GetMapping("/mypage/order-detail")
-    public String orderDetailPage(Model model) {
+    @GetMapping("/mypage/order-detail/{ordersId}")
+    public String orderDetailPage(Model model, @PathVariable Long ordersId, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
+        model.addAttribute("productList", orderHistoryService.readOrder("testtest", ordersId, page, limit));
+        // 테스트용 OrderDetailDto
+        model.addAttribute("testDetail", OrderDetailDto.builder().address("test주소").name("어금지").phone("01011111111").request("문 앞에 두고 가주세요!").totalAmount(30000).cardCompany("비씨카드").point(5000).build());
+        model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", ordersId));
         return "page/mypage/order_detail.html";
     }
 

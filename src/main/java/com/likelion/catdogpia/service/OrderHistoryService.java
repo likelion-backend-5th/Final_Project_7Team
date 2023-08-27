@@ -1,6 +1,8 @@
 package com.likelion.catdogpia.service;
 
+import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
 import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
+import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.MemberRepository;
 import com.likelion.catdogpia.repository.OrderRespository;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,9 +31,32 @@ public class OrderHistoryService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
-        Page<OrderListDto> orderListPage = orderRespository.findOrderInfo(pageable, member.getId());
+        Page<OrderListDto> orderListPage = orderRespository.findAllByMemberId(pageable, member.getId());
 
         return orderListPage;
+    }
+
+    // 주문 상세 조회 > 특정 주문 번호의 상품들 조회
+    public Page<OrderListDto> readOrder(String loginId, Long ordersId, Integer page, Integer limit) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
+        Page<OrderListDto> orderListPage = orderRespository.findAllByOrderId(pageable, member.getId());
+
+        return orderListPage;
+    }
+
+    // 주문 상세 조회 > 배송지 정보, 결제 정보
+    public OrderDetailDto readDetail(String loginId, Long ordersId) {
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if(optionalMember.isEmpty()) {
+            new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        Optional<Orders> optionalOrders = orderRespository.findById(ordersId);
+        if(optionalOrders.isEmpty()) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return orderRespository.findDetailByOrderId(ordersId);
     }
 
 }
