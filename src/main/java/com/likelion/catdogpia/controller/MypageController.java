@@ -3,6 +3,7 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
 import com.likelion.catdogpia.service.AddressService;
+import com.likelion.catdogpia.service.OrderHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class MypageController {
 
     private final AddressService addressService;
+    private final OrderHistoryService orderHistoryService;
 
     // 프로필 페이지
     @GetMapping("/mypage")
@@ -42,7 +44,8 @@ public class MypageController {
 
     // 주문 내역 페이지
     @GetMapping("/mypage/order-list")
-    public String orderListPage(Model model) {
+    public String orderListPage(Model model, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
+        model.addAttribute("orderList", orderHistoryService.readAllOrder("testtest", page, limit));
         return "page/mypage/order_list.html";
     }
 
