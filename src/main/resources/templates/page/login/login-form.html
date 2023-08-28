@@ -42,11 +42,33 @@
             <a href="/signup">회원가입</a>
         </div>
         <div class="socialLogin">
-            <button type="button" class="kakao-login">
-                <img src="/kakao_login_medium_wide.png">
-            </button>
+            <a href="/oauth2/authorization/naver">
+                <img src="/naverLogin.png" alt="Naver Social Login" class="naver-login">
+            </a>
         </div>
     </form>
 </div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", e => {
+        e.preventDefault();
+        const loginId = document.getElementById("loginId").value
+        const password = document.getElementById("password").value
+        fetch("/issue", {
+            method : "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ loginId, password })
+        }).then(data => {
+            if (data.result === 'success') {
+                localStorage.setItem('accessToken', data.accessToken);
+                window.location.href = '/';
+            }
+        })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    })
+</script>
 </body>
 </html>

@@ -39,11 +39,13 @@ input {
     background-color: white;
 }
 
-.kakao-login {
+.naver-login {
     border: none;
     background-color: transparent;
     padding: 0;
     margin: 10px;
+    margin-left: 60px;
+    width: 200px;
 }
 
 .find {
