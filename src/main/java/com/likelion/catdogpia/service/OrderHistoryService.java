@@ -27,11 +27,11 @@ public class OrderHistoryService {
     private final MemberRepository memberRepository;
 
     // 주문 내역 리스트 조회
-    public Page<OrderListDto> readAllOrder(String loginId, Integer page, Integer limit) {
+    public Page<OrderListDto> readAllOrder(String loginId, String orderStatus, Integer page, Integer limit) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
-        Page<OrderListDto> orderListPage = orderRespository.findAllByMemberId(pageable, member.getId());
+        Page<OrderListDto> orderListPage = orderRespository.findAllByMemberId(pageable, member.getId(), orderStatus);
 
         return orderListPage;
     }

@@ -6,16 +6,18 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
     <ul class="order-state">
-        <li>전체 0</li>
-        <li>입금/결제 0</li>
-        <li>배송중 1</li>
-        <li>배송완료 5</li>
-        <li>취소/교환/반품 1</li>
+        <li th:onclick="filterOrderStatus(null)">전체 0</li>
+        <li th:onclick="filterOrderStatus('입금/결제')">입금/결제 0</li>
+        <li th:onclick="filterOrderStatus('배송중')">배송중 1</li>
+        <li th:onclick="filterOrderStatus('배송완료')">배송완료 5</li>
+        <li th:onclick="filterOrderStatus('취소/교환/반품')">취소/교환/반품 1</li>
     </ul>
     <table class="mypage-table order-list-table">
         <tr>

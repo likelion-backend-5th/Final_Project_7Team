@@ -6,3 +6,14 @@ spring:
       ddl-auto: create
     properties:
       hibernate.format_sql: true
+      hibernate:
+        show_sql: true
+    defer-datasource-initialization: true
+    datasource.initialization-mode: always
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+sql:
+  init:
+    mode: always

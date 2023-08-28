@@ -17,8 +17,8 @@ public interface OrderRespository extends JpaRepository<Orders, Long> {
             "JOIN OrderProduct op ON o.id = op.order.id " +
             "JOIN ProductOption po ON op.id = po.id " +
             "JOIN Product p ON po.id = p.id " +
-            "WHERE o.member.id = :memberId")
-    Page<OrderListDto> findAllByMemberId(Pageable pageable, @Param("memberId") Long memberId);
+            "WHERE o.member.id = :memberId AND (:orderStatus is null or op.orderStatus = :orderStatus)")
+    Page<OrderListDto> findAllByMemberId(Pageable pageable, @Param("memberId") Long memberId, @Param("orderStatus") String orderStatus);
 
     // 마이페이지 - 주문 상세 조회 > 특정 주문 번호의 상품들 조회
     @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderListDto(o.id, o.orderAt, op.quantity, op.orderStatus, po.size, po.color, p.name, p.price) " +

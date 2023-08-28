@@ -45,14 +45,14 @@ public class MypageController {
 
     // 주문 내역 페이지
     @GetMapping("/mypage/order-list")
-    public String orderListPage(Model model, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("orderList", orderHistoryService.readAllOrder("testtest", page, limit));
+    public String orderListPage(Model model, @RequestParam(value = "orderStatus", required = false) String orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        model.addAttribute("orderList", orderHistoryService.readAllOrder("testtest", orderStatus, page, limit));
         return "page/mypage/order_list.html";
     }
 
     // 주문 상세 페이지
     @GetMapping("/mypage/order-detail/{ordersId}")
-    public String orderDetailPage(Model model, @PathVariable Long ordersId, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
+    public String orderDetailPage(Model model, @PathVariable Long ordersId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("productList", orderHistoryService.readOrder("testtest", ordersId, page, limit));
         // 테스트용 OrderDetailDto
         model.addAttribute("testDetail", OrderDetailDto.builder().address("test주소").name("어금지").phone("01011111111").request("문 앞에 두고 가주세요!").totalAmount(30000).cardCompany("비씨카드").point(5000).build());
@@ -74,7 +74,7 @@ public class MypageController {
 
     // 배송지 관리 페이지
     @GetMapping("/mypage/address")
-    public String addressPage(Model model, @RequestParam(value="page", defaultValue = "0") Integer page, @RequestParam(value="limit", defaultValue = "10") Integer limit) {
+    public String addressPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
         return "page/mypage/address.html";
     }
