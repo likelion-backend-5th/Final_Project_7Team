@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
+@RequestMapping("/mypage")
 @RequiredArgsConstructor
 public class MypageController {
 
@@ -20,38 +21,38 @@ public class MypageController {
     private final OrderHistoryService orderHistoryService;
 
     // 프로필 페이지
-    @GetMapping("/mypage")
+    @GetMapping("")
     public String profilePage(Model model) {
         return "page/mypage/profile.html";
     }
 
     // 회원 정보 수정 페이지
-    @GetMapping("/mypage/edit-profile")
+    @GetMapping("/edit-profile")
     public String editProfilePage(Model model) {
         return "page/mypage/edit_profile.html";
     }
 
     // 반려동물 등록 페이지
-    @GetMapping("/mypage/edit-pet")
+    @GetMapping("/edit-pet")
     public String addPetPage(Model model) {
         return "page/mypage/add_pet.html";
     }
 
     // 반려동물 등록
-    @PostMapping("/mypage/edit-pet")
+    @PostMapping("/edit-pet")
     public String addPet(Model model) {
         return "page/mypage/add_pet.html";
     }
 
     // 주문 내역 페이지
-    @GetMapping("/mypage/order-list")
+    @GetMapping("/order-list")
     public String orderListPage(Model model, @RequestParam(value = "orderStatus", required = false) String orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("orderList", orderHistoryService.readAllOrder("testtest", orderStatus, page, limit));
         return "page/mypage/order_list.html";
     }
 
     // 주문 상세 페이지
-    @GetMapping("/mypage/order-detail/{ordersId}")
+    @GetMapping("/order-detail/{ordersId}")
     public String orderDetailPage(Model model, @PathVariable Long ordersId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("productList", orderHistoryService.readOrder("testtest", ordersId, page, limit));
         // 테스트용 OrderDetailDto
@@ -61,52 +62,52 @@ public class MypageController {
     }
 
     // 교환 및 환불 페이지
-    @GetMapping("/mypage/exchange-refund")
+    @GetMapping("/exchange-refund")
     public String exchangeRefundPage(Model model) {
         return "page/mypage/exchange_refund.html";
     }
 
     // 적립금 페이지
-    @GetMapping("/mypage/point")
+    @GetMapping("/point")
     public String pointPage(Model model) {
         return "page/mypage/point.html";
     }
 
     // 배송지 관리 페이지
-    @GetMapping("/mypage/address")
+    @GetMapping("/address")
     public String addressPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
         return "page/mypage/address.html";
     }
 
     // 배송지 등록 페이지
-    @GetMapping("/mypage/add-address")
+    @GetMapping("/add-address")
     public String addAddressPage(Model model) {
         return "page/mypage/add_address.html";
     }
 
     // 배송지 등록
-    @PostMapping("/mypage/add-address")
+    @PostMapping("/add-address")
     public String postAddAddress(AddressFormDto dto) {
         addressService.saveAddress("testtest", dto);
         return "redirect:/mypage/address";
     }
 
     // 배송지 수정 팝업 페이지
-    @GetMapping("/mypage/address/update/{addressId}")
+    @GetMapping("/address/update/{addressId}")
     public String updateAddressPage(@PathVariable Long addressId, Model model) {
         model.addAttribute("address", addressService.readAddress(addressId));
         return "page/mypage/edit_address.html";
     }
 
     // 배송지 수정
-    @PostMapping("/mypage/address/update/{addressId}")
+    @PostMapping("/address/update/{addressId}")
     public String updateAddress(@PathVariable Long addressId, AddressFormDto dto) {
         addressService.updateAddress(addressId, dto);
         return "redirect:/mypage/address";
     }
 
-    @PostMapping("/mypage/address/delete/{addressId}")
+    @PostMapping("/address/delete/{addressId}")
     public String deleteAddress(@PathVariable Long addressId) {
         log.info("delete addressId값 = " + addressId);
         addressService.deleteAddress("testtest", addressId);
@@ -114,13 +115,13 @@ public class MypageController {
     }
 
     // 리뷰 관리
-    @GetMapping("/mypage/review")
+    @GetMapping("/review")
     public String reviewPage(Model model) {
         return "page/mypage/review.html";
     }
 
     // 게시글 관리 페이지
-    @GetMapping("/mypage/article")
+    @GetMapping("/article")
     public String mypagePage(Model model) {
         return "page/mypage/article.html";
     }
