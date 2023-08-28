@@ -82,7 +82,7 @@ public class QueryRepository {
                                 ExpressionUtils.as(
                                         JPAExpressions.select(qProductOption.stock.sum())
                                         .from(qProductOption)
-                                        .where(qProductOption.id.eq(product.id)),
+                                        .where(qProductOption.product.eq(product)),
                                 "totalStock")
                         ))
                         .from(product)

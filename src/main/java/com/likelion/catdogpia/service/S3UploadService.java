@@ -2,6 +2,7 @@ package com.likelion.catdogpia.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,18 @@ public class S3UploadService {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(IllegalArgumentException::new);
         return upload(uploadFile, dirName);
+    }
+
+
+    //파일 삭제
+    public void deleteFile(String fileName){
+        log.info("파일삭제 시작");
+        try {
+            amazonS3Client.deleteObject(bucket, fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("파일삭제 끝");
     }
 
     private String upload(File uploadFile, String dirName) {

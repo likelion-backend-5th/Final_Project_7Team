@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,7 +61,7 @@ public class AdminService {
         // 관리자인지 확인하는 로직 필요
 
         // 회원 수정
-        Member findMember = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         findMember.changeMember(memberDto);
     }
 
@@ -97,7 +98,7 @@ public class AdminService {
         // 카테고리가 없으면 오류 발생
         if(findCategories.isEmpty()) {
             log.info("findCategories is empty!");
-            throw new RuntimeException();
+            return returnList;
         }
 
         // Entity -> DTO
@@ -158,6 +159,162 @@ public class AdminService {
                         .build());
         }
         log.info("상품 옵션 저장 완료");
+    }
+
+    // 상품 조회
+    public ProductDto findProduct(Long productId) {
+        // 상품 조회
+        Product findProduct = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+
+        return ProductDto.fromEntity(findProduct);
+    }
+
+    // 상품 수정
+    @Transactional
+    public void modifyProduct(Long productId, ProductDto product, MultipartFile mainImg, MultipartFile detailImg) throws IOException {
+
+        // 상품 수정 로직
+
+        // 1. 상품 id를 가지고 상품 조회
+        Product findProduct = productRepository.findById(productId).orElseThrow(RuntimeException::new);
+
+        // 2. 카테고리 변경
+        if(!findProduct.getCategory().getParentCategory().getId().equals(product.getCategoryId())) {
+            // 변경된 카테고리를 넣어줌
+            CategoryEntity findCategory = categoryRepository.findById(product.getCategoryId()).orElseThrow(IllegalArgumentException::new);
+            findProduct.changeCategory(findCategory);
+        }
+
+        // 3. 파일 변경
+        // 대표이미지 변경
+        if(mainImg != null) {
+            // 인덱스값 추출
+            AttachDetail findAttachDetail = findProduct.getAttach().getAttachDetailList().get(0);
+            String filename = findAttachDetail.getFileUrl();
+            int idx = filename.indexOf("product/");
+            // 삭제할 파일명 추출
+            String deleteFilename = findAttachDetail.getFileUrl().substring(idx);
+            // 이미지 삭제
+            s3UploadService.deleteFile(deleteFilename);
+            // 이미지 업로드
+            String mainImgFileUrl = s3UploadService.upload(mainImg, "product");
+            log.info("이미지 : " + mainImgFileUrl);
+            // 이미지 수정
+            findAttachDetail.changeFile(
+                    findAttachDetail.getId(),
+                    mainImgFileUrl,
+                    mainImg.getSize(),
+                    mainImg.getOriginalFilename(),
+                    findProduct.getAttach());
+            log.info("대표 이미지 수정 완료");
+        }
+        // 상품 상세 이미지 변경
+        if(detailImg != null) {
+            // 인덱스값 추출
+            AttachDetail findAttachDetail = findProduct.getAttach().getAttachDetailList().get(1);
+            String filename = findAttachDetail.getFileUrl();
+            int idx = filename.indexOf("product/");
+            // 삭제할 파일명 추출
+            String deleteFilename = findProduct.getAttach().getAttachDetailList().get(1).getFileUrl().substring(idx);
+            // 이미지 삭제
+            s3UploadService.deleteFile(deleteFilename);
+            // 이미지 업로드
+            String detailImgFileUrl = s3UploadService.upload(detailImg, "product");
+            // 이미지 수정
+            findAttachDetail.changeFile(
+                    findAttachDetail.getId(),
+                    detailImgFileUrl,
+                    detailImg.getSize(),
+                    detailImg.getOriginalFilename(),
+                    findProduct.getAttach());
+            log.info("상품 상세 이미지 수정 완료");
+        }
+
+        // 4. 상품 정보 수정
+        findProduct.changeProduct(product);
+
+        // 5. 상품 옵션 수정
+        // 5-1. 기존 옵션이 더 많을 때(상품 옵션이 삭제 되었을 때)
+        if(findProduct.getProductOptionList().size() > product.getProductOptionList().size()) {
+            for (int i = 0; i < findProduct.getProductOptionList().size(); i++) {
+                ProductOption productOption = findProduct.getProductOptionList().get(i);
+
+                if(i < product.getProductOptionList().size()) {
+                    ProductOptionDto productOptionDto = product.getProductOptionList().get(i);
+
+                    if(productOption.getId().equals(productOptionDto.getId())) {
+                        productOption.changeProductOption(productOptionDto, findProduct);
+                    }
+                } else {
+                    productOptionRepository.delete(productOption);
+                }
+            }
+        }
+        // 5-2. 수정하는 옵션이 더 많을 때
+        else if (findProduct.getProductOptionList().size() < product.getProductOptionList().size()) {
+            for (int i = 0; i < product.getProductOptionList().size(); i++) {
+                ProductOptionDto productOptionDto = product.getProductOptionList().get(i);
+
+                if(i < findProduct.getProductOptionList().size()) {
+                    ProductOption productOption = findProduct.getProductOptionList().get(i);
+                    if(productOption.getId().equals(productOptionDto.getId())) {
+                        productOption.changeProductOption(productOptionDto, findProduct);
+                    } else {
+                        // 기존 옵션을 삭제하고 새로운 옵션 추가
+                        productOptionRepository.delete(productOption);
+                        addProductOption(findProduct, productOptionDto);
+                    }
+                } else {
+                    // 옵션 추가
+                    addProductOption(findProduct, productOptionDto);
+                }
+            }
+        }
+        // 5-3. 리스트의 갯수가 같을 때
+        else {
+            for (int i = 0; i < product.getProductOptionList().size(); i++) {
+                ProductOptionDto productOptionDto = product.getProductOptionList().get(i);
+                ProductOption productOption = findProduct.getProductOptionList().get(i);
+
+                if(productOption.getId().equals(productOptionDto.getId())) {
+                    productOption.changeProductOption(productOptionDto, findProduct);
+                } else {
+                    // 기존 옵션을 삭제하고 새로운 옵션 추가
+                    productOptionRepository.delete(productOption);
+                    addProductOption(findProduct, productOptionDto);
+                }
+            }
+        }
+
+    }
+    // 상품 옵션 추가
+    private void addProductOption(Product findProduct, ProductOptionDto productOptionDto) {
+        productOptionRepository.save(ProductOption.builder()
+                .size(productOptionDto.getSize())
+                .color(productOptionDto.getColor())
+                .stock(productOptionDto.getStock())
+                .product(findProduct)
+                .build());
+    }
+
+    // 상품 삭제
+    @Transactional
+    public void removeProduct(Long productId) {
+        // 상품 조회
+        Product findProduct = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+
+        // 상품 이미지 삭제 (S3에 업로드 되어 있는 이미지)
+        if(findProduct.getAttach() != null) {
+            for (AttachDetail attachDetail : findProduct.getAttach().getAttachDetailList()) {
+                int idx = attachDetail.getFileUrl().indexOf("product/");
+                String fileUrlSubstring = attachDetail.getFileUrl().substring(idx);
+                s3UploadService.deleteFile(fileUrlSubstring);
+            }
+            // 파일 ID 삭제
+            attachRepository.delete(findProduct.getAttach());
+        }
+        // 상품 삭제
+        productRepository.delete(findProduct);
     }
 }
 

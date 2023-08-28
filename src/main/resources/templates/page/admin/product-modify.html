@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>상품 등록</title>
+    <title>상품 수정</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -54,7 +54,7 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              상품 등록
+              상품 수정
             </h2>
 
             <!-- General elements -->
@@ -66,7 +66,8 @@
             <div
               class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
-              <form th:action="@{/admin/products/create}" th:object="${productDto}" method="post">
+              <form th:action="@{/admin/products/modify}" th:object="${productDto}" method="post">
+                <input type="hidden" id="productId" th:value="${productId}">
               <label class="inline-block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">상품명<span class="dark:text-red-400"> *</span></span>
                 <input
@@ -91,12 +92,12 @@
                   <!-- - 버튼 -->
                   <button id="remove-button" class="inline-block text-sm w-12 font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" type="button">-</button>
                 </div>
-                <div id="item" class="item mt-4 text-sm">
+                <div id="item" class="item mt-4 text-sm" th:each="productOption : ${productDto.getProductOptionList()}" th:id="|item-${productOptionStat.index + 1}|">
                   <label class="inline-block text-sm">
                     <span class="text-gray-700 dark:text-gray-400">색상<span class="dark:text-red-400"> *</span></span>
                     <input
                             class="color block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="ex)black or 검정" type="text"
+                            placeholder="ex)black or 검정" type="text" th:value="${productOption.color}"
                     />
                   </label>
                   <label class="inline-block text-sm ml-3">
@@ -104,29 +105,24 @@
                     <select
                             class="size inline-block w-full mt-1 text-center text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                     >
-                      <option selected>XS</option>
-                      <option>S</option>
-                      <option>M</option>
-                      <option>L</option>
-                      <option>FREE</option>
+                      <option selected th:selected="${productOption.size == 'XS'}">XS</option>
+                      <option th:selected="${productOption.size == 'S'}">S</option>
+                      <option th:selected="${productOption.size == 'M'}">M</option>
+                      <option th:selected="${productOption.size == 'L'}">L</option>
+                      <option th:selected="${productOption.size == 'FREE'}">FREE</option>
                     </select>
                   </label>
                   <label class="inline-block text-sm ml-3">
                     <span class="text-gray-700 dark:text-gray-400">판매수량<span class="dark:text-red-400"> *</span></span>
                     <input
                             class="stock block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="ex)2000" type="text"
-                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                            placeholder="ex)2000" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                            th:value="${productOption.stock}"
+
                     />
                   </label>
                   <span class="ml-2 text-gray-700 dark:text-gray-400 font-medium" style="font-size: 15px">개</span>
-                  <!--<label class="inline-block text-sm ml-3">
-                    <span class="text-gray-700 dark:text-gray-400">가격<span class="dark:text-red-400"> *</span></span>
-                    <input
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="ex)40000"
-                    />
-                  </label>-->
+                  <input type="hidden" id="optionId" th:value="${productOption.id}">
                 </div>
               </div>
               <div class="mt-4 text-sm">
@@ -138,11 +134,10 @@
                     class="inline-flex items-center text-gray-600 dark:text-gray-400"
                   >
                     <input
-                      type="radio" checked="checked" id="sale"
+                      type="radio" id="sale"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="accountType"
-                      value="판매중"
-                      th:field="*{status}"
+                      value="판매중" th:checked="${productDto.status == '판매중'}"
                     />
                     <span class="ml-2">판매중</span>
                   </label>
@@ -152,9 +147,7 @@
                     <input
                       type="radio" id="stop"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="accountType"
-                      value="판매중지"
-                      th:field="*{status}"
+                      name="accountType" value="판매중지" th:checked="${productDto.status == '판매중지'}"
                     />
                     <span class="ml-2">판매중지</span>
                   </label>
@@ -164,9 +157,7 @@
                     <input
                             type="radio" id="soldOut"
                             class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                            name="accountType"
-                            value="품절"
-                            th:field="*{status}"
+                            name="accountType" value="품절" th:checked="${productDto.status == '품절'}"
                     />
                     <span class="ml-2">품절</span>
                   </label>
@@ -190,7 +181,7 @@
                     <option>-- 선택 --</option>
                     <option
                         th:each="category : ${categoryList}" th:if="${category.categoryId} == null"
-                        th:value="${category.id}" th:utext="${category.name}"
+                        th:value="${category.id}" th:utext="${category.name}" th:selected="${category.id == productDto.parentCategoryId}"
                     >
                     </option>
                   </select>
@@ -199,6 +190,7 @@
                   >
                     <option th:value="null">-- 선택 --</option>
                   </select>
+                  <input type="hidden" id="returnCategoryId" th:value="${productDto.categoryId}">
                 </label>
               </div>
             </div>
@@ -216,7 +208,7 @@
               <span class="block text-center text-gray-700 dark:text-gray-400" style="padding-top: 30px; padding-bottom: 15px;">
                 최소 100px X 100px 사이즈의 이미지 파일을 등록해주세요.
               </span>
-              <img id="uploadMainImg" src="../../../img/default-img.jpeg" style="width: 400px; padding-top: 20px;" class="rounded mx-auto d-block" alt="...">
+              <img id="uploadMainImg" th:src="${productDto.attachDetailList.get(0).getFileUrl()}" src="../../../img/default-img.jpeg" style="width: 400px; padding-top: 20px;" class="rounded mx-auto d-block" alt="...">
               <div class="text-center" style="padding-top: 35px;">
                 <label for="mainImg" class="dark:text-gray-400">
                   파일 업로드
@@ -237,7 +229,7 @@
               <span class="block text-center text-gray-700 dark:text-gray-400" style="padding-top: 30px; padding-bottom: 15px;">
                 최소 100px X 100px 사이즈의 이미지 파일을 등록해주세요.
               </span>
-              <img id="uploadDetailImg" src="../../../img/default-img.jpeg" style="width: 400px; padding-top: 20px;" class="rounded mx-auto d-block" alt="...">
+              <img id="uploadDetailImg" th:src="${productDto.attachDetailList.get(1).getFileUrl()}" src="../../../img/default-img.jpeg" style="width: 400px; padding-top: 20px;" class="rounded mx-auto d-block" alt="...">
               <div class="text-center" style="padding-top: 35px;">
                 <label for="detailImg" class="dark:text-gray-400">
                   파일 업로드
@@ -248,7 +240,7 @@
             </form>
             <div class="col text-center">
               <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submitBnt" type="submit">
-                등록
+                수정
               </button>
               &nbsp;&nbsp;&nbsp;
               <button th:onclick="|location.href='@{/admin/products}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
@@ -265,31 +257,46 @@
 </script>
 <script>
   $(document).ready(function() {
-    let itemCount = 1; // 초기 아이템 개수
-
+    //============  + - 버튼 관련  ============ //
+    let nowItemCnt = $("#items-container").find('div').length - 1; // 현재 아이템 갯수
     // + 버튼 클릭 시 동작
     $(document).on("click", "#add-button", function() {
-      itemCount++; // 아이템 개수 증가
-      let newItem = $("#item").clone(); // 새로운 아이템 복제
-      newItem.attr("id", "item-" + itemCount); // 아이템 ID 설정
+      let newItem = $("#item-" + nowItemCnt).clone(); // 새로운 아이템 복제
+      newItem.attr("id", "item-" + ++nowItemCnt); // 아이템 ID 설정
       newItem.find("input[type='text']").val(""); // 입력 필드 초기화
       newItem.find("select").prop("selectedIndex", 0); // 셀렉트 박스 초기화
-      if(itemCount === 2) {
-        $("#item").after(newItem); // 복제한 아이템 추가
-      } else {
-        $("#item-" + (itemCount - 1)).after(newItem); // 복제한 아이템 추가
-      }
+      $("#item-" + (nowItemCnt - 1)).after(newItem); // 복제한 아이템 추가
     });
 
     // - 버튼 클릭 시 동작
     $(document).on("click", "#remove-button", function() {
-      if (itemCount > 1) {
-        $("#item-" + itemCount).remove(); // 해당 아이템 삭제
-        itemCount--; // 아이템 개수 감소
+      if (nowItemCnt > 1) {
+        $("#item-" + nowItemCnt).remove(); // 해당 아이템 삭제
+        nowItemCnt--; // 아이템 개수 감소
+      }
+    });
+    // =================================================================== //
+
+    //=========== 카테고리 선택되어 있게 설정
+    const selectedValue = $("#selectedCategory").val();
+    let subCategorySelect = $("#selectedSubCategory");
+
+    // 중분류 selectbox 초기화
+    subCategorySelect.empty();
+    subCategorySelect.append($('<option>').text('-- 선택 --').attr('value', ''))
+
+    // 선택된 대분류에 해당하는 중분류 옵션 추가
+    categoryList.forEach(function(category) {
+      if (category.categoryId != null && category.categoryId == selectedValue) {
+        subCategorySelect.append($('<option>').text(category.name).attr('value', category.id));
       }
     });
 
-    // 카테고리 동작
+    let returnCategoryId = $("#returnCategoryId").val();
+    $("#selectedSubCategory").val(returnCategoryId).prop("selected",true);
+    // =================================================================== //
+
+    //======= 카테고리 동작
     $(document).on("change", "#selectedCategory", function() {
       const selectedValue = $(this).val();
       let subCategorySelect = $("#selectedSubCategory");
@@ -305,7 +312,9 @@
         }
       });
     });
+    // =================================================================== //
 
+    /* 이미지 업로드 */
     // 상품 대표 이미지 업로드 input 요소
     const mainImgInput = $("#mainImg");
     // 상품 대표 이미지 업로드 img 요소
@@ -343,8 +352,9 @@
         reader.readAsDataURL(file);
       }
     });
+    // =================================================================== //
 
-    //== 등록 요청 ==//
+    //== 수정 요청 ==//
     $("#submitBnt").on("click", function() {
       const productData = {
         categoryId: $("#selectedSubCategory :selected").val(),
@@ -355,12 +365,13 @@
       };
 
       // 상태값 적용
-      const idList = ['sale', 'stop', 'soldOut'];
+      const idList = ['stop', 'sale', 'soldOut'];
       for (const id of idList) {
-        const value = $("#" + id).val();
 
-        if (value) {
-          productData.status = value; // 선택된 값을 대입
+        const isChecked = $("#" + id).prop("checked");
+
+        if (isChecked) {
+          productData.status = $("#" + id).val();
           break;
         }
       }
@@ -378,12 +389,14 @@
         const color = $(this).find("input.color").val();
         const size = $(this).find("select.size").val();
         const stock = $(this).find("input.stock").val();
+        const id = $(this).find("input.hidden").val();
 
         // if (color && size && stock) {
           const optionData = {
             color: color,
             size: size,
-            stock: parseInt(stock)
+            stock: parseInt(stock),
+            id: id
           };
           productData.productOptionList.push(optionData);
         // }
@@ -392,26 +405,18 @@
 
       // validation check
       const errors = validateProductData(productData);
-      const mainImgErrors = validateImage(mainImg);
-      const detailImgErrors = validateImage(detailImg);
-      if (errors.length > 0 ) {
+      if (errors.length > 0) {
         // 오류 메시지 출력
         const errorMessage = errors.join("\n");
         alert(errorMessage);
-      } else if(mainImgErrors > 0) {
-        // 대표 이미지 오류 메시지 출력
-        const mainImgErrorMessage = mainImgErrors.join("\n");
-        alert(mainImgErrorMessage);
-
-      } else if(detailImgErrors > 0) {
-        // 상세 이미지 오류 메시지 출력
-        const detailImgErrorMessage = mainImgErrors.join("\n");
-        alert(detailImgErrorMessage);
       } else {
+
+        const productId = $("#productId").val();
+        const url = `/admin/products/${productId}/modify`;
 
         $.ajax({
           type: "POST",
-          url: "/admin/products/create",
+          url: url,
           contentType: false,
           processData: false,
           enctype: 'multipart/form-data',

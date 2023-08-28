@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>상품관리</title>
+    <title>상품 관리</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -23,22 +23,28 @@
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen}"
     >
-    <!-- 사이드지바 -->
+    <!-- 사이드바 -->
       <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
     <!-- 메인 -->
       <div class="flex flex-col flex-1 w-full">
         <!-- 헤더 -->
         <header id="header"></header>
-      
+
         <!-- 테이블 시작 -->
         <main class="h-full pb-16 overflow-y-auto">
           <div class="container grid px-6 mx-auto">
+            <div class="flex my-6 text-2xl">
             <h2
-              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+              class="font-semibold text-gray-700 dark:text-gray-200"
             >
-              상품관리
+              상품 관리
             </h2>
-
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    style="margin-left: auto" th:onclick="|location.href='@{/admin/products/create-form}'|"
+            >
+              상품 등록
+            </button>
+            </div>
             <!-- With avatar -->
           <div class="flex">
             <h4 th:text="|총 ${productList.totalElements}개|"
@@ -119,7 +125,7 @@
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
-                    <tr th:each="product : ${productList}" class="text-gray-700 dark:text-gray-400" id="main">
+                    <tr th:if="${!productList.isEmpty()}" th:each="product : ${productList}" class="text-gray-700 dark:text-gray-400" id="main">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                           <div th:text="${product.id}"
@@ -132,8 +138,8 @@
                           </div>
                           <input type="hidden" id="deleteId" th:value="${product.id}">
                           <div style="padding-left: 16px;">
-                            <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" 
-                            th:href="@{/admin/products/{productId}(productId=${product.id})}">
+                            <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                             th:onclick="|location.href='@{/admin/products/{productId}/modify-form (productId=${product.id})}'|">
                             <p class="font-semibold" th:text="${product.name}"></p>
                           </a>
                           </div>
@@ -141,7 +147,7 @@
                       </td>
                       <td class="px-4 py-3 text-sm" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}">
                       </td>
-                      <td class="px-4 py-3 text-sm" th:text="|${product.totalStock}개|"></td>
+                      <td class="px-4 py-3 text-sm" th:text="${#numbers.formatInteger(product.totalStock, 3, 'COMMA') + '개'}"></td>
                       <td class="px-4 py-3 text-xs" th:text="${product.status}"></td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm" id="update-button">
@@ -182,7 +188,22 @@
                         </div>
                       </td>
                     </tr>
-                    
+
+                    <tr th:unless="${!productList.isEmpty()}" class="text-gray-700 dark:text-gray-400">
+                      <td class="px-4 py-3 w-full text-center">
+                        <div class="items-center" style="margin-left: 215px;">
+                          <span>등록된 상품이 없습니다.</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                    </tr>
                     <!-- Modal backdrop. This what you want to place close to the closing body tag -->
                   <div
                     x-show="isModalOpen"

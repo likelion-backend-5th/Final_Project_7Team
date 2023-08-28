@@ -2,18 +2,19 @@ package com.likelion.catdogpia.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductDto;
-import com.likelion.catdogpia.domain.dto.admin.ProductOptionDto;
-import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.service.AdminService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -118,17 +119,11 @@ public class AdminController {
         return "/page/admin/products";
     }
 
-    // 상품 상세
-    @GetMapping("/products/{productId}")
-    public String productDetails(@PathVariable Long productId, Model model) {
-
-        return "/page/admin/product-detail";
-    }
-
     // 상품 등록 페이지
     @GetMapping("/products/create-form")
     public String productCreateForm(Model model) {
-        model.addAttribute("categoryList", adminService.findCategory());
+        List<CategoryDto> categoryList = adminService.findCategory();
+        model.addAttribute("categoryList", categoryList);
         model.addAttribute("productDto", new ProductDto());
         return "/page/admin/product-create";
     }
@@ -151,6 +146,42 @@ public class AdminController {
 
         adminService.createProduct(product, mainImg, detailImg);
 
+        return "redirect:/admin/products";
+    }
+
+    // 상품 수정 페이지
+    @GetMapping("/products/{productId}/modify-form")
+    public String productModifyForm(@PathVariable Long productId, Model model) {
+        model.addAttribute("productId", productId);
+        model.addAttribute("productDto", adminService.findProduct(productId));
+        model.addAttribute("categoryList", adminService.findCategory());
+        log.info("product : " + adminService.findProduct(productId).toString());
+        return "/page/admin/product-modify";
+    }
+
+    // 상품 수정
+    @PostMapping("/products/{productId}/modify")
+    public String productModify(
+            @PathVariable Long productId,
+            @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
+            @RequestParam(value = "detailImg", required = false) MultipartFile detailImg,
+            @RequestParam("productDto") String productDto
+    ) throws IOException {
+
+        log.info("productDto : " + productDto);
+        // json -> productDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
+        log.info("product toString : " + product.toString());
+
+        adminService.modifyProduct(productId, product, mainImg, detailImg);
+
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/products/{productId}/delete")
+    public String productRemove(@PathVariable Long productId){
+        adminService.removeProduct(productId);
         return "redirect:/admin/products";
     }
 }

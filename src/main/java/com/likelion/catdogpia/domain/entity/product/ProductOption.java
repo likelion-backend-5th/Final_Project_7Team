@@ -1,7 +1,10 @@
 package com.likelion.catdogpia.domain.entity.product;
 
+import com.likelion.catdogpia.domain.dto.admin.ProductOptionDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,14 @@ public class ProductOption {
     @OneToMany(mappedBy = "productOption")
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
+    //== 상품 옵션 수정 메소드 ==//
+    public void changeProductOption(ProductOptionDto productOptionDto, Product product){
+        this.id = productOptionDto.getId();
+        this.color = productOptionDto.getColor();
+        this.size = productOptionDto.getSize();
+        this.stock = productOptionDto.getStock();
+        this.product = product;
+    }
 
     @Builder
     public ProductOption(Long id, Product product, String size, String color, int stock, List<OrderProduct> orderProductList) {
