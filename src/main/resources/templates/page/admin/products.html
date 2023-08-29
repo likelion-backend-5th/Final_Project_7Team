@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>회원관리</title>
+    <title>상품 관리</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
     <script src="../../../js/init-alpine.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <!-- 헤더-->
@@ -23,39 +23,44 @@
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen}"
     >
-    <!-- 사이드지바 -->
+    <!-- 사이드바 -->
       <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
     <!-- 메인 -->
       <div class="flex flex-col flex-1 w-full">
         <!-- 헤더 -->
         <header id="header"></header>
-      
+
         <!-- 테이블 시작 -->
         <main class="h-full pb-16 overflow-y-auto">
           <div class="container grid px-6 mx-auto">
+            <div class="flex my-6 text-2xl">
             <h2
-              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+              class="font-semibold text-gray-700 dark:text-gray-200"
             >
-              회원관리
+              상품 관리
             </h2>
-
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    style="margin-left: auto" th:onclick="|location.href='@{/admin/products/create-form}'|"
+            >
+              상품 등록
+            </button>
+            </div>
             <!-- With avatar -->
           <div class="flex">
-            <h4 th:text="|총 ${memberList.totalElements}명|"
+            <h4 th:text="|총 ${productList.totalElements}개|"
               class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
             >
             </h4>
             <div class="flex" style="margin-left: auto">
               <div class="relative mr-1">
                 <select id="filter" class=" form-select text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple" aria-label="Default select example">
-                  <option selected th:selected="${filter == 'loginId'}" value="loginId">ID</option>
-                  <option th:selected="${filter == 'nickname'}" value="nickname">닉네임</option>
-                  <option th:selected="${filter == 'name'}" value="name">이름</option>
-                  <option th:selected="${filter == 'status'}" value="status">회원 상태</option>
+                  <option selected th:selected="${filter == 'name'}" value="name">상품명</option>
+                  <option th:selected="${filter == 'status'}" value="status">판매여부</option>
                 </select>
               </div>
               <div class="relative w-56 max mr-1 focus-within:text-purple-500"
-              style="margin-left: auto; margin-bottom: 10px;"
+                   style="margin-left: auto; margin-bottom: 10px;"
+                   id="searchDiv"
               >
                 <div class="absolute inset-y-0 flex items-center pl-2">
                   <svg
@@ -78,8 +83,27 @@
                   aria-label="Search"
                   id="keyword"
                 />
-              </div>
                 <input type="hidden" id="hidden" name="hidden" th:value="${keyword}">
+              </div>
+              <!-- 판매상태가 클릭되었을 때 나오게 되는 셀렉트 박스 -->
+              <div class="relative w-56 max mr-1 focus-within:text-purple-500"
+                   style="margin-left: auto; margin-bottom: 10px; display: none;"
+                   id="selectDiv"
+              >
+                <select
+                        class="w-full text-center font-medium text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                        type="text"
+                        style="padding-right: 24px;"
+                        aria-label="Search"
+                        id="statusKeyword"
+                        onchange="searchByStatus(this.value)"
+
+                >
+                  <option selected th:selected="${keyword == '판매중'}">판매중</option>
+                  <option th:selected="${keyword == '품절'}">품절</option>
+                  <option th:selected="${keyword == '판매중지'}">판매중지</option>
+                </select>
+              </div>
             </div>
           </div>
             <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
@@ -90,10 +114,10 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="px-4 py-3">&nbsp&nbsp 번호 
-                          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 아이디/닉네임</th>
-                      <th class="px-4 py-3">이름</th>
-                      <th class="px-4 py-3">회원 상태</th>
-                      <th class="px-4 py-3">가입일</th>
+                          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 상품명</th>
+                      <th class="px-4 py-3">판매금액</th>
+                      <th class="px-4 py-3">재고수량</th>
+                      <th class="px-4 py-3">판매여부</th>
                       <th class="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -101,10 +125,10 @@
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
-                    <tr th:each="member : ${memberList}" class="text-gray-700 dark:text-gray-400" id="main">
+                    <tr th:if="${!productList.isEmpty()}" th:each="product : ${productList}" class="text-gray-700 dark:text-gray-400" id="main">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
-                          <div th:text="${member.id}"
+                          <div th:text="${product.id}"
                             class="relative hidden w-8 h-5 ml-3 rounded-full md:block"
                           >
                             <div
@@ -112,37 +136,25 @@
                               aria-hidden="true"
                             ></div>
                           </div>
-                          <input type="hidden" id="deleteId" th:value="${member.id}">
+                          <input type="hidden" id="deleteId" th:value="${product.id}">
                           <div style="padding-left: 16px;">
-                            <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" 
-                            th:href="@{/admin/members/{memberId}(memberId=${member.id})}">
-                            <p class="font-semibold" th:text="${member.loginId} + ' / ' +  ${member.nickname}">test-123412 / 헬로키티</p>
+                            <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                             th:onclick="|location.href='@{/admin/products/{productId}/modify-form (productId=${product.id})}'|">
+                            <p class="font-semibold" th:text="${product.name}"></p>
                           </a>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm" th:text="${member.name}">
+                      <td class="px-4 py-3 text-sm" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}">
                       </td>
-                      <td class="px-4 py-3 text-xs">
-                        <span th:if="${member.blackListYn} == 'Y'"
-                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
-                        >
-                          블랙
-                        </span>
-                        <span th:unless="${member.blackListYn} == 'Y'"
-                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                          회원
-                        </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm" th:text="${#strings.substring(member.createdAt,0,10)}">
-                      </td>
+                      <td class="px-4 py-3 text-sm" th:text="${#numbers.formatInteger(product.totalStock, 3, 'COMMA') + '개'}"></td>
+                      <td class="px-4 py-3 text-xs" th:text="${product.status}"></td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm" id="update-button">
                           <button
                             class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                             aria-label="Edit"
-                            th:onclick="|location.href='@{/admin/members/{memberId}/modify-form (memberId=${member.id})}'|"
+                            th:onclick="|location.href='@{/admin/products/{productId}/modify-form (productId=${product.id})}'|"
                           >
                             <svg
                               class="w-5 h-5"
@@ -176,7 +188,22 @@
                         </div>
                       </td>
                     </tr>
-                    
+
+                    <tr th:unless="${!productList.isEmpty()}" class="text-gray-700 dark:text-gray-400">
+                      <td class="px-4 py-3 w-full text-center">
+                        <div class="items-center" style="margin-left: 215px;">
+                          <span>등록된 상품이 없습니다.</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                      <td class="px-4 py-3">
+                      </td>
+                    </tr>
                     <!-- Modal backdrop. This what you want to place close to the closing body tag -->
                   <div
                     x-show="isModalOpen"
@@ -230,11 +257,11 @@
                         <p
                           class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300"
                         >
-                          회원 삭제
+                          상품 삭제
                         </p>
                         <!-- Modal description -->
                         <p class="text-sm text-gray-700 dark:text-gray-400">
-                          해당 회원을 삭제하시겠습니까??
+                          해당 상품을 삭제하시겠습니까??
                         </p>
                       </div>
                       <footer
@@ -258,7 +285,7 @@
                   </tbody>
                 </table>
               </div>
-              <div th:if="${!memberList.isEmpty()}"
+              <div th:if="${!productList.isEmpty()}"
                 class="py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
                 > 
                 <span class="col-span-2"></span>
@@ -267,15 +294,15 @@
                   <nav aria-label="Table navigation">
                     <ul class="inline-flex items-center"
                         th:with="
-                      maxPage=${memberList.pageable.pageSize},
-                      start=${(memberList.number/ maxPage) * maxPage + 1},
-                      end=(${(memberList.totalPages == 0) ? 1 : (start + (maxPage - 1) < memberList.totalPages ? start + (maxPage - 1) : memberList.totalPages)})">
+                      maxPage=${productList.pageable.pageSize},
+                      start=${(productList.number/ maxPage) * maxPage + 1},
+                      end=(${(productList.totalPages == 0) ? 1 : (start + (maxPage - 1) < productList.totalPages ? start + (maxPage - 1) : productList.totalPages)})">
                       <!-- 첫번째 페이지로 이동 -->
                       <li>
                         <button
                           class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
                           aria-label="Previous"
-                          th:onclick="|navigateToPage(0)|"
+                          th:onclick="|javascript:navigateToPage(0)|"
                         >
                           <svg
                             aria-hidden="true"
@@ -292,7 +319,7 @@
                       </li>
                       <!-- 페이지 표시 -->
                       <li th:each="page: ${#numbers.sequence(start, end)}">
-                        <button th:text="${page}" th:onclick="|navigateToPage(${page - 1})|"
+                        <button th:text="${page}" th:onclick="|javascript:navigateToPage(${page} - 1)|"
                           class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
                         >
                         </button>
@@ -302,7 +329,7 @@
                         <button
                           class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
                           aria-label="Next"
-                          th:onclick="|navigateToPage(${memberList.totalPages - 1})|"
+                          th:onclick="|javascript:navigateToPage(${productList.totalPages - 1})|"
                         >
                           <svg
                             class="w-4 h-4 fill-current"
@@ -333,16 +360,40 @@
       // Enter key event handler
       $('#keyword').keypress(function(event) {
         if (event.which === 13) { // Enter key code
-          searchMembers();
+          searchProducts();
+        }
+      });
+
+      // 페이지 로딩 후 초기 체크
+      if ($("#filter").val() === "status") {
+        $("#searchDiv").css("display", "none");
+        $("#selectDiv").css("display", "block");
+      } else {
+        $("#selectDiv").css("display", "none");
+        $("#searchDiv").css("display", "block");
+      }
+
+      // 셀렉트박스 생성
+      $("#filter").on("change", function() {
+        if ($(this).val() === "status") {
+          $("#searchDiv").css("display", "none");
+          $("#selectDiv").css("display", "block");
+        } else {
+          $("#selectDiv").css("display", "none");
+          $("#searchDiv").css("display", "block");
         }
       });
     });
 
-    function searchMembers() {
+    function searchByStatus(status) {
+      window.location.href = '/admin/products?filter=status&keyword=' + encodeURIComponent(status);
+    }
+
+    function searchProducts() {
       let filter = $('#filter').val();
       let keyword = $('#keyword').val();
       // Redirect to the new URL to reload the page
-      window.location.href = '/admin/members?filter=' + encodeURIComponent(filter) + '&keyword=' + encodeURIComponent(keyword);
+      window.location.href = '/admin/products?filter=' + encodeURIComponent(filter) + '&keyword=' + encodeURIComponent(keyword);
     }
 
     // 페이지 이동
@@ -354,22 +405,22 @@
       if(hidden != null) {
         filter = encodeURIComponent(filter);
         hidden = encodeURIComponent(hidden);
-        location.href = '/admin/members?page=' + page + '&filter=' + filter + '&keyword=' + hidden;
+        location.href = '/admin/products?page=' + page + '&filter=' + filter + '&keyword=' + hidden;
       } else if(keyword != null){
         filter = encodeURIComponent(filter);
         keyword = encodeURIComponent(keyword);
-        location.href = '/admin/members?page=' + page + '&filter=' + filter + '&keyword=' + keyword;
+        location.href = '/admin/products?page=' + page + '&filter=' + filter + '&keyword=' + keyword;
       } else {
-        location.href = '/admin/members?page=' + page;
+        location.href = '/admin/products?page=' + page;
       }
     }
 
-    // 회원 삭제
+    // 상품 삭제
       $("#deleteBtn").click(function () {
-        let memberId = $("#deleteId").val();
+        let productId = $("#deleteId").val();
 
         $.ajax({
-          url: `/admin/members/${memberId}/delete`,
+          url: `/admin/products/${productId}/delete`,
           method: "POST",
           success: function (response) {
             // 성공적으로 삭제된 경우 처리

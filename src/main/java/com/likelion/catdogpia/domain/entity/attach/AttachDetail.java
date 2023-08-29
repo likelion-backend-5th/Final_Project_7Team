@@ -14,11 +14,11 @@ public class AttachDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 500, nullable = false)
     private String fileUrl;
 
     @Column(nullable = false)
-    private int fileSize;
+    private long fileSize;
 
     @Column(nullable = false, length = 260)
     private String realname;
@@ -28,8 +28,17 @@ public class AttachDetail {
     @JoinColumn(name = "attach_id")
     private Attach attach;
 
+    //== 파일 수정 메소드 ==//
+    public void changeFile(Long id, String fileUrl, long fileSize, String realname, Attach attach) {
+        this.id = id;
+        this.fileUrl = fileUrl;
+        this.fileSize = fileSize;
+        this.realname = realname;
+        this.attach = attach;
+    }
+
     @Builder
-    public AttachDetail(Long id, String fileUrl, int fileSize, String realname, Attach attach) {
+    public AttachDetail(Long id, String fileUrl, long fileSize, String realname, Attach attach) {
         this.id = id;
         this.fileUrl = fileUrl;
         this.fileSize = fileSize;

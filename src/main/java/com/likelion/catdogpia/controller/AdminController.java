@@ -1,16 +1,26 @@
 package com.likelion.catdogpia.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.admin.ProductDto;
 import com.likelion.catdogpia.service.AdminService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -87,6 +97,7 @@ public class AdminController {
         return resultMap;
     }
 
+    // 회원 삭제
     @PostMapping("/members/{memberId}/delete")
     public String memberRemove(@PathVariable Long memberId) {
         log.info("delete");
@@ -94,4 +105,97 @@ public class AdminController {
         return "redirect:/admin/members";
     }
 
+    // 상품 목록
+    @GetMapping("/products")
+    public String productList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword
+    ) {
+        model.addAttribute("productList", adminService.findProductList(pageable, filter, keyword));
+        model.addAttribute("filter",filter);
+        model.addAttribute("keyword",keyword);
+        return "/page/admin/products";
+    }
+
+    // 상품 등록 페이지
+    @GetMapping("/products/create-form")
+    public String productCreateForm(Model model) {
+        List<CategoryDto> categoryList = adminService.findCategory();
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("productDto", new ProductDto());
+        return "/page/admin/product-create";
+    }
+
+    // 상품 등록
+    @PostMapping(value = "/products/create")
+    public String productCreate(
+            @RequestParam("mainImg") MultipartFile mainImg,
+            @RequestParam("detailImg") MultipartFile detailImg,
+            @RequestParam("productDto") String productDto
+    ) throws IOException {
+
+        log.info("product : " + productDto);
+        log.info("mainImg :" + mainImg.getOriginalFilename());
+        log.info("detailImg :" + detailImg.getOriginalFilename());
+        // json -> productDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
+        log.info("product toString : " + product.toString());
+
+        adminService.createProduct(product, mainImg, detailImg);
+
+        return "redirect:/admin/products";
+    }
+
+    // 상품 수정 페이지
+    @GetMapping("/products/{productId}/modify-form")
+    public String productModifyForm(@PathVariable Long productId, Model model) {
+        model.addAttribute("productId", productId);
+        model.addAttribute("productDto", adminService.findProduct(productId));
+        model.addAttribute("categoryList", adminService.findCategory());
+        log.info("product : " + adminService.findProduct(productId).toString());
+        return "/page/admin/product-modify";
+    }
+
+    // 상품 수정
+    @PostMapping("/products/{productId}/modify")
+    public String productModify(
+            @PathVariable Long productId,
+            @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
+            @RequestParam(value = "detailImg", required = false) MultipartFile detailImg,
+            @RequestParam("productDto") String productDto
+    ) throws IOException {
+
+        log.info("productDto : " + productDto);
+        // json -> productDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
+        log.info("product toString : " + product.toString());
+
+        adminService.modifyProduct(productId, product, mainImg, detailImg);
+
+        return "redirect:/admin/products";
+    }
+
+    // 상품 삭제
+    @PostMapping("/products/{productId}/delete")
+    public String productRemove(@PathVariable Long productId){
+        adminService.removeProduct(productId);
+        return "redirect:/admin/products";
+    }
+
+    // 상품명 중복 확인
+    @GetMapping("/products/duplicate-check")
+    @ResponseBody
+    public Map<String, Boolean> checkProductNameAvailability(
+            @RequestParam("name") String name,
+            @RequestParam(required = false) Long productId
+    ){
+        Map<String, Boolean> resultMap = new HashMap<>();
+        resultMap.put("duplicated", adminService.isDuplicatedProductName(name, productId));
+        log.info("resultMap : " + resultMap.get("duplicated"));
+        return resultMap;
+    }
 }
