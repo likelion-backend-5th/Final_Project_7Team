@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -70,10 +71,13 @@ public class CartService {
     }
 
     // 장바구니 상품 삭제
-    public void deleteCart(String loginId, Long cartId) {
+    public void deleteCart(String loginId, List<Long> cartIds) {
         // (현재 로그인한 회원과 해당 장바구니 상품 저장한 회원 일치 여부 확인)
 
-        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        cartRepository.delete(cart);
+        for(Long cartId : cartIds) {
+            Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            cartRepository.delete(cart);
+        }
+
     }
 }

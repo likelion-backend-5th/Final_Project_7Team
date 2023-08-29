@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -35,13 +37,16 @@ public class MainController {
     @PutMapping("/cart")
     @ResponseBody
     public int updateCart(Model model, @RequestParam Long id, @RequestParam String mp) {
+        // 변경된 수량 return
         return cartService.updateCount("testtest", id, mp);
     }
 
     // 장바구니 상품 삭제
-    @PostMapping("/cart/delete")
-    public String deleteCart() {
-        return "redirect:/cart";
+    @DeleteMapping("/cart")
+    @ResponseBody
+    public String deleteCart(@RequestParam(value = "cartIds[]") List<Long> cartIds) {
+        cartService.deleteCart("testtest", cartIds);
+        return "success";
     }
 
 
