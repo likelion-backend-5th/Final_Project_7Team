@@ -50,7 +50,6 @@ public class Product extends BaseEntity {
     private List<QnA> qnAList = new ArrayList<>();
 
     @Builder
-
     public Product(Long id, CategoryEntity category, Attach attach, String name,
                    int price, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
