@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/cart.css}" type="text/css">
+    <script src="/js/cart.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="cart-container">
+    <p>전체 <span th:text="${cartList.totalElements}"></span>개</p>
+    <button>선택 상품 삭제</button>
+    <table class="cart-table">
+        <tr>
+            <th width="5%"><input type="checkbox"></th>
+            <th width="60%">상품명(옵션)</th>
+            <th width="10%">수량</th>
+            <th width="25%">총 가격</th>
+        </tr>
+        <tr th:each="cart : ${cartList}">
+            <td><input type="checkbox"></td>
+            <td>
+                <a href="#" th:text="${cart.name}"></a>
+                <p th:text="${cart.size}+' / '+${cart.color}"></p>
+            </td>
+            <td>
+                <button>-</button>
+                <p th:text="${cart.productCnt}"></p>
+                <button>+</button>
+            </td>
+            <td th:text="${cart.price * cart.productCnt}+'원'"></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <p>전체 상품 금액</p>
+                <p th:text="${totalAmount}"></p>
+            </td>
+        </tr>
+    </table>
+    <button type="button">주문하기</button>
+</div>
+
+</body>
+</html>
