@@ -2,14 +2,14 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.service.CartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -32,9 +32,10 @@ public class MainController {
     }
 
     // 장바구니 수량 변경
-    @PostMapping("/cart/update")
-    public String updateCart() {
-        return "redirect:/cart";
+    @PutMapping("/cart")
+    @ResponseBody
+    public int updateCart(Model model, @RequestParam Long id, @RequestParam String mp) {
+        return cartService.updateCount("testtest", id, mp);
     }
 
     // 장바구니 상품 삭제

@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/cart.css}" type="text/css">
     <script src="/js/cart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div layout:fragment="content" class="cart-container">
@@ -26,9 +27,9 @@
                 <p th:text="${cart.size}+' / '+${cart.color}"></p>
             </td>
             <td>
-                <button>-</button>
-                <p th:text="${cart.productCnt}"></p>
-                <button>+</button>
+                <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus')">-</button>
+                <p th:id="'cart-'+${cart.id}" th:text="${cart.productCnt}"></p>
+                <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus')">+</button>
             </td>
             <td th:text="${cart.price * cart.productCnt}+'원'"></td>
         </tr>

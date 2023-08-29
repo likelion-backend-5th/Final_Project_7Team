@@ -6,6 +6,7 @@ import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.CartRepository;
 import com.likelion.catdogpia.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -47,11 +49,24 @@ public class CartService {
     }
 
     // 장바구니 상품 수량 변경
-    public void updateCount(String loginId, Long cartId, int count) {
+    @Transactional
+    public int updateCount(String loginId, Long cartId, String mp) {
         // (현재 로그인한 회원과 해당 장바구니 상품 저장한 회원 일치 여부 확인)
 
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        int count = 0;
+        if(mp.equals("minus")) {
+            count = -1;
+        } else if (mp.equals("plus")) {
+            count = 1;
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         cart.updateCount(count);
+
+        return cart.getProductCnt();
     }
 
     // 장바구니 상품 삭제
