@@ -179,9 +179,23 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
+    // 상품 삭제
     @PostMapping("/products/{productId}/delete")
     public String productRemove(@PathVariable Long productId){
         adminService.removeProduct(productId);
         return "redirect:/admin/products";
+    }
+
+    // 상품명 중복 확인
+    @GetMapping("/products/duplicate-check")
+    @ResponseBody
+    public Map<String, Boolean> checkProductNameAvailability(
+            @RequestParam("name") String name,
+            @RequestParam(required = false) Long productId
+    ){
+        Map<String, Boolean> resultMap = new HashMap<>();
+        resultMap.put("duplicated", adminService.isDuplicatedProductName(name, productId));
+        log.info("resultMap : " + resultMap.get("duplicated"));
+        return resultMap;
     }
 }

@@ -1,7 +1,6 @@
-const errors = [];
 
 function validateProductData(data) {
-
+    const errors = [];
     if (data.categoryId.trim() === "") {
         errors.push("카테고리가 선택되지 않았습니다.");
     }
@@ -31,22 +30,20 @@ function validateProductData(data) {
         }
     });
 
-    for (let i = 0; i < optionList.length; i++) {
-        if(optionList.includes(optionList[i])) {
-            errors.push("같은 사이즈가 선택되었습니다. 다른 사이즈를 선택해주세요.");
-            break;
-        }
+    const hasDuplicatesResult = new Set(optionList).size !== optionList.length;
+
+    if (hasDuplicatesResult) {
+        errors.push("같은 사이즈가 선택되었습니다. 다른 사이즈를 선택해주세요.");
     }
 
     return errors;
 }
 
 function validateImage(img) {
-
+    const errors = [];
     if (!img) {
         errors.push("이미지를 선택해주세요.");
     } else {
-        // 파일 크기 제한 (예: 5MB)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (img.size > maxSize) {
             errors.push("이미지의 크기가 너무 큽니다.");
@@ -61,4 +58,20 @@ function validateImage(img) {
     }
 
     return errors;
+}
+
+function duplicateName(name, productId) {
+    $.ajax({
+        type: "GET",
+        url: '/admin/products/duplicate-check',
+        data: {name : name, productId : productId},
+        success: function (response) {
+            if (!response.duplicated) {
+                alert("이미 등록된 상품명이 있습니다. 다시 작성해주세요.");
+            }
+        },
+        error: function (error) {
+            window.location.href = "/admin/error-page/500";
+        }
+    });
 }

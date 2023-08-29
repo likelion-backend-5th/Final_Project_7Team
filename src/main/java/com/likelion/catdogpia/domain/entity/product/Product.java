@@ -45,7 +45,7 @@ public class Product extends BaseEntity {
     @Column(length = 10, nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product")
     private List<ProductOption> productOptionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

@@ -394,18 +394,22 @@
       const errors = validateProductData(productData);
       const mainImgErrors = validateImage(mainImg);
       const detailImgErrors = validateImage(detailImg);
+
       if (errors.length > 0 ) {
         // 오류 메시지 출력
+        duplicateName(name);
         const errorMessage = errors.join("\n");
         alert(errorMessage);
-      } else if(mainImgErrors > 0) {
+      }
+
+      if(mainImgErrors.length > 0) {
         // 대표 이미지 오류 메시지 출력
         const mainImgErrorMessage = mainImgErrors.join("\n");
         alert(mainImgErrorMessage);
 
-      } else if(detailImgErrors > 0) {
+      } else if(detailImgErrors.length > 0) {
         // 상세 이미지 오류 메시지 출력
-        const detailImgErrorMessage = mainImgErrors.join("\n");
+        const detailImgErrorMessage = detailImgErrors.join("\n");
         alert(detailImgErrorMessage);
       } else {
 

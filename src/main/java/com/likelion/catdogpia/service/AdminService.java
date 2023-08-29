@@ -241,7 +241,8 @@ public class AdminService {
 
                 if(i < product.getProductOptionList().size()) {
                     ProductOptionDto productOptionDto = product.getProductOptionList().get(i);
-
+                    log.info("Id" + productOption.getId());
+                    log.info("dtoId" + productOption.getId());
                     if(productOption.getId().equals(productOptionDto.getId())) {
                         productOption.changeProductOption(productOptionDto, findProduct);
                     }
@@ -300,21 +301,24 @@ public class AdminService {
     // 상품 삭제
     @Transactional
     public void removeProduct(Long productId) {
+        // 권한 체크 필요
+
         // 상품 조회
         Product findProduct = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
-
-        // 상품 이미지 삭제 (S3에 업로드 되어 있는 이미지)
-        if(findProduct.getAttach() != null) {
-            for (AttachDetail attachDetail : findProduct.getAttach().getAttachDetailList()) {
-                int idx = attachDetail.getFileUrl().indexOf("product/");
-                String fileUrlSubstring = attachDetail.getFileUrl().substring(idx);
-                s3UploadService.deleteFile(fileUrlSubstring);
-            }
-            // 파일 ID 삭제
-            attachRepository.delete(findProduct.getAttach());
-        }
+        // 상품 옵션 삭제
+        productOptionRepository.deleteAll(findProduct.getProductOptionList());
         // 상품 삭제
         productRepository.delete(findProduct);
+    }
+
+    // 상품명 중복 확인
+    public Boolean isDuplicatedProductName(String name, Long productId) {
+
+        if(productId != null) {
+            return productRepository.findByIdAndName(productId, name) != null;
+        } else {
+            return productRepository.findByName(name) != null;
+        }
     }
 }
 
