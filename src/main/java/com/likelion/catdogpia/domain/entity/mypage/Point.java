@@ -19,8 +19,9 @@ public class Point {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 상태
+    // 상태 (USED, SAVED)
     @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
     private PointStatus status;
     
     // 적립금
@@ -40,7 +41,7 @@ public class Point {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orders_id")
+    @JoinColumn(name = "order_id")
     private Orders order;
 
     @Builder
