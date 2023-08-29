@@ -6,6 +6,7 @@ import com.likelion.catdogpia.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ public class MemberService implements UserDetailsManager {
     private final MemberRepository memberRepository;
     private final JavaMailSender javaMailSender;
     private static int number;
+    @Autowired
     public MemberService(MemberRepository memberRepository, JavaMailSender javaMailSender) {
         this.memberRepository = memberRepository;
         this.javaMailSender = javaMailSender;
@@ -97,11 +99,11 @@ public class MemberService implements UserDetailsManager {
         try {
             message.setFrom("thecatdogpia@gmail.com");
             message.setRecipients(MimeMessage.RecipientType.TO, email);
-            message.setSubject("Catdogpia 회원가입 이메일 인증");
+            message.setSubject("[CatDogPia] 회원가입 이메일 인증");
             String body = "";
             body += "<h2>" + "CatDogPia 이메일 인증" + "</h2>";
-            body += "<h3>" + "캣독피아에 등록한 이메일 주소가 올바른지 확인하기 위한 인증번호입니다.\n" +
-                    "아래의 인증번호를 복사하여 이메일 인증을 완료해 주세요." + "</h3>";
+            body += "<h3>" + "캣독피아에 등록한 이메일 주소가 올바른지 확인하기 위한 인증번호입니다." + "</h3>";
+            body += "<h3>" + "아래의 인증번호를 복사하여 이메일 인증을 완료해 주세요." + "</h3>";
             body += "<h1> " + number + "</h1>";
             message.setText(body, "UTF-8", "html");
         } catch (MessagingException e) {

@@ -18,6 +18,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Boolean existsByNickname(String nickname);
 
     Boolean existsByEmail(String email);
+
+    Optional<Member> findByNameAndEmail(String name, String email);
+
+    Optional<Member> findByLoginIdAndNameAndEmail(String loginId, String name, String email);
+
+    Optional<Member> findByEmail(String email);
   
     @Query("select new com.likelion.catdogpia.domain.dto.admin.MemberDto(" +
             "m.id, m.name, m.loginId, m.nickname, m.phone, " +

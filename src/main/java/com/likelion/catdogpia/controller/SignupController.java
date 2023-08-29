@@ -59,7 +59,7 @@ public class SignupController {
                     .socialLogin('N')
                     .blackListYn('N')
                     .build());
-            return "redirect:/page/login/login-form";
+            return "redirect:/login";
         }
         log.warn("비밀번호 불일치");
         return "redirect:/signup";
