@@ -3,13 +3,17 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
 import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
+import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
 import com.likelion.catdogpia.service.AddressService;
 import com.likelion.catdogpia.service.OrderHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -47,17 +51,36 @@ public class MypageController {
     // 주문 내역 페이지
     @GetMapping("/order-list")
     public String orderListPage(Model model, @RequestParam(value = "orderStatus", required = false) String orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("orderList", orderHistoryService.readAllOrder("testtest", orderStatus, page, limit));
+        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page, limit);
+//        List<OrderListDto> contentList = orderList.getContent();
+//        OrderListDto firstOrder = contentList.get(0);
+//        log.info("테스트1 id : " + firstOrder.getId());
+//        log.info("테스트1 name : " + firstOrder.getName());
+//        log.info("테스트1 price : " + firstOrder.getPrice());
+//        log.info("테스트1 orderAt : " + firstOrder.getOrderAt());
+//        log.info("테스트1 quantity : " + firstOrder.getQuantity());
+//        log.info("테스트1 size : " + firstOrder.getSize());
+//        log.info("테스트1 color : " + firstOrder.getColor());
+//        OrderListDto secondOrder = contentList.get(1);
+//        log.info("테스트2 id : " + secondOrder.getId());
+//        log.info("테스트2 name : " + secondOrder.getName());
+//        log.info("테스트2 price : " + secondOrder.getPrice());
+//        log.info("테스트2 orderAt : " + secondOrder.getOrderAt());
+//        log.info("테스트2 quantity : " + secondOrder.getQuantity());
+//        log.info("테스트2 size : " + secondOrder.getSize());
+//        log.info("테스트2 color : " + secondOrder.getColor());
+
+        model.addAttribute("orderList", orderList);
         return "page/mypage/order_list.html";
     }
 
     // 주문 상세 페이지
-    @GetMapping("/order-detail/{ordersId}")
-    public String orderDetailPage(Model model, @PathVariable Long ordersId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("productList", orderHistoryService.readOrder("testtest", ordersId, page, limit));
+    @GetMapping("/order-detail/{orderId}")
+    public String orderDetailPage(Model model, @PathVariable Long orderId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        model.addAttribute("productList", orderHistoryService.readOrder("testtest", orderId, page, limit));
         // 테스트용 OrderDetailDto
         model.addAttribute("testDetail", OrderDetailDto.builder().address("test주소").name("어금지").phone("01011111111").request("문 앞에 두고 가주세요!").totalAmount(30000).cardCompany("비씨카드").point(5000).build());
-        model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", ordersId));
+        model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", orderId));
         return "page/mypage/order_detail.html";
     }
 

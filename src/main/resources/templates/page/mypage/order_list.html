@@ -28,10 +28,15 @@
             <th width="20%">주문 상태</th>
         </tr>
         <tr th:each="order : ${orderList}">
-            <td th:text="${order.orderAt}">2023.08.21</td>
-            <td><a href="/mypage/order-detail/${order.id}" th:text="${order.id}">20230821394810</a></td>
-            <td th:text="${order.name}">나풀 불라우스 (L/blue)</td>
-            <td th:text="${order.price}">20000원 <span th:text="'('+${order.quantity}+'개)'">(1개)</span></td>
+            <td th:text="${#temporals.format(order.orderAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td><a th:href="@{/mypage/order-detail/{orderId}(orderId=${order.id})}" th:text="${order.id}"></a></td>
+            <td>
+                <div th:text="${order.name}"></div>
+                <div th:text="'옵션 : '+${order.size}+' / '+${order.color}"></div>
+            </td>
+            <td>
+                <div th:text="${order.amount}"></div>
+                <span th:text="'('+${order.quantity}+'개)'">(1개)</span></td>
             <td th:text="${order.orderStatus}">구매 확정 / 후기 작성</td>
         </tr>
     </table>

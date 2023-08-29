@@ -33,8 +33,12 @@ public class OrderListDto {
     // 상품가격 (Product)
     private int price;
 
+    // 주문 금액 (quantity * price)
+    private int amount;
+
     @Builder
-    public OrderListDto(Long id, LocalDateTime orderAt, int quantity, String orderStatus, String size, String color, String name, int price) {
+
+    public OrderListDto(Long id, LocalDateTime orderAt, int quantity, String orderStatus, String size, String color, String name, int price, int amount) {
         this.id = id;
         this.orderAt = orderAt;
         this.quantity = quantity;
@@ -43,5 +47,6 @@ public class OrderListDto {
         this.color = color;
         this.name = name;
         this.price = price;
+        this.amount = amount;
     }
 }
