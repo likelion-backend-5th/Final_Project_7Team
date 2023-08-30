@@ -24,36 +24,51 @@
 </head>
 <body>
 <div layout:fragment="content" class="cart-container">
-    <p>전체 <span th:text="${cartList.totalElements}"></span>개</p>
-    <button onclick="deleteCart()">선택 상품 삭제</button>
+    <p class="cart-total-quantity">총 <span th:text="${cartList.totalElements}"></span>개</p>
+    <button class="btn-cart-delete" onclick="deleteCart()">선택 상품 삭제</button>
     <table class="cart-table">
         <tr>
             <th width="5%"><input type="checkbox" class="allCheck"></th>
-            <th width="60%">상품명(옵션)</th>
+            <th width="55%">상품명(옵션)</th>
+            <th width="15%">판매가</th>
             <th width="10%">수량</th>
-            <th width="25%">총 가격</th>
+            <th width="15%">총 금액</th>
         </tr>
         <tr th:each="cart : ${cartList}">
             <td><input type="checkbox" class="rowCheck" th:value="${cart.id}"></td>
             <td>
-                <a href="#" th:text="${cart.name}"></a>
-                <p th:text="${cart.size}+' / '+${cart.color}"></p>
+                <div class="cart-p-box">
+                    <div class="cart-img-box">
+                        <img>
+                    </div>
+                    <div class="cart-pname-box">
+                        <a class="pname" href="#" th:text="${cart.name}"></a>
+                        <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
+                    </div>
+                </div>
             </td>
             <td>
-                <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus')">-</button>
-                <p th:id="'cart-'+${cart.id}" th:text="${cart.productCnt}"></p>
-                <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus')">+</button>
+                <div th:text="${cart.price}+'원'"></div>
             </td>
-            <td th:text="${cart.price * cart.productCnt}+'원'"></td>
+            <td>
+                <div>
+                    <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus', [[${cart.price}]])">-</button>
+                    <p th:id="'quantity-'+${cart.id}" th:text="${cart.productCnt}"></p>
+                    <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus', [[${cart.price}]])">+</button>
+                </div>
+            </td>
+            <td th:id="'price-'+${cart.id}" class="p-price" th:text="${cart.price * cart.productCnt}+'원'"></td>
         </tr>
         <tr>
             <td colspan="4">
                 <p>전체 상품 금액</p>
-                <p th:text="${totalAmount}"></p>
+                <p th:id="total-price" th:text="${totalAmount}+'원'"></p>
             </td>
         </tr>
     </table>
-    <button type="button">주문하기</button>
+    <section class="section-order-btn">
+        <button class="btn-cart-order" type="button">주문하기</button>
+    </section>
 </div>
 
 </body>

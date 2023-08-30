@@ -1,8 +1,8 @@
-function changeQuantity(id, mp) {
+function changeQuantity(cartId, mp, price) {
 
-    var currentQuantity = parseInt($("#cart-" + id).text().trim()) // 공백 제거
+    var currentQuantity = parseInt($("#quantity-" + cartId).text().trim()) // 공백 제거
     // '-' 버튼을 눌렀을 때 수량이 1 미만이 되는 경우
-    if(mp==='minus' && currentQuantity <= 1) {
+    if (mp === 'minus' && currentQuantity <= 1) {
         alert("수량은 1개 이상이어야 합니다.");
         return;
     }
@@ -11,19 +11,26 @@ function changeQuantity(id, mp) {
         type: "PUT",
         url: "/cart",
         data: {
-            id: id,
+            id: cartId,
             mp: mp
         },
         success: function (response) {
             // 응답으로 받은 업데이트된 수량을 사용하여 수량 업데이트
-            $("#cart-" + id).text(response);
-            // location.reload()
+            $("#quantity-" + cartId).text(response);
+            // 해당 상품 총 금액 변경
+            $("#price-" + cartId).text(price * response + '원');
+
+            // 전체 상품 금액 변경
+            let totalPrice = 0;
+            $(".p-price").each(function () {
+                let rowPrice = parseFloat($(this).text().replace('원', '').trim());
+                totalPrice += rowPrice;
+            });
+            // totalPrice += $("#price-").text().replace('원', '').trim()
+            $("#total-price").text(totalPrice + '원');
         }
     });
 }
-
-// const rowCheck = document.getElementsByClassName("rowCheck");
-// const rowCount = rowCheck.length
 
 
 function deleteCart() {
@@ -34,7 +41,7 @@ function deleteCart() {
         selectedIds.push(checkbox.value);
     })
 
-    if(selectedIds.length === 0) {
+    if (selectedIds.length === 0) {
         alert('삭제할 상품을 선택해주세요')
         return
     }
@@ -46,7 +53,7 @@ function deleteCart() {
     $.ajax({
         type: "DELETE",
         url: "/cart",
-        data: { cartIds: selectedIds },
+        data: {cartIds: selectedIds},
         success: function () {
             alert("상품이 삭제되었습니다")
             location.reload()
