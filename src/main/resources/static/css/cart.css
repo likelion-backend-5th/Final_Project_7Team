@@ -33,13 +33,16 @@
     text-align: start;
 }
 
-.cart-table .cart-pname-box .pname {
+.cart-table .sell .pname {
     color: black;
 }
 
 .cart-table .cart-pname-box .poption {
     margin-top: 5px;
     margin-bottom: 0;
+}
+
+.cart-table .sell .poption {
     color: gray;
 }
 
@@ -100,4 +103,14 @@
 .section-order-btn {
     width: 100%;
     text-align: center;
+}
+
+
+/* 품절 */
+.sold-out span {
+    font-weight: bold;
+}
+
+.sold-out .pname, .poption {
+    color: lightgray;
 }

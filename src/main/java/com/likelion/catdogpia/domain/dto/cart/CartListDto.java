@@ -28,8 +28,11 @@ public class CartListDto {
     // 상품 총 금액
     private int amount;
 
+    // 재고 (ProductOption)
+    private int stock;
+
     @Builder
-    public CartListDto(Long id, String name, String size, String color, int price, int productCnt, int amount) {
+    public CartListDto(Long id, String name, String size, String color, int price, int productCnt, int amount, int stock) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -37,5 +40,6 @@ public class CartListDto {
         this.price = price;
         this.productCnt = productCnt;
         this.amount = amount;
+        this.stock = stock;
     }
 }

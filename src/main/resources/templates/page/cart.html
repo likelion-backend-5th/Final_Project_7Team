@@ -38,13 +38,25 @@
             <td><input type="checkbox" class="rowCheck" th:value="${cart.id}"></td>
             <td>
                 <div class="cart-p-box">
-                    <div class="cart-img-box">
-                        <img>
-                    </div>
-                    <div class="cart-pname-box">
-                        <a class="pname" href="#" th:text="${cart.name}"></a>
-                        <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
-                    </div>
+                    <th:block th:if="${cart.stock==0}">
+                        <div class="cart-img-box">
+                            <img>
+                        </div>
+                        <div class="cart-pname-box sold-out">
+                            <span>[품절]</span>
+                            <a class="pname" href="#" th:text="${cart.name}"></a>
+                            <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${cart.stock!=0}">
+                        <div class="cart-img-box">
+                            <img>
+                        </div>
+                        <div class="cart-pname-box sell">
+                            <a class="pname" href="#" th:text="${cart.name}"></a>
+                            <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
+                        </div>
+                    </th:block>
                 </div>
             </td>
             <td>

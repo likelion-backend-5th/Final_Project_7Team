@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     // 장바구니에 담긴 상품 목록
-    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.cart.CartListDto(c.id, p.name, po.size, po.color, p.price, c.productCnt, p.price * c.productCnt) "+
+    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.cart.CartListDto(c.id, p.name, po.size, po.color, p.price, c.productCnt, p.price * c.productCnt, po.stock) "+
             "FROM Cart c " +
             "JOIN ProductOption po ON c.productOption.id = po.id " +
             "JOIN Product p ON po.product.id = p.id " +
