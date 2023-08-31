@@ -29,7 +29,8 @@ public class OrderProduct {
     private int quantity;
 
     @Column(length = 20, nullable = false)
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     private LocalDateTime receivedAt;
 
@@ -39,8 +40,13 @@ public class OrderProduct {
     private Review review;
 
 
+    //== 상태변경 메소드 ==//
+    public void changeStatus(String status) {
+        this.orderStatus = OrderStatus.valueOf(status);
+    }
+
     @Builder
-    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, String orderStatus,
+    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus,
                         LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
         this.id = id;
         this.order = order;

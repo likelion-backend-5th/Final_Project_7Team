@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.admin.OrderStatusUpdateDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductDto;
+import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,5 +200,46 @@ public class AdminController {
         resultMap.put("duplicated", adminService.isDuplicatedProductName(name, productId));
         log.info("resultMap : " + resultMap.get("duplicated"));
         return resultMap;
+    }
+
+    // 주문관리 목록
+    @GetMapping("/orders")
+    public String orderList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate,
+            @RequestParam(required = false) String orderStatus
+    ) {
+        log.info("filter : " + filter);
+        log.info("keyword : " + keyword);
+        log.info("toDate : " + toDate);
+        log.info("fromDate : " + fromDate);
+        log.info("orderStatus : " + orderStatus);
+        model.addAttribute("orderList", adminService.findOrderList(pageable, filter, keyword, toDate, fromDate, orderStatus));
+        model.addAttribute("filter",filter);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("toDate",toDate);
+        model.addAttribute("fromDate",fromDate);
+        model.addAttribute("orderStatus", orderStatus);
+        model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
+        return "/page/admin/orders";
+    }
+
+    // 주문 상태 변경
+    @PostMapping("/orders/change-status")
+    public String changeOrderStatus(@RequestBody List<OrderStatusUpdateDto> updateDtoList) {
+        log.info("hi");
+        // 백단에서 한번 더 list validation check 수행
+        if(updateDtoList.isEmpty()) {
+            throw new IllegalArgumentException("list is empty");
+        }
+        else {
+            adminService.changeOrderStatus(updateDtoList);
+        }
+
+        return "redirect:/admin/orders";
     }
 }

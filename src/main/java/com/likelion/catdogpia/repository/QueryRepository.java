@@ -1,8 +1,11 @@
 package com.likelion.catdogpia.repository;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
+import com.likelion.catdogpia.domain.dto.admin.OrderListDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
-import com.likelion.catdogpia.domain.entity.product.QProduct;
+import com.likelion.catdogpia.domain.entity.order.QOrders;
+import com.likelion.catdogpia.domain.entity.product.OrderStatus;
+import com.likelion.catdogpia.domain.entity.product.QOrderProduct;
 import com.likelion.catdogpia.domain.entity.product.QProductOption;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -10,18 +13,26 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static com.likelion.catdogpia.domain.entity.user.QMember.*;
 import static com.likelion.catdogpia.domain.entity.product.QProduct.*;
+import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
+import static com.likelion.catdogpia.domain.entity.order.QOrders.*;
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class QueryRepository {
@@ -108,6 +119,96 @@ public class QueryRepository {
                 case "name" -> product.name.contains(keyword);
                 default -> product.status.eq(keyword);
             };
+        } else {
+            return null;
+        }
+    }
+
+    // 상품 목록 조회
+    public Page<OrderListDto> findByOrderList(Pageable pageable, String filter, String keyword, String toDate, String fromDate, OrderStatus orderStatus) {
+        QOrders orders = new QOrders("orders");
+        QOrderProduct orderProduct = new QOrderProduct("orderProduct");
+        QProductOption productOption = new QProductOption("productOption");
+
+        List<OrderListDto> orderList =
+                queryFactory.select(Projections.fields(OrderListDto.class,
+                                orders.id,
+                                orders.orderAt,
+                                orders.orderNumber,
+                                product.name.as("productName"),
+                                member.name.as("buyerName"),
+                                productOption.color,
+                                productOption.size,
+                                orderProduct.orderStatus,
+                                orderProduct.quantity,
+                                orderProduct.id.as("orderProductId")
+                                ))
+                        .from(orders)
+                        .join(member).on(orders.member.eq(member))
+                        .join(orderProduct).on(orders.eq(orderProduct.order))
+                        .join(productOption).on(orderProduct.productOption.eq(productOption))
+                        .join(product).on(productOption.product.eq(product))
+                        .where(orderSearchFilter(filter, keyword),
+                                orderDateFilter(toDate, fromDate),
+                                orderStatusFilter(orderStatus))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(orders.id.desc())
+                        .fetch();
+
+        Long count = queryFactory
+                .select(orders.count())
+                .from(orders)
+                .join(member).on(orders.member.eq(member))
+                .join(orderProduct).on(orders.eq(orderProduct.order))
+                .join(productOption).on(orderProduct.productOption.eq(productOption))
+                .join(product).on(productOption.product.eq(product))
+                .where(orderSearchFilter(filter, keyword),
+                        orderDateFilter(toDate, fromDate),
+                        orderStatusFilter(orderStatus))
+                .fetchOne();
+
+        return new PageImpl<>(orderList, pageable, count);
+
+
+    }
+
+    // 검색 조건 추가
+    private BooleanExpression orderSearchFilter(String filter, String keyword) {
+        if(StringUtils.hasText(filter)) {
+            return switch (filter) {
+                case "buyerName" -> member.name.contains(keyword);
+                default -> orders.orderNumber.contains(keyword);
+            };
+        } else {
+            return null;
+        }
+    }
+
+    // 날짜 조건 추가
+    private BooleanExpression orderDateFilter(String toDate, String fromDate) {
+        if(StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter);
+                LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
+
+                return orders.orderAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
+            } catch (DateTimeParseException ex) {
+                // 날짜 형식이 잘못된 경우 처리
+                log.info("날짜 형식이 잘못됨!");
+                ex.printStackTrace();
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
+    // 주문 상태 조건 추가
+    private BooleanExpression orderStatusFilter(OrderStatus orderStatus) {
+        if(orderStatus != null) {
+            return orderProduct.orderStatus.eq(orderStatus);
         } else {
             return null;
         }

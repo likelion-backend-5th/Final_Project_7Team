@@ -20,6 +20,9 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
+    private String orderNumber;
+
     // 회원
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
