@@ -3,9 +3,12 @@ package com.likelion.catdogpia.service;
 import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
 import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
 import com.likelion.catdogpia.domain.entity.order.Orders;
+import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.MemberRepository;
+import com.likelion.catdogpia.repository.OrderProductRepository;
 import com.likelion.catdogpia.repository.OrderRespository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -25,13 +28,16 @@ public class OrderHistoryService {
 
     private final OrderRespository orderRespository;
     private final MemberRepository memberRepository;
+    private final OrderProductRepository orderProductRepository;
 
     // 주문 내역 리스트 조회
-    public Page<OrderListDto> readAllOrder(String loginId, String orderStatus, Integer page, Integer limit) {
+    public Page<OrderListDto> readAllOrder(String loginId, OrderStatus orderStatus, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<OrderListDto> orderListPage = orderRespository.findAllByMemberId(pageable, member.getId(), orderStatus);
+
+        log.info("주문내역리스트사이즈 "+orderListPage.getTotalElements());
 
         return orderListPage;
     }
@@ -57,6 +63,18 @@ public class OrderHistoryService {
             new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return orderRespository.findDetailByOrderId(orderId);
+    }
+
+    // 주문 상태별 개수
+    public Map<String, Integer> getOrderCountByStatus(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Map<String, Integer> map = new HashMap<>();
+        for (OrderStatus status : OrderStatus.values()) {
+            int count = orderProductRepository.countOrderStatus(member.getId(), status);
+            map.put(String.valueOf(status), count);
+        }
+        return map;
     }
 
 }

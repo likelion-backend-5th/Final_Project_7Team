@@ -13,9 +13,9 @@
     <p class="mypage-title">주문 상세</p>
     <ul class="order-detail-ul">
         <li>주문번호</li>
-        <li th:text="${productList.content[0].id}"></li>
+        <li th:text="${productList.content[0].orderNumber}"></li>
         <li>주문일자</li>
-        <li th:text="${#temporals.format(productList.content[0].orderAt, 'yyyy-MM-dd HH:mm')}">2023.08.21 00:04</li>
+        <li th:text="${#temporals.format(productList.content[0].orderAt, 'yyyy-MM-dd HH:mm')}"></li>
     </ul>
 
     <p class="mypage-title">상품 정보</p>

@@ -13,11 +13,16 @@
 <div layout:fragment="content" class="mypage-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
     <ul class="order-state">
-        <li th:onclick="filterOrderStatus(null)">전체 0</li>
-        <li th:onclick="filterOrderStatus('입금/결제')">입금/결제 0</li>
-        <li th:onclick="filterOrderStatus('배송중')">배송중 1</li>
-        <li th:onclick="filterOrderStatus('배송완료')">배송완료 5</li>
-        <li th:onclick="filterOrderStatus('취소/교환/반품')">취소/교환/반품 1</li>
+        <li th:onclick="filterOrderStatus(null)">전체 </li>
+        <li th:onclick="filterOrderStatus('RECEIVED')">주문접수 <span th:text="${orderStatusCount['RECEIVED']}"></span></li>
+        <li th:onclick="filterOrderStatus('PREPARING_FOR_SHIPMENT')">배송준비  <span th:text="${orderStatusCount['PREPARING_FOR_SHIPMENT']}"></span></li>
+        <li th:onclick="filterOrderStatus('SHIPPED')">배송중 <span th:text="${orderStatusCount['SHIPPED']}"></span></li>
+        <li th:onclick="filterOrderStatus('DELIVERED')">배송완료 <span th:text="${orderStatusCount['DELIVERED']}"></span></li>
+        <li th:onclick="filterOrderStatus('PURCHASE_CONFIRMED')">구매확정 <span th:text="${orderStatusCount['PURCHASE_CONFIRMED']}"></span></li>
+        <li th:onclick="filterOrderStatus('EXCHANGE_REQUESTED')">교환요청 <span th:text="${orderStatusCount['EXCHANGE_REQUESTED']}"></span></li>
+        <li th:onclick="filterOrderStatus('EXCHANGE_COMPLETED')">교환완료 <span th:text="${orderStatusCount['EXCHANGE_COMPLETED']}"></span></li>
+        <li th:onclick="filterOrderStatus('REFUND_REQUESTED')">환불요청 <span th:text="${orderStatusCount['REFUND_REQUESTED']}"></span></li>
+        <li th:onclick="filterOrderStatus('REFUND_COMPLETED')">환불완료 <span th:text="${orderStatusCount['REFUND_COMPLETED']}"></span></li>
     </ul>
     <table class="mypage-table order-list-table">
         <tr>
@@ -29,7 +34,7 @@
         </tr>
         <tr th:each="order : ${orderList}">
             <td th:text="${#temporals.format(order.orderAt, 'yyyy-MM-dd HH:mm')}"></td>
-            <td><a th:href="@{/mypage/order-detail/{orderId}(orderId=${order.id})}" th:text="${order.id}"></a></td>
+            <td><a th:href="@{/mypage/order-detail/{orderId}(orderId=${order.id})}" th:text="${order.orderNumber}"></a></td>
             <td>
                 <div th:text="${order.name}"></div>
                 <div th:text="'옵션 : '+${order.size}+' / '+${order.color}"></div>

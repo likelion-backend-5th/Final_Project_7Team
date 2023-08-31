@@ -29,7 +29,8 @@ public class OrderProduct {
     private int quantity;
 
     @Column(length = 20, nullable = false)
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     private LocalDateTime receivedAt;
 
@@ -40,8 +41,7 @@ public class OrderProduct {
 
 
     @Builder
-    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, String orderStatus,
-                        LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
+    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
         this.id = id;
         this.order = order;
         this.productOption = productOption;

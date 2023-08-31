@@ -44,7 +44,8 @@ public class Product extends BaseEntity {
     private String content;
 
     @Column(length = 10, nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     @OneToMany(mappedBy = "product")
     private List<ProductOption> productOptionList = new ArrayList<>();
@@ -55,7 +56,7 @@ public class Product extends BaseEntity {
     @Builder
 
     public Product(Long id, CategoryEntity category, Attach attach, String name,
-                   int price, String content, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
+                   int price, String content, ProductStatus status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
         this.category = category;
         this.attach = attach;
