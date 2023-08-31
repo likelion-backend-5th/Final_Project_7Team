@@ -37,6 +37,4 @@ public class ProductListResponseDto {
 //                .thumbnailImage()
                 .build();
     }
-
-
 }
