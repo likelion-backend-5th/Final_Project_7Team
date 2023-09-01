@@ -36,6 +36,13 @@ public class OrderProduct {
 
     private LocalDateTime shippedAt;
 
+    private LocalDateTime deliveryAt;
+    private LocalDateTime purchaseConfirmedAt;
+    private LocalDateTime exchangeRequestedAt;
+    private LocalDateTime exchangeCompletedAt;
+    private LocalDateTime refundRequestedAt;
+    private LocalDateTime refundCompletedAt;
+
     @OneToOne(mappedBy = "orderProduct")
     private Review review;
 
