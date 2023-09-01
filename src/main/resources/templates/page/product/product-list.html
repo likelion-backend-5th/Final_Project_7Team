@@ -6,12 +6,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="/assets/img/apple-icon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico">
+<!--    <link rel="apple-touch-icon" href="/assets/img/apple-icon.png">-->
+<!--    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico">-->
 
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/templatemo.css">
-    <link rel="stylesheet" href="/assets/css/custom.css">
+<!--    <link rel="stylesheet" href="/assets/css/custom.css">-->
 
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
@@ -148,39 +148,7 @@
 <!-- End Footer -->
 
 <!-- Start Script -->
-<script src="/assets/js/jquery-1.11.0.min.js"></script>
-<script src="/assets/js/jquery-migrate-1.2.1.min.js"></script>
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/templatemo.js"></script>
-<script src="/assets/js/custom.js"></script>
-<!--    <script>-->
-<!--        var categoryIdValue = "";  // 초기에는 빈 문자열로 설정-->
 
-<!--        // categoryId 업데이트 함수-->
-<!--        function updateCategoryId(selectedCategoryId) {-->
-<!--            categoryIdValue = selectedCategoryId;-->
-
-<!--            // Form action 업데이트-->
-<!--            var mainIdValue = document.getElementById("mainId").textContent;-->
-<!--            document.getElementById("searchForm").action = "/products/" + mainIdValue + "/" + categoryIdValue;-->
-
-<!--            // 선택한 카테고리 표시를 업데이트 -->
-<!--            var selectedCategoryName = document.querySelector(`a[data-category-id="${selectedCategoryId}"] span`).textContent;-->
-<!--            document.getElementById("selectedCategory").textContent = selectedCategoryName;-->
-<!--        }-->
-
-<!--        // 폼 제출 시, 검색어가 자동으로 추가.-->
-<!--        document.getElementById("searchForm").onsubmit = function() {-->
-<!--            var searchValue = document.querySelector("#searchForm input[name='search']").value;-->
-
-<!--            // 검색어가 없을 경우, 공백으로 설정-->
-<!--            if (searchValue === null || searchValue === undefined) {-->
-<!--                searchValue = '';-->
-<!--            }-->
-
-<!--            this.action += "?search=" + encodeURIComponent(searchValue);-->
-<!--        };-->
-<!--    </script>-->
     <script>
         function submitSearchForm() {
             var searchInput = document.getElementById('searchInput');
