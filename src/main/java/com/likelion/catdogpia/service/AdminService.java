@@ -4,12 +4,14 @@ import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
+import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.product.ProductOption;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
+import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -342,6 +344,15 @@ public class AdminService {
             if(findOrderProduct.getOrderStatus().name().equals(updateDto.getStatus())) continue;
             else  findOrderProduct.changeStatus(updateDto.getStatus());
         }
+    }
+
+    // 주문내역 조회
+    public List<OrderDto> findOrder(Long orderId) {
+        // 해당 주문 내역이 있는지 확인 조회
+        Orders orders = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+
+        // 주문 목록 리턴
+        return queryRepository.findOrder(orderId);
     }
 }
 

@@ -1,12 +1,13 @@
 package com.likelion.catdogpia.repository;
 
-import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
-import com.likelion.catdogpia.domain.dto.admin.OrderListDto;
-import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
+import com.likelion.catdogpia.domain.dto.admin.*;
+import com.likelion.catdogpia.domain.entity.attach.QAttach;
+import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.domain.entity.product.QOrderProduct;
 import com.likelion.catdogpia.domain.entity.product.QProductOption;
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -42,26 +42,26 @@ public class QueryRepository {
     // 회원관리 목록
     public Page<MemberListDto> findByFilterAndKeyword(Pageable pageable, String filter, String keyword) {
         // 회원 목록
-       List<MemberListDto> memberList =
-               queryFactory.select(Projections.fields(MemberListDto.class,
-                        member.id,
-                        member.name,
-                        member.loginId,
-                        member.nickname,
-                        member.blackListYn,
-                        member.createdAt
-                ))
-                .from(member)
-                .where(searchFilter(filter,keyword))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(member.id.desc())
-                .fetch();
+        List<MemberListDto> memberList =
+                queryFactory.select(Projections.fields(MemberListDto.class,
+                                member.id,
+                                member.name,
+                                member.loginId,
+                                member.nickname,
+                                member.blackListYn,
+                                member.createdAt
+                        ))
+                        .from(member)
+                        .where(searchFilter(filter, keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(member.id.desc())
+                        .fetch();
         // 카운트
         Long count = queryFactory
                 .select(member.count())
                 .from(member)
-                .where(searchFilter(filter,keyword))
+                .where(searchFilter(filter, keyword))
                 .fetchOne();
 
         return new PageImpl<>(memberList, pageable, count);
@@ -69,7 +69,7 @@ public class QueryRepository {
 
     // 검색 조건 추가
     private BooleanExpression searchFilter(String filter, String keyword) {
-        if(StringUtils.hasText(filter)) {
+        if (StringUtils.hasText(filter)) {
             return switch (filter) {
                 case "loginId" -> member.loginId.contains(keyword);
                 case "name" -> member.name.contains(keyword);
@@ -92,12 +92,12 @@ public class QueryRepository {
                                 product.price,
                                 ExpressionUtils.as(
                                         JPAExpressions.select(qProductOption.stock.sum())
-                                        .from(qProductOption)
-                                        .where(qProductOption.product.eq(product)),
-                                "totalStock")
+                                                .from(qProductOption)
+                                                .where(qProductOption.product.eq(product)),
+                                        "totalStock")
                         ))
                         .from(product)
-                        .where(productSearchFilter(filter,keyword))
+                        .where(productSearchFilter(filter, keyword))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .orderBy(product.id.desc())
@@ -106,7 +106,7 @@ public class QueryRepository {
         Long count = queryFactory
                 .select(product.count())
                 .from(product)
-                .where(productSearchFilter(filter,keyword))
+                .where(productSearchFilter(filter, keyword))
                 .fetchOne();
 
         return new PageImpl<>(productListDtoList, pageable, count);
@@ -114,7 +114,7 @@ public class QueryRepository {
 
     // 검색 조건 추가
     private BooleanExpression productSearchFilter(String filter, String keyword) {
-        if(StringUtils.hasText(filter)) {
+        if (StringUtils.hasText(filter)) {
             return switch (filter) {
                 case "name" -> product.name.contains(keyword);
                 default -> product.status.eq(keyword);
@@ -142,7 +142,7 @@ public class QueryRepository {
                                 orderProduct.orderStatus,
                                 orderProduct.quantity,
                                 orderProduct.id.as("orderProductId")
-                                ))
+                        ))
                         .from(orders)
                         .join(member).on(orders.member.eq(member))
                         .join(orderProduct).on(orders.eq(orderProduct.order))
@@ -175,7 +175,7 @@ public class QueryRepository {
 
     // 검색 조건 추가
     private BooleanExpression orderSearchFilter(String filter, String keyword) {
-        if(StringUtils.hasText(filter)) {
+        if (StringUtils.hasText(filter)) {
             return switch (filter) {
                 case "buyerName" -> member.name.contains(keyword);
                 default -> orders.orderNumber.contains(keyword);
@@ -187,7 +187,7 @@ public class QueryRepository {
 
     // 날짜 조건 추가
     private BooleanExpression orderDateFilter(String toDate, String fromDate) {
-        if(StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
+        if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
                 LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter);
@@ -207,10 +207,60 @@ public class QueryRepository {
 
     // 주문 상태 조건 추가
     private BooleanExpression orderStatusFilter(OrderStatus orderStatus) {
-        if(orderStatus != null) {
+        if (orderStatus != null) {
             return orderProduct.orderStatus.eq(orderStatus);
         } else {
             return null;
         }
+    }
+
+    public List<OrderDto> findOrder(Long orderId) {
+        QProductOption productOption = new QProductOption("productOption");
+        QAttach attach = new QAttach("attach");
+        QAttachDetail attachDetail = new QAttachDetail("attachDetail");
+
+        return queryFactory.select(orders)
+                .from(orders)
+                .join(orderProduct).on(orderProduct.order.eq(orders))
+                .join(productOption).on(orderProduct.productOption.eq(productOption))
+                .join(product).on(productOption.product.eq(product))
+                .leftJoin(attach).on(product.attach.eq(attach))
+                .leftJoin(attachDetail).on(attachDetail.attach.eq(attach)
+                        .and(attachDetail.id.eq(
+                                JPAExpressions.select(attachDetail.id.min())
+                                        .from(attachDetail)
+                                        .where(attachDetail.attach.eq(attach))
+                )))
+                .where(orders.id.eq(orderId))
+                .transform(GroupBy.groupBy(orders.id).list(
+                        Projections.fields(OrderDto.class,
+                                orders.id,
+                                orders.orderNumber,
+                                orders.name.as("buyerName"),
+                                orders.address,
+                                orders.phone,
+                                orders.request,
+                                orders.cardCompany,
+                                orders.totalAmount,
+                                orders.deliveryCharge,
+                                orders.discountAmount,
+                                orders.orderAt,
+                                GroupBy.list(Projections.fields(OrderProductDto.class,
+                                        orderProduct.id,
+                                        orderProduct.orderStatus,
+                                        orderProduct.deliveryAt,
+                                        orderProduct.purchaseConfirmedAt,
+                                        orderProduct.exchangeRequestedAt,
+                                        orderProduct.exchangeCompletedAt,
+                                        orderProduct.refundRequestedAt,
+                                        orderProduct.refundCompletedAt,
+                                        orderProduct.quantity,
+                                        product.name.as("productName"),
+                                        product.price,
+                                        productOption.size,
+                                        productOption.color,
+                                        attachDetail.fileUrl.as("imgUrl")
+                                        )).as("orderProductList")
+                )));
     }
 }

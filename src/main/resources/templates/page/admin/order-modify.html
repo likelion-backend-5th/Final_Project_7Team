@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>주문 상세 내역</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="../../../js/init-alpine.js"></script>
+  </head>
+  <body>
+    <!-- 헤더-->
+    <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+    <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+    <!-- 메인 -->
+      <div class="flex flex-col flex-1 w-full">
+        <!-- 헤더 -->
+        <header id="header"></header>
+
+        <!-- 테이블 시작 -->
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container grid px-6 mx-auto">
+            <div class="flex my-6 text-2xl">
+              <h2
+                class="font-semibold text-gray-700 dark:text-gray-200"
+              >
+                주문 상세 내역
+              </h2>
+            </div>
+            <div class="flex">
+              <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+                th:text="|주문 번호 - ${order[0].orderNumber}|"
+               >
+              </h4>
+              <h4 class="ml-6 mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+                  th:text="|주문 일자 - ${#temporals.format(order[0].orderAt, 'yyyy-MM-dd HH:mm')}|"
+                >
+              </h4>
+            </div>
+            <!-- 주문 정보 -->
+            <div class="mt-4 w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <h5 class="ml-6 mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">주문 정보</h5>
+              <div class="w-full overflow-x-auto">
+                <table  style="width: 100%; table-layout: fixed;" class="whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="px-4 py-3 text-center" style="width: 10%">주문자</th>
+                      <th class="px-4 py-3 text-center" style="width: 35%">배송정보</th>
+                      <th class="px-4 py-3 text-center" style="width: 20%">휴대폰</th>
+                      <th class="px-4 py-3 text-center" style="width: 35%">요구사항</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800 "
+                  >
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-5 py-3 text-center text-sm" style="width: 10%" th:text="${order[0].buyerName}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 35%" th:text="${order[0].address}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 20%" th:text="${order[0].phone}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 35%" th:text="${order[0].request}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- 상품 정보 -->
+            <div>
+              <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+                <h5 class="ml-6 mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">상품 정보</h5>
+                <div class="w-full overflow-x-auto">
+                  <table  style="width: 100%; table-layout: fixed;" class="whitespace-no-wrap">
+                    <thead>
+                      <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                        >
+                        <th class="px-4 py-3 text-center" style="width: 30%">상품명</th>
+                        <th class="px-4 py-3 text-center" style="width: 20%">옵션정보</th>
+                        <th class="px-4 py-3 text-center" style="width: 10%">주문금액</th>
+                        <th class="px-4 py-3 text-center" style="width: 15%">교환일시</th>
+                        <th class="px-4 py-3 text-center" style="width: 15%">환불일시</th>
+                        <th class="px-4 py-3 text-center" style="width: 10%">주문상태</th>
+                      </tr>
+                    </thead>
+                    <!-- 반복 -->
+                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                      <tr class="text-gray-700 dark:text-gray-400" th:each="orderProdct : ${order[0].orderProductList}">
+                        <td class="px-5 py-3 text-sm" style="width: 30%">
+                          <div class="flex">
+                            <span class="px-3 py-4 text-center" style="margin-left: auto" th:text="${orderProdct.productName}"></span>
+                            <img th:if="${orderProdct.imgUrl} != null" th:src="${orderProdct.imgUrl}"
+                                 style="width: 80px; height: 60px; margin-right: auto"
+                                 class="pl-2" alt="...">
+                            <img th:unless="${orderProdct.imgUrl} != null" src="../../../img/default-img.jpeg"
+                                 style="width: 80px; height: 60px; margin-right: auto"
+                                 class="pl-2" alt="...">
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-center text-sm" style="width: 20%" th:text="|${orderProdct.color} / ${orderProdct.size} ${orderProdct.quantity}개|"></td>
+                        <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:text="${#numbers.formatInteger(orderProdct.price, 3, 'COMMA') + '원'}"></td>
+                        <td class="px-4 py-3 text-center text-sm" style="width: 15%">2023-09-01 11:10</td>
+                        <td class="px-4 py-3 text-center text-sm" style="width: 15%">-</td>
+                        <td class="px-4 py-3 text-center text-sm" style="width: 10%">
+                          <select class="orderStatus text-center font-medium text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                                  type="text" aria-label="Search"
+                          >
+                            <option selected th:each="status : ${orderStatusList}"
+                                    th:value="${status}" th:text="${status.getStatus()}" th:selected="${status == orderProdct.orderStatus}">
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              <div>
+            </div>
+            <!-- 총 결제 정보 -->
+            <div class="mt-8 w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <h5 class="ml-6 mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">총 결제 정보</h5>
+              <div class="w-full overflow-x-auto">
+                <table  style="width: 100%; table-layout: fixed;" class="whitespace-no-wrap">
+                  <thead>
+                  <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                  >
+                    <th class="px-4 py-3 text-center" style="width: 25%">상품가격</th>
+                    <th class="px-4 py-3 text-center" style="width: 25%">배송비</th>
+                    <th class="px-4 py-3 text-center" style="width: 25%">할인금액</th>
+                    <th class="px-4 py-3 text-center" style="width: 25%">결제수단</th>
+                  </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                  <tr class="text-gray-700 dark:text-gray-400">
+                    <td class="px-5 py-3 text-center text-sm" style="width: 25%" th:text="${#numbers.formatInteger(order[0].totalAmount + order[0].deliveryCharge + order[0].discountAmount, 3, 'COMMA') + '원'}"></td>
+                    <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:if="${order[0].deliveryCharge != 0}" th:text="${#numbers.formatInteger(order[0].deliveryCharge, 3, 'COMMA') + '원'}"></td>
+                    <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:unless="${order[0].deliveryCharge != 0}" th:text="0원"></td>
+                    <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:if="${order[0].discountAmount != 0}" th:text="${#numbers.formatInteger(order[0].discountAmount, 3, 'COMMA') + '원'}"></td>
+                    <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:unless="${order[0].discountAmount != 0}" th:text="0원"></td>
+                    <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:text="${order[0].cardCompany}"></td>
+                  </tr>
+                  <tr class="text-gray-700 dark:text-gray-400">
+                    <td class="px-5 py-3 text-center text-sm" style="width: 0%"></td>
+                    <td class="px-5 py-3 text-center text-sm" style="width: 0%"></td>
+                    <td class="px-5 py-3 text-center text-sm" style="width: 50%"></td>
+                    <td class="px-5 py-3 text-center" style="width: 50%" th:text="'총 결제 금액 : ' + ${#numbers.formatInteger(order[0].totalAmount, 3, 'COMMA') + '원'}"></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+  <script>
+    // 클릭 이벤트
+    $(document).ready(function() {
+      // Enter key event handler
+      $('#keyword').keypress(function(event) {
+        if (event.which === 13) { // Enter key code
+          searchOrders();
+        }
+      });
+
+      $('#search-bnt').click(function() {
+          searchOrders();
+      });
+      // 페이지 로딩 후 초기 체크
+      if ($("#filter").val() === "orderStatus") {
+        $("#searchDiv").css("display", "none");
+        $("#selectDiv").css("display", "block");
+      } else {
+        $("#selectDiv").css("display", "none");
+        $("#searchDiv").css("display", "block");
+      }
+
+      // 셀렉트박스 생성
+      $("#filter").change(function() {
+        if ($(this).val() === "orderStatus") {
+          $("#searchDiv").css("display", "none");
+          $("#selectDiv").css("display", "block");
+        } else {
+          $("#selectDiv").css("display", "none");
+          $("#searchDiv").css("display", "block");
+        }
+      });
+
+      let toDateValue = $(".toDate").val();
+      if (toDateValue !== "") {
+        $(".toDate").val(toDateValue);
+      }
+
+      let fromDateValue = $(".fromDate").val();
+      if (fromDateValue !== "") {
+        $(".fromDate").val(fromDateValue);
+      }
+    })
+
+    // 조회 날짜
+    $("#week").click(function () {
+      setDateRange(7);  // 7일(1주일) 전
+    });
+
+    $("#month").click(function () {
+      setDateRange(30);  // 30일(1달) 전
+    });
+
+    $("#3months").click(function () {
+      setDateRange(90);  // 90일(3달) 전
+    });
+
+    function setDateRange(days) {
+      let today = new Date();  // 오늘 날짜
+      let pastDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);  // 주어진 일수 전 날짜
+
+      let toDate = formatDate(today);  // 오늘 날짜를 yyyy-MM-dd 형식으로 포맷
+      let fromDate = formatDate(pastDate);  // 주어진 일수 전 날짜를 yyyy-MM-dd 형식으로 포맷
+
+      $(".toDate").val(toDate);  // toDate 필드에 값을 설정
+      $(".fromDate").val(fromDate);  // fromDate 필드에 값을 설정
+    }
+
+    function formatDate(date) {
+      let year = date.getFullYear();
+      let month = String(date.getMonth() + 1).padStart(2, '0');
+      let day = String(date.getDate()).padStart(2, '0');
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function searchOrders() {
+      let filter = encodeURIComponent($('#filter').val());
+      let keyword = encodeURIComponent($('#keyword').val());
+      let toDate = encodeURIComponent($('.toDate').val());
+      let fromDate = encodeURIComponent($('.fromDate').val());
+      let selectOrderStatus = $('#selectOrderStatus').val();
+      if(selectOrderStatus !== '-- 선택 --') {
+        keyword = selectOrderStatus;
+      }
+
+      window.location.href = '/admin/orders?filter=' + filter + '&keyword=' + keyword
+              + '&fromDate=' + fromDate + '&toDate=' + toDate;
+    }
+
+    // 페이지 이동
+    function navigateToPage(page) {
+      let filter = $('#filter').val();
+      let keyword = $('#keyword').val();
+      let toDate = $('.toDate').val();
+      let fromDate = $('.fromDate').val();
+      let hidden = $('#hidden').val();
+      let selectOrderStatus = $('#selectOrderStatus').val();
+
+      if(selectOrderStatus !== '-- 선택 --') {
+        keyword = selectOrderStatus;
+      }
+
+      if(hidden != null) {
+        filter = encodeURIComponent(filter);
+        hidden = encodeURIComponent(hidden);
+        toDate = encodeURIComponent(toDate);
+        fromDate = encodeURIComponent(fromDate);
+        location.href = '/admin/orders?page=' + page + '&filter=' + filter + '&keyword=' + hidden + '&fromDate=' + fromDate + '&toDate=' + toDate;
+      } else if(keyword != null){
+        filter = encodeURIComponent(filter);
+        keyword = encodeURIComponent(keyword);
+        location.href = '/admin/orders?page=' + page + '&filter=' + filter + '&keyword=' + keyword + '&fromDate=' + fromDate + '&toDate=' + toDate;
+      } else {
+        location.href = '/admin/orders?page=' + page;
+      }
+    }
+
+    // 체크 박스 선택
+    $("#selectAll").click(function () {
+      if($("#selectAll").prop("checked")) {
+       $(".checkbox").prop("checked", true)
+      } else {
+        $(".checkbox").prop("checked", false)
+      }
+    });
+
+    $(".checkbox").click(function () {
+      if($(".checkbox").prop("checked").length !== $(".checkbox").length) {
+        $("#selectAll").prop("checked", false)
+      } else {
+        $("#selectAll").prop("checked", true)
+      }
+    });
+
+    // 상태 변경
+    $(".orderStatus").change(function () {
+      $(this).closest("tr").find(".checkbox").prop("checked",true);
+    });
+
+    // 상태 일괄변경
+    function updateOrderStatus() {
+      let selectedItems = [];
+
+      $(".checkbox:checked").each(function () {
+        let id = parseInt($(this).val());
+        let status = $(this).closest("tr").find(".orderStatus").val();
+        selectedItems.push({ id: id, status: status });
+      });
+
+      if (selectedItems.length > 0) {
+        // 선택된 상품의 상태값 변경 요청
+        $.ajax({
+          url: "/admin/orders/change-status",
+          type: "POST",
+          contentType: "application/json",
+          dataType: "text",
+          data: JSON.stringify(selectedItems),
+          success: function (response) {
+            // 성공적으로 처리된 경우의 동작
+            alert("변경되었습니다.")
+            window.location.reload(); // 페이지 새로고침
+          },
+          error: function (error) {
+            // 오류 처리 동작
+            window.location.href = "/admin/error-page/500";
+          }
+        });
+      }
+    }
+  </script>
+</html>

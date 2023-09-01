@@ -2,10 +2,7 @@ package com.likelion.catdogpia.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
-import com.likelion.catdogpia.domain.dto.admin.MemberDto;
-import com.likelion.catdogpia.domain.dto.admin.OrderStatusUpdateDto;
-import com.likelion.catdogpia.domain.dto.admin.ProductDto;
+import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.service.AdminService;
 import jakarta.validation.Valid;
@@ -241,5 +238,24 @@ public class AdminController {
         }
 
         return "redirect:/admin/orders";
+    }
+
+    // 주문내역상세 조회 및 수정
+    @GetMapping("/orders/{orderId}/modify-form")
+    public String orderModifyForm(@PathVariable Long orderId, Model model) {
+        List<OrderDto> order = adminService.findOrder(orderId);
+
+        for (OrderDto orderProductDto : order) {
+            log.info(orderProductDto.toString());
+        }
+        // 해당 주문에 대한 정보가 없으면 오류 발생
+        if(order.isEmpty()) {
+            throw new IllegalArgumentException("list is empty");
+        }
+
+        model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
+        model.addAttribute("order", order);
+
+        return "/page/admin/order-modify";
     }
 }
