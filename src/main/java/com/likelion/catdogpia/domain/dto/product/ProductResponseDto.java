@@ -3,13 +3,11 @@ package com.likelion.catdogpia.domain.dto.product;
 import com.likelion.catdogpia.domain.entity.product.Product;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @Builder
 public class ProductResponseDto {
     private Long id;
@@ -24,7 +22,7 @@ public class ProductResponseDto {
     private int price;
 
     // 사이즈, 색상, 재고
-    private List<ProductOptionDto> productOptionList;
+    private List<ProductOptionResponseDto> productOptionList;
 
     // 썸네일 이미지 URL
     private String thumbnailImage;
@@ -50,7 +48,7 @@ public class ProductResponseDto {
                 .name(product.getName())
                 .price(product.getPrice())
                 .productOptionList(product.getProductOptionList().stream()
-                        .map(ProductOptionDto::fromEntity)
+                        .map(ProductOptionResponseDto::fromEntity)
                         .collect(Collectors.toList()))
                 .thumbnailImage(product.getAttach().getAttachDetailList().get(0).getFileUrl())
                 .contentImage(product.getAttach().getAttachDetailList().get(1).getFileUrl())

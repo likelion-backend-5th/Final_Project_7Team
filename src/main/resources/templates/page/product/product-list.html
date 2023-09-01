@@ -59,38 +59,18 @@
     <div class="row">
 
         <div class="col-lg-3">
-            <h1 class="h2 pb-4">Categories</h1>
-            <ul class="list-unstyled templatemo-accordion">
-                <li class="pb-3">
-                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                        의류
-                        <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+            <div class="col-md-4">
+                <a th:href="@{/products/{id}(id=${mainCategory.getId()})}" class="product-link">
+                    <h1 class="h2 pb-4" th:text="${mainCategory.getName()}">대분류명</h1>
+                    <p id="mainId" th:text="${mainCategory.getId()}" hidden></p>
+                </a>
+            </div>
+            <ul>
+                <li class="pb-3" th:each="category : ${categoryList}">
+                    <a th:href="@{/products/{parentId}/{id}(parentId=${category.getParentId()},id=${category.getId()})}" class="product-link">
+                        <span th:text="${category.getName()}"></span>
+                        <span id="categoryId" th:text="${category.getId()}" hidden></span>
                     </a>
-                    <ul class="collapse show list-unstyled pl-3">
-                        <li><a class="text-decoration-none" href="#">패딩</a></li>
-                        <li><a class="text-decoration-none" href="#">블라우스</a></li>
-                    </ul>
-                </li>
-                <li class="pb-3">
-                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                        잡화
-                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                    </a>
-                    <ul id="collapseTwo" class="collapse list-unstyled pl-3">
-                        <li><a class="text-decoration-none" href="#">하네스</a></li>
-                        <li><a class="text-decoration-none" href="#">목줄</a></li>
-                    </ul>
-                </li>
-                <li class="pb-3">
-                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                        그 외 나머지 대분류
-                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                    </a>
-                    <ul id="collapseThree" class="collapse list-unstyled pl-3">
-                        <li><a class="text-decoration-none" href="#">소분류1</a></li>
-                        <li><a class="text-decoration-none" href="#">소분류2</a></li>
-                        <li><a class="text-decoration-none" href="#">소분류3</a></li>
-                    </ul>
                 </li>
             </ul>
         </div>
@@ -99,16 +79,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <ul class="list-inline shop-top-menu pb-3 pt-1">
-                        <li class="list-inline-item">
-                            <a class="h3 text-dark text-decoration-none mr-3" href="#">All</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="h3 text-dark text-decoration-none mr-3" href="#">Men's</a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a class="h3 text-dark text-decoration-none" href="#">Women's</a>
+                        <li>
+                            <form id="searchForm" onsubmit="return submitSearchForm()">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="검색어를 입력하세요">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">검색</button>
+                                    </div>
+                                </div>
+                            </form>
                         </li>
                     </ul>
+
                 </div>
                 <div class="col-md-6 pb-4">
                     <div class="d-flex">
@@ -120,13 +102,14 @@
                     </div>
                 </div>
             </div>
+            <div></div>
 <!--            post start-->
             <div class="row">
                 <div th:each="product : ${productList}" class="col-md-4">
-                    <a th:href="@{/products/{id}(id=${product.id})}" class="h3 text-decoration-none">
+                    <a th:href="@{/products/detail/{id}(id=${product.id})}" class="product-link">
                     <div class="card mb-4 product-wap rounded-0">
                         <div class="card rounded-0">
-                            <img class="card-img rounded-0 img-fluid" src="/assets/img/shop_01.jpg">
+                            <img class="card-img rounded-0 img-fluid" th:src="${product.thumbnailImage}" alt="Product Image">
                         </div>
                         <div class="card-body">
                             <div class="h3 text-decoration-none" th:text="${product.name}">Product Name</div>
@@ -140,21 +123,22 @@
 
 <!--            post end-->
 
-            <div div="row">
-                <ul class="pagination pagination-lg justify-content-end">
-                    <li class="page-item disabled">
-                        <a class="page-link active rounded-0 mr-3 shadow-sm border-top-0 border-left-0" href="#" tabindex="-1">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link rounded-0 shadow-sm border-top-0 border-left-0 text-dark" href="#">3</a>
-                    </li>
-                </ul>
-            </div>
+            <!--페이징 시작    -->
+                <div>
+    <span th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${page != nowPage and categoryId != null}"
+           th:href="@{/products/{parentId}/{id}(parentId=${mainCategory.getId()},id=${categoryId}, page=${page - 1}, search=${param.search})}"
+           th:text="${page}" class="product-link">
+        </a>
+        <a th:unless="${page == nowPage or categoryId != null}"
+           th:href="@{/products/{id}(id=${mainCategory.getId()}, page=${page - 1}, search=${param.search})}"
+           th:text="${page}" class="product-link">
+        </a>
+        <strong th:if="${page == nowPage}" th:text="${page}" style="color: dimgrey"></strong>
+    </span>
+                </div>
+                <!-- 페이징 끝-->
         </div>
-
     </div>
 </div>
 <!-- End Content -->
@@ -169,6 +153,68 @@
 <script src="/assets/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/templatemo.js"></script>
 <script src="/assets/js/custom.js"></script>
+<!--    <script>-->
+<!--        var categoryIdValue = "";  // 초기에는 빈 문자열로 설정-->
+
+<!--        // categoryId 업데이트 함수-->
+<!--        function updateCategoryId(selectedCategoryId) {-->
+<!--            categoryIdValue = selectedCategoryId;-->
+
+<!--            // Form action 업데이트-->
+<!--            var mainIdValue = document.getElementById("mainId").textContent;-->
+<!--            document.getElementById("searchForm").action = "/products/" + mainIdValue + "/" + categoryIdValue;-->
+
+<!--            // 선택한 카테고리 표시를 업데이트 -->
+<!--            var selectedCategoryName = document.querySelector(`a[data-category-id="${selectedCategoryId}"] span`).textContent;-->
+<!--            document.getElementById("selectedCategory").textContent = selectedCategoryName;-->
+<!--        }-->
+
+<!--        // 폼 제출 시, 검색어가 자동으로 추가.-->
+<!--        document.getElementById("searchForm").onsubmit = function() {-->
+<!--            var searchValue = document.querySelector("#searchForm input[name='search']").value;-->
+
+<!--            // 검색어가 없을 경우, 공백으로 설정-->
+<!--            if (searchValue === null || searchValue === undefined) {-->
+<!--                searchValue = '';-->
+<!--            }-->
+
+<!--            this.action += "?search=" + encodeURIComponent(searchValue);-->
+<!--        };-->
+<!--    </script>-->
+    <script>
+        function submitSearchForm() {
+            var searchInput = document.getElementById('searchInput');
+            var categoryId = searchInput.value.trim(); // 입력된 검색어 양 끝의 공백 제거
+
+            // 입력된 검색어가 있다면 addSearchParam 함수 호출
+            if (categoryId !== '') {
+                addSearchParam(categoryId);
+            } else {
+                // 검색어가 입력되지 않은 경우, 공백을 넘겨줌
+                addSearchParam(' ');
+            }
+
+            return false; // 폼 제출 막기
+        }
+
+        function addSearchParam(categoryId) {
+            var currentUrl = new URL(window.location.href); // URL 객체를 사용하여 현재 페이지 URL 가져오기
+
+            if (categoryId !== '') {
+                // 검색어가 비어있지 않으면 search 파라미터 업데이트
+                currentUrl.searchParams.set('search', categoryId);
+            } else {
+                // 검색어가 비어있는 경우 search 파라미터 제거
+                currentUrl.searchParams.delete('search');
+            }
+
+            // 페이지 번호를 1로 설정
+            currentUrl.searchParams.set('page', '0');
+
+            // 업데이트된 URL로 이동
+            window.location.href = currentUrl.toString();
+        }
+    </script>
 <!-- End Script -->
 </body>
 

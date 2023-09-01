@@ -1,4 +1,4 @@
-package com.likelion.catdogpia.domain.dto.product;
+package com.likelion.catdogpia.domain.dto.category;
 
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ProductCategoryListDto {
+public class ProductCategoryDto {
 
     private Long id;
 
@@ -16,8 +16,8 @@ public class ProductCategoryListDto {
 
     private String name;
 
-    public static ProductCategoryListDto fromEntity(CategoryEntity category) {
-        return ProductCategoryListDto.builder()
+    public static ProductCategoryDto fromEntity(CategoryEntity category) {
+        return ProductCategoryDto.builder()
                 .id(category.getId())
                 .parentId(category.getParentCategory().getId())
                 .parentName(category.getParentCategory().getName())

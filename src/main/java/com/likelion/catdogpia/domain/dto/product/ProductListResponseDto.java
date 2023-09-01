@@ -3,10 +3,8 @@ package com.likelion.catdogpia.domain.dto.product;
 import com.likelion.catdogpia.domain.entity.product.Product;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class ProductListResponseDto {
     private Long id;
