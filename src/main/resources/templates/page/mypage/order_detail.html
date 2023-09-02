@@ -56,13 +56,15 @@
     <table class="mypage-table">
         <tr>
             <th>상품 합계</th>
+            <th>배송비</th>
             <th>할인 합계</th>
             <th>최종 결제 금액</th>
             <th>결제 수단</th>
         </tr>
         <tr>
             <td>65000원</td>
-            <td th:text="${productDetail.point}+'원'"></td>
+            <td th:text="${productDetail.deliveryCharge}+'원'"></td>
+            <td th:text="${productDetail.discountAmount}+'원'"></td>
             <td th:text="${productDetail.totalAmount}+'원'"></td>
             <td th:text="${productDetail.cardCompany}"></td>
         </tr>

@@ -20,26 +20,30 @@ public class OrderDetailDto {
     // 요청사항 (Orders)
     private String request;
 
-//    // 상품 가격 합계 (Product)
+    // 상품 가격 합계 (Product)
 //    private int totalProdAmount;
 
-    // 주문 총 금액 (Orders)
+    // 배송비
+    private int deliveryCharge;
+
+    // 할인 합계 (=적립금 사용액) (Orders)
+    private int discountAmount;
+
+    // 주문 최종 금액 (Orders)
     private int totalAmount;
     
     // 결제 수단 (Orders)
     private String cardCompany;
 
-    // 할인 합계 (=적립금 사용액) (Point)
-    private int point;
-
     @Builder
-    public OrderDetailDto(String address, String name, String phone, String request, int totalAmount, String cardCompany, int point) {
+    public OrderDetailDto(String address, String name, String phone, String request, int deliveryCharge, int discountAmount, int totalAmount, String cardCompany) {
         this.address = address;
         this.name = name;
         this.phone = phone;
         this.request = request;
+        this.deliveryCharge = deliveryCharge;
+        this.discountAmount = discountAmount;
         this.totalAmount = totalAmount;
         this.cardCompany = cardCompany;
-        this.point = point;
     }
 }

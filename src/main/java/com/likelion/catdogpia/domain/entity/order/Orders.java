@@ -20,6 +20,9 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
+    private String orderNumber;
+
     // 회원
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -48,12 +51,19 @@ public class Orders {
 
     private LocalDateTime cancelAt;
 
+    // 배송비
+    private int deliveryCharge;
+
+    // 할인금액
+    private int discountAmount;
+
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
     @Builder
-    public Orders(Long id, Member member, String name, String phone, String address, String request, String cardCompany, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, List<OrderProduct> orderProductList) {
+    public Orders(Long id, String orderNumber, Member member, String name, String phone, String address, String request, String cardCompany, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, int deliveryCharge, int discountAmount, List<OrderProduct> orderProductList) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.member = member;
         this.name = name;
         this.phone = phone;
@@ -63,6 +73,8 @@ public class Orders {
         this.totalAmount = totalAmount;
         this.orderAt = orderAt;
         this.cancelAt = cancelAt;
+        this.deliveryCharge = deliveryCharge;
+        this.discountAmount = discountAmount;
         this.orderProductList = orderProductList;
     }
 }

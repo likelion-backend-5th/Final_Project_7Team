@@ -31,9 +31,9 @@ public interface OrderRespository extends JpaRepository<Orders, Long> {
     Page<OrderListDto> findAllByOrderId(Pageable pageable, @Param("orderId") Long orderId);
 
     // 마이페이지 - 주문 상세 조회 > 배송지 정보, 결제 정보
-    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto(o.address, o.name, o.phone, o.request, o.totalAmount, o.cardCompany, p.point ) " +
+    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto(o.address, o.name, o.phone, o.request, o.deliveryCharge, o.discountAmount, o.totalAmount, o.cardCompany ) " +
             "FROM Orders o " +
-            "LEFT JOIN Point p ON o.id = p.order.id AND p.status = com.likelion.catdogpia.domain.entity.mypage.PointStatus.SAVED " +
+//            "LEFT JOIN Point p ON o.id = p.order.id AND p.status = com.likelion.catdogpia.domain.entity.mypage.PointStatus.SAVED " +
             "WHERE o.id = :orderId")
     OrderDetailDto findDetailByOrderId(@Param("orderId") Long orderId);
 

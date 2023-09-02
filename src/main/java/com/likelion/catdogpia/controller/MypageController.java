@@ -74,8 +74,6 @@ public class MypageController {
     @GetMapping("/order-detail/{orderId}")
     public String orderDetailPage(Model model, @PathVariable Long orderId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("productList", orderHistoryService.readOrder("testtest", orderId, page, limit));
-        // 테스트용 OrderDetailDto
-        model.addAttribute("testDetail", OrderDetailDto.builder().address("test주소").name("어금지").phone("01011111111").request("문 앞에 두고 가주세요!").totalAmount(30000).cardCompany("비씨카드").point(5000).build());
         model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", orderId));
         return "page/mypage/order_detail.html";
     }

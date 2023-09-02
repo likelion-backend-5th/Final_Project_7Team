@@ -39,9 +39,26 @@ public class OrderProduct {
     @OneToOne(mappedBy = "orderProduct")
     private Review review;
 
+    // 배송 완료 일시
+    private LocalDateTime deliveryAt;
+
+    // 구매 확정 일시
+    private LocalDateTime purchaseConfirmedAt;
+
+    // 교환 요청 일시
+    private LocalDateTime exchangeRequestedAt;
+
+    // 교환 완료 일시
+    private LocalDateTime exchangeCompletedAt;
+
+    // 환불 요청 일시
+    private LocalDateTime refundRequestedAt;
+
+    // 환불 완료 일시
+    private LocalDateTime refundCompletedAt;
 
     @Builder
-    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
+    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt, Review review, LocalDateTime deliveryAt, LocalDateTime purchaseConfirmedAt, LocalDateTime exchangeRequestedAt, LocalDateTime exchangeCompletedAt, LocalDateTime refundRequestedAt, LocalDateTime refundCompletedAt) {
         this.id = id;
         this.order = order;
         this.productOption = productOption;
@@ -50,5 +67,11 @@ public class OrderProduct {
         this.receivedAt = receivedAt;
         this.shippedAt = shippedAt;
         this.review = review;
+        this.deliveryAt = deliveryAt;
+        this.purchaseConfirmedAt = purchaseConfirmedAt;
+        this.exchangeRequestedAt = exchangeRequestedAt;
+        this.exchangeCompletedAt = exchangeCompletedAt;
+        this.refundRequestedAt = refundRequestedAt;
+        this.refundCompletedAt = refundCompletedAt;
     }
 }
