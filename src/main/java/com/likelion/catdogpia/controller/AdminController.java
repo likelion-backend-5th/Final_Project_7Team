@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -257,5 +254,38 @@ public class AdminController {
         model.addAttribute("order", order);
 
         return "/page/admin/order-modify";
+    }
+
+    // 커뮤니티 목록
+    @GetMapping("/communities")
+    public String communityList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword
+    ) {
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("communityList", adminService.findCommunityList(pageable, filter, keyword));
+
+        return "/page/admin/communities";
+    }
+
+    // 커뮤니티 삭제
+    @PostMapping("/communities/delete-list")
+    public String communitiesDelete(@RequestBody List<Map<String, Object>> requestList) {
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteCommunities(deleteList);
+        }
+
+        return "redirect:/admin/communities";
     }
 }

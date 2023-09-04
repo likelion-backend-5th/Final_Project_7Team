@@ -44,6 +44,8 @@ public class AdminService {
     // 주문관련
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+    // 커뮤니티 관련
+    private final CommunityRepository communityRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -355,6 +357,25 @@ public class AdminService {
 
         // 주문 목록 리턴
         return queryRepository.findOrder(orderId);
+    }
+
+    // 커뮤니티 목록 조회
+    public Page<CommunityListDto> findCommunityList(Pageable pageable, String filter, String keyword) {
+        return queryRepository.findByCommunityList(pageable, filter, keyword);
+    }
+
+    // 커뮤니티 삭제
+    @Transactional
+    public void deleteCommunities(List<Long> deleteList) {
+
+        // 커뮤니티 id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(communityRepository.existsById(deleteId)) {
+                communityRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 }
 

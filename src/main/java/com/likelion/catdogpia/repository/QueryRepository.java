@@ -30,6 +30,8 @@ import static com.likelion.catdogpia.domain.entity.user.QMember.*;
 import static com.likelion.catdogpia.domain.entity.product.QProduct.*;
 import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
 import static com.likelion.catdogpia.domain.entity.order.QOrders.*;
+import static com.likelion.catdogpia.domain.entity.community.QArticle.*;
+import static com.likelion.catdogpia.domain.entity.report.QReport.*;
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
 @Slf4j
@@ -262,5 +264,53 @@ public class QueryRepository {
                                         attachDetail.fileUrl.as("imgUrl")
                                         )).as("orderProductList")
                 )));
+    }
+
+    // 커뮤니티 목록
+    public Page<CommunityListDto> findByCommunityList(Pageable pageable, String filter, String keyword) {
+
+        List<CommunityListDto> communityList =
+                queryFactory.select(Projections.fields(CommunityListDto.class,
+                        article.id,
+                        article.title,
+                        article.member.name.as("writer"),
+                        article.viewCnt,
+                        article.likeCnt,
+                        ExpressionUtils.as(
+                            JPAExpressions.select(report.id.count().castToNum(Integer.class))
+                                    .from(report)
+                                    .where(report.article.id.eq(article.id)),
+                                "reportCnt")
+                        ))
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(communitySearchFilter(filter, keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(article.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(article.count())
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(communitySearchFilter(filter, keyword))
+                        .fetchOne();
+
+
+        return new PageImpl<>(communityList, pageable, count);
+    }
+
+    // 주문 상태 조건 추가
+    private BooleanExpression communitySearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "number" -> article.id.eq(Long.parseLong(keyword));
+                case "title" -> article.title.contains(keyword);
+                default -> member.name.contains(keyword);
+            };
+        } else {
+            return null;
+        }
     }
 }
