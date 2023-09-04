@@ -1,12 +1,11 @@
 package com.likelion.catdogpia.controller;
 
 
-import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
-import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
-import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
+import com.likelion.catdogpia.domain.dto.mypage.*;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.service.AddressService;
 import com.likelion.catdogpia.service.OrderHistoryService;
+import com.likelion.catdogpia.service.PointService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ public class MypageController {
 
     private final AddressService addressService;
     private final OrderHistoryService orderHistoryService;
+    private final PointService pointService;
 
     // 프로필 페이지
     @GetMapping("")
@@ -57,18 +57,28 @@ public class MypageController {
         return "page/mypage/order_list.html";
     }
 
-//    // 주문 내역 페이지 - 주문 상태 필터링
-//    @PostMapping("/order-list")
-//    public Map<String, Object> orderListPage(OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-//        Map<String, Object> response = new HashMap<>();
-//
-//        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
-//        response.put("orderList", orderList);
-//        // 주문 상태별 개수
-//        Map<String, Integer> orderStatusCount = orderHistoryService.getOrderCountByStatus("testtest");
-//        response.put("orderStatusCount", orderStatusCount);
-//        return response;
-//    }
+    // 주문 내역 > 구매 확정
+    @PutMapping("/order-list/purchase-confirm/{opId}")
+    @ResponseBody
+    public ResponseDto purchaseConfirm(@PathVariable Long opId) {
+        orderHistoryService.purchaseConfirm("testtest", opId);
+        return new ResponseDto("구매 확정 되었습니다.");
+    }
+
+    // 교환 요청 페이지
+    @GetMapping("/order-list/exchange/{opId}")
+    public String exchangePage(@PathVariable Long opId, Model model) {
+        model.addAttribute("order", orderHistoryService.exchangeRefund("testtest", opId));
+        model.addAttribute("option", orderHistoryService.getProductOption(opId));
+        return "page/mypage/exchange.html";
+    }
+
+    // 환불 요청 페이지
+    @GetMapping("/order-list/refund/{opId}")
+    public String refundPage(@PathVariable Long opId, Model model) {
+        model.addAttribute("order", orderHistoryService.exchangeRefund("testtest", opId));
+        return "page/mypage/refund.html";
+    }
 
     // 주문 상세 페이지
     @GetMapping("/order-detail/{orderId}")
@@ -78,15 +88,11 @@ public class MypageController {
         return "page/mypage/order_detail.html";
     }
 
-    // 교환 및 환불 페이지
-    @GetMapping("/exchange-refund")
-    public String exchangeRefundPage(Model model) {
-        return "page/mypage/exchange_refund.html";
-    }
-
     // 적립금 페이지
     @GetMapping("/point")
-    public String pointPage(Model model) {
+    public String pointPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        // 적립금 내역
+        model.addAttribute("pointList", pointService.findAllPoint("testtest", page));
         return "page/mypage/point.html";
     }
 

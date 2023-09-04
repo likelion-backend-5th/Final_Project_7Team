@@ -10,6 +10,9 @@
 <body>
 <div layout:fragment="content" class="mypage-container">
   <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+  <th:block th:if="${pointList.hasContent()}">
+    <p class="point-total">총 <span th:text="${pointList.content[0].totalPoint}"></span>원</p>
+  </th:block>
   <table class="mypage-table point-table">
     <tr>
       <th>상태</th>
@@ -18,19 +21,12 @@
       <th>주문번호</th>
       <th>적용 일시</th>
     </tr>
-    <tr>
-      <td>사용</td>
-      <td>-2774</td>
-      <td>적립금 결제</td>
-      <td>20230810938950</td>
-      <td>2023.08.10</td>
-    </tr>
-    <tr>
-      <td>적립</td>
-      <td>+1036</td>
-      <td>적립금 결제 취소</td>
-      <td>20230729938950</td>
-      <td>2023.07.29</td>
+    <tr th:each="point : ${pointList}">
+      <td th:text="${point.status}">사용</td>
+      <td th:text="${point.point}">-2774</td>
+      <td th:text="${point.pointSource}">적립금 결제</td>
+      <td th:text="${point.orderNumber}">20230810938950</td>
+      <td th:text="${#temporals.format(point.usedAt, 'yyyy-MM-dd')}">2023.08.10</td>
     </tr>
   </table>
 </div>
