@@ -17,6 +17,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script th:inline="javascript">
+        //접근 권한 설정
         document.addEventListener('DOMContentLoaded', async function loadPage() {
             const accessToken = localStorage.getItem("accessToken");
             const headers = {'Authorization': `Bearer ${accessToken}`};
@@ -57,6 +58,7 @@
             }
         });
 
+        //수정 페이지
         function goToEditPage() {
             window.location.href= `/community/[[${articleId}]]/edit`;
         }
@@ -85,8 +87,14 @@
 <body>
 <div layout:fragment="content" class="articleDetail">
     <div class="titleText">
-        <!-- 여기에 카테고리 이름 있으면 좋을듯 -->
-        <h1 th:text="${article.title}">게시글 제목</h1>
+        <div class="titleLine">
+            <h1 class="category" th:each="category : ${categoryList}"
+                th:value="${category.id}"
+                th:text="'[' + ${category.name} + ']'"
+            th:if="${category.id == article.categoryId}">
+            </h1>
+            <h1 class="title" th:text="${article.title}">게시글 제목</h1>
+        </div>
         <hr style="border: none; border-top: 2px solid #dddddd;">
     </div>
     <div class="contentHeader">

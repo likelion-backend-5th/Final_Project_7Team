@@ -13,7 +13,19 @@
     float: left;
 }
 
-.titleText h1 {
+.titleLine {
+    display: flex;
+    flex-direction: row;
+}
+
+.titleLine .category {
+    font-size: 50px;
+    margin-right: 10px;
+    font-weight: bold;
+    color: 	#6F6F6F;
+}
+
+.titleLine .title {
     font-size: 50px;
     font-weight: bold;
 }
