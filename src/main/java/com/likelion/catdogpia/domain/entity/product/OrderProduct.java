@@ -49,7 +49,19 @@ public class OrderProduct {
 
     //== 상태변경 메소드 ==//
     public void changeStatus(String status) {
+        LocalDateTime now = LocalDateTime.now();
+
         this.orderStatus = OrderStatus.valueOf(status);
+
+        switch (status) {
+            case "SHIPPED" -> shippedAt = now;
+            case "DELIVERED" -> deliveryAt = now;
+            case "PURCHASE_CONFIRMED" -> purchaseConfirmedAt = now;
+            case "EXCHANGE_REQUESTED" -> exchangeRequestedAt = now;
+            case "EXCHANGE_COMPLETED" -> exchangeCompletedAt = now;
+            case "REFUND_REQUESTED" -> refundRequestedAt = now;
+            case "REFUND_COMPLETED" -> refundCompletedAt = now;
+        }
     }
 
     @Builder

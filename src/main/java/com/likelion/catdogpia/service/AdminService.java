@@ -342,7 +342,9 @@ public class AdminService {
             OrderProduct findOrderProduct = orderProductRepository.findById(updateDto.getId()).orElseThrow(IllegalArgumentException::new);
             // 이미 같으면 update 하지 않고 스킵
             if(findOrderProduct.getOrderStatus().name().equals(updateDto.getStatus())) continue;
-            else  findOrderProduct.changeStatus(updateDto.getStatus());
+            else {
+                findOrderProduct.changeStatus(updateDto.getStatus());
+            }
         }
     }
 
