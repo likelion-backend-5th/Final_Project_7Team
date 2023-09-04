@@ -1,4 +1,8 @@
 .mypage-container {
+    font-size: 14px;
+}
+
+.mypage-container {
     width: 60%;
     margin: auto;
 }
@@ -43,6 +47,10 @@
 
 .mypage-table a {
     color: black;
+}
+
+.mypage-table a:hover {
+    text-decoration: underline;
 }
 
 .mypage-title {
@@ -169,8 +177,33 @@ ul.order-state li {
     line-height: 28px;
 }
 
-.mypage-table a:hover {
-    text-decoration: underline;
+.order-list-table td {
+    height: 100px;
+}
+
+.order-list-table .td-order-status {
+    display: flex;
+}
+
+.order-list-table .td-order-status {
+    display: flex;
+    align-items: center;
+}
+
+.order-list-table .td-order-status div:nth-child(1) {
+    display: flex;
+    width: 40%;
+    justify-content: end;
+}
+
+.order-list-table .td-order-status div:nth-child(2) {
+    display: block;
+    width: 60%;
+}
+
+.order-list-table .td-order-status button {
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
 }
 
 /* ======================================================================= */
@@ -196,9 +229,11 @@ ul.order-state li {
 /* ======================================================================= */
 /* 교환 및 환불 (exchange_refund) */
 
-/*.exchange-reason input {*/
-/*    display: block;*/
-/*}*/
+.exchange-address-table th {
+    width: 120px;
+    font-weight: normal;
+}
+
 
 /* ======================================================================= */
 /* 배송지 관리 */

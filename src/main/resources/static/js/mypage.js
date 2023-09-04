@@ -9,10 +9,49 @@ function openPetPopup() {
     window.open("/mypage/edit-pet", "우리 아이 등록/수정", "width=600, height=600")
 }
 
+
 // 주문내역 (order_list.html) =======================================================
 // 주문 상태에 따른 필터링
 function filterOrderStatus(orderStatus) {
-    location.href = "/mypage/order-list?orderStatus=" + orderStatus;
+    if(orderStatus === 'ALL') {
+        location.href = "/mypage/order-list"
+    } else {
+        location.href = "/mypage/order-list?orderStatus=" + orderStatus;
+    }
+}
+
+// 주문 상태별 버튼 클릭
+function handleOrderAction(opId, action) {
+    if (action === '구매확정') {
+        if (confirm("구매 확정을 하시겠습니까? 구매 확정 시 교환 또는 환불 요청이 불가능합니다.")) {
+            fetch("/mypage/order-list/purchase-confirm/" + opId, {
+                method: "put"
+            }).then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    throw new Error('구매 확정 실패');
+                }
+            }).then(data => {
+                alert(data.message)
+                location.reload()
+            }).catch(error => {
+                alert(error.message)
+            })
+        } else {
+            return false
+        }
+    }
+
+    // if (action === '교환요청' || action === '환불요청') {
+    if (action === '교환요청') {
+        location.href = "/mypage/order-list/exchange/" + opId
+    }
+}
+
+// 교환 및 환불 요청
+function exchangeRefund() {
+
 }
 
 // 배송지 (address) ==========================================================

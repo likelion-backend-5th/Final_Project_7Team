@@ -74,4 +74,14 @@ public class OrderProduct {
         this.refundRequestedAt = refundRequestedAt;
         this.refundCompletedAt = refundCompletedAt;
     }
+
+    // 주문 상태 변경
+    public void changeOrderStatus(OrderStatus status) {
+        this.orderStatus = status;
+    }
+
+    // 구매 확정 일시 변경
+    public void changePurchaseConfirmAt() {
+        this.purchaseConfirmedAt = LocalDateTime.now();
+    }
 }
