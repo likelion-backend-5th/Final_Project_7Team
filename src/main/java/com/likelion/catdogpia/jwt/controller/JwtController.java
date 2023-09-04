@@ -1,7 +1,9 @@
 package com.likelion.catdogpia.jwt.controller;
 
+import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.jwt.JwtTokenProvider;
 import com.likelion.catdogpia.jwt.domain.JwtTokenResponseDto;
+import com.likelion.catdogpia.repository.MemberRepository;
 import com.likelion.catdogpia.service.LoginService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -18,6 +21,7 @@ import java.util.Map;
 public class JwtController {
     private final LoginService loginService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     //토큰 검증
     @GetMapping("/authorize")
@@ -27,6 +31,12 @@ public class JwtController {
             response.put("result", "실패");
         }
         response.put("result", "성공");
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        response.put("loginId", loginId);
+
+        Optional<Member> member = memberRepository.findByLoginId(loginId);
+        response.put("nickname", member.get().getNickname());
         return response;
     }
 
@@ -36,6 +46,8 @@ public class JwtController {
         Map<String, String> response = new HashMap<>();
         if (refreshToken == null) {
             response.put("result", "fail");
+
+            log.info("토큰 재발급 완료");
         } else {
             JwtTokenResponseDto newJwt = jwtTokenProvider.reissue(refreshToken);
 
@@ -49,6 +61,8 @@ public class JwtController {
             refreshTokenCookie.setMaxAge(24*60*60);
             refreshTokenCookie.setPath("/");
             httpResponse.addCookie(refreshTokenCookie);
+
+            log.info("토큰 재발급 완료");
         }
         return response;
     }
