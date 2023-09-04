@@ -1,0 +1,200 @@
+/* 전체 컨텐츠 영역 */
+.articleDetail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-right: 200px;
+    margin-left: 200px;
+}
+
+.titleText {
+    float: left;
+}
+
+.titleText h1 {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+/* 작성자, 작성일, 조회수 */
+.contentHeader {
+    display: flex;
+    flex-direction: row;
+}
+
+#writer {
+    color: black;
+    font-size: 24px;
+    margin-left: 10px;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+#createdAt {
+    font-size: 24px;
+    margin-right: 20px;
+}
+
+#viewCnt {
+    font-size: 24px;
+}
+
+/* 리스트 스타일 제거 */
+ul, ol {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+/* 이미지 스타일 */
+.contentBody img {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+/* 내용 본문 스타일 */
+.contentBody p {
+    margin-top: 40px;
+    font-size: 24px;
+    color: black;
+}
+
+/*.bi {*/
+/*    background-color: rgba(0, 0, 0, 0.1);*/
+/*    border: rgba(0, 0, 0, 0.1);*/
+/*    color: rgba(0, 0, 0, 0.1);*/
+/*    color: #ff5353;*/
+/*    font-size: 50px;*/
+/*}*/
+
+/*!* 좋아요 수 스타일 *!*/
+/*.contentBody p:last-child {*/
+/*    font-weight: bold;*/
+/*    margin-top: 20px;*/
+/*    text-align: center;*/
+/*}*/
+
+/* 글 수정, 글 삭제 버튼 스타일 */
+#modifyAndDeleteButton {
+    margin-top: 20px;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+#editButton, #deleteButton {
+    background-color: #ADC2A9;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+#editButton:hover, #deleteButton:hover {
+    background-color: white;
+    color: #ADC2A9;
+    border: 1px solid #D3E4CD;
+}
+
+/* 댓글 스타일 */
+#comment-section {
+    margin-top: 30px;
+}
+
+/* 댓글 리스트 스타일 */
+#comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* 각 댓글 아이템 스타일 */
+#comment-list li {
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+/* 댓글 작성자 및 날짜 스타일 */
+#commentWriter {
+    font-weight: bold;
+}
+
+/* 댓글 작성 폼 스타일 */
+#comment-form {
+    margin-top: 20px;
+}
+
+/* 댓글 작성 칸 및 버튼 스타일 */
+.comment-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#comment-text {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+#comment-form button {
+    height: 100px;
+    width: 100px;
+    background-color: #ADC2A9;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#comment-form button:hover {
+    background-color: white;
+    color: #ADC2A9;
+    border: 1px solid #D3E4CD;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+/* 닫기 버튼 스타일 */
+#cancelDeleteButton {
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    margin: 10px 5px;
+    cursor: pointer;
+}
+
+#cancelDeleteButton:hover {
+    background-color: #ddd;
+}

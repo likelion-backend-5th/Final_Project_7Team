@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatDogPia</title>
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/article.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/article-page.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {'Authorization': `Bearer ${accessToken}`};
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const writer = [[${article.member.nickname}]];
+                    if (responseData.nickname === writer) {
+                        document.getElementById("modifyAndDeleteButton").style.display = "block";
+                    }
+                    /* 댓글 기능 구현 하고*/
+                    // if (document.getElementById("commentWriter") != null) {
+                    //     const commentWriter = document.getElementById("commentWriter").value;
+                    //     if (responseData.nickname === commentWriter) {
+                    //         document.getElementById("modifyAndDeleteCommentButton").style.display = "block";
+                    //     }
+                    // }
+                    document.getElementById("comment-form").style.display = "block";
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    }
+                }
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        });
+
+        function goToEditPage() {
+            window.location.href= `/community/[[${articleId}]]/edit`;
+        }
+
+        //삭제 확인 버튼 눌렀을 때
+        function checkButton() {
+            fetch(`/community/[[${articleId}]]/delete`, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("confirmDeleteModal").style.display = "none";
+                        alert("삭제되었습니다.");
+                        window.location.href = "/community";
+                    } else {
+                        alert("삭제 중에 오류가 발생했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("오류 발생: " + error);
+                    alert("삭제 중에 오류가 발생했습니다.");
+                });
+        }
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="articleDetail">
+    <div class="titleText">
+        <!-- 여기에 카테고리 이름 있으면 좋을듯 -->
+        <h1 th:text="${article.title}">게시글 제목</h1>
+        <hr style="border: none; border-top: 2px solid #dddddd;">
+    </div>
+    <div class="contentHeader">
+        <p id="writer" th:text="${article.member.nickname}">작성자 닉네임</p>
+        <p id="createdAt" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성일</p>
+        <p id="viewCnt">조회 <span th:text="${article.viewCnt}">조회수</span></p>
+    </div>
+    <div class = "contentBody">
+        <ul>
+            <li th:each="attachDetail : ${article.attachDetailList}">
+                <img th:src="${attachDetail.fileUrl}"/>
+            </li>
+        </ul>
+
+        <p th:text="${article.content}">내용</p>
+
+<!--        &lt;!&ndash; 좋아요 하기 버튼. 사용자가 좋아요 했으면 빨간하트 아니면 하얀하트 &ndash;&gt;-->
+<!--        <div class="unlike">-->
+<!--            <i class="bi bi-heart"></i>-->
+<!--        </div>-->
+<!--        <div class="like">-->
+<!--            <i class="bi bi-heart-fill"></i>-->
+<!--        </div>-->
+<!--        <p th:text="${article.likeCnt}">좋아요 수</p>-->
+    </div>
+    <div id="modifyAndDeleteButton" style="display: none">
+        <button id="editButton" onclick="goToEditPage()">글 수정</button>
+        <button id="deleteButton" onclick="showModal()">글 삭제</button>
+
+        <!-- 모달 대화 상자 -->
+        <div id="confirmDeleteModal" class="modal">
+            <div class="modal-content">
+                <p>정말로 글을 삭제하시겠습니까?</p>
+                <button id="confirmDeleteButton" onclick="checkButton()">확인</button>
+                <button id="cancelDeleteButton" onclick="cancelButton()">취소</button>
+            </div>
+        </div>
+    </div>
+    <div id="comment-section">
+        <!-- 댓글 조회창 -->
+        <p style="font-size: 30px; font-weight: bold; color: black">댓글</p>
+        <hr style="border: none; border-top: 2px solid #dddddd;">
+        <ul id="comment-list">
+            <li th:each="comment : ${article.commentList}">
+                <p>
+                    <span id="commentWriter" th:text="${comment.member.nickname}">작성자</span><br>
+                    <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성일자</span><br>
+                    <span th:text="${comment.content}">댓글 내용</span>
+
+                <div id="modifyAndDeleteCommentButton" style="display: none">
+                    <button>댓글 수정</button>
+                    <button>댓글 삭제</button>
+                </div>
+                </p>
+            </li>
+        </ul>
+
+        <!-- 댓글 작성창 -->
+        <form id="comment-form" style="display: none">
+            <div class="comment-input">
+                <textarea id="comment-text" rows="4" cols="50" placeholder="댓글을 작성해주세요"></textarea>
+                <button type="submit">댓글 등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
