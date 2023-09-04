@@ -1,8 +1,10 @@
 package com.likelion.catdogpia.domain.entity.product;
 
+import com.likelion.catdogpia.domain.dto.admin.ProductDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
+import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -46,8 +48,21 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private List<ProductOption> productOptionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<QnA> qnAList = new ArrayList<>();
+
+    //== 상품 수정 메소드 ==//
+    // 카테고리 수정
+    public void changeCategory(CategoryEntity category) {
+        this.category = category;
+    }
+
+    // 상품 정보 수정
+    public void changeProduct(ProductDto productDto) {
+        this.name = productDto.getName();
+        this.price = productDto.getPrice();
+        this.status = productDto.getStatus();
+    }
 
     @Builder
     public Product(Long id, CategoryEntity category, Attach attach, String name,

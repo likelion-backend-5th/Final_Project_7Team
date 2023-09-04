@@ -1,0 +1,72 @@
+h2 {
+    font-weight: bold;
+    color: #99A799;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    margin: 100px 0;
+}
+
+.signupBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-btn {
+    color: rgba(29, 43, 58, 0.57);
+    background-color: #D3E4CD;
+    border: 1px solid #ADC2A9;
+    font-weight: bold;
+    padding: 5px 10px;
+    height: 50px;
+}
+
+.signup-btn:hover {
+    color: white;
+}
+
+.textForm {
+    margin: 10px;
+}
+
+#emailVerificationFields {
+    margin: 10px 0;
+}
+
+.btn-signup {
+    font-size: 20px;
+    padding: 10px 20px;
+    margin: 0 auto;
+    width: fit-content;
+    color: white;
+    background-color: #D3E4CD;
+    border: 1px solid #ADC2A9;
+    font-weight: bold;
+}
+
+.btn-signup:hover {
+    color: #D3E4CD;
+    background-color: white;
+}
+
+.textForm label {
+    width: 130px;
+}
+
+input {
+    border: 1px solid #ADC2A9;
+    width: 500px;
+    height: 50px;
+    padding: 10px 20px;
+}
+
+label {
+    color: grey;
+}
