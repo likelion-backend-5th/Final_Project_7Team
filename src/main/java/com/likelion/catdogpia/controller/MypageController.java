@@ -6,6 +6,7 @@ import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.service.AddressService;
 import com.likelion.catdogpia.service.OrderHistoryService;
 import com.likelion.catdogpia.service.PointService;
+import com.likelion.catdogpia.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ public class MypageController {
     private final AddressService addressService;
     private final OrderHistoryService orderHistoryService;
     private final PointService pointService;
+    private final ReviewService reviewService;
 
     // 프로필 페이지
     @GetMapping("")
@@ -132,14 +134,14 @@ public class MypageController {
 
     @PostMapping("/address/delete/{addressId}")
     public String deleteAddress(@PathVariable Long addressId) {
-        log.info("delete addressId값 = " + addressId);
         addressService.deleteAddress("testtest", addressId);
         return "redirect:/mypage/address";
     }
 
-    // 리뷰 관리
+    // 리뷰 관리 페이지
     @GetMapping("/review")
-    public String reviewPage(Model model) {
+    public String reviewPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
         return "page/mypage/review.html";
     }
 

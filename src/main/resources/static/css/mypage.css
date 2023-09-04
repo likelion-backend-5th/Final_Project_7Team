@@ -303,6 +303,7 @@ ul.order-state li {
 .review-box {
     display: flex;
     height: 130px;
+    margin-bottom: 50px;
 }
 
 .review-box .content-box {
@@ -318,8 +319,14 @@ ul.order-state li {
     font-size: 18px;
 }
 
+.review-box .content-box p:nth-child(2) {
+    color: #b4b4b4;
+    font-weight: bold;
+}
+
 .review-box .img-box {
-    width: 20%;
+    width: 120px;
+    height: 120px;
     border: 1px solid lightgray;
 }
 
