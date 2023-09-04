@@ -29,18 +29,43 @@ public class OrderProduct {
     private int quantity;
 
     @Column(length = 20, nullable = false)
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     private LocalDateTime receivedAt;
 
     private LocalDateTime shippedAt;
 
+    private LocalDateTime deliveryAt;
+    private LocalDateTime purchaseConfirmedAt;
+    private LocalDateTime exchangeRequestedAt;
+    private LocalDateTime exchangeCompletedAt;
+    private LocalDateTime refundRequestedAt;
+    private LocalDateTime refundCompletedAt;
+
     @OneToOne(mappedBy = "orderProduct")
     private Review review;
 
 
+    //== 상태변경 메소드 ==//
+    public void changeStatus(String status) {
+        LocalDateTime now = LocalDateTime.now();
+
+        this.orderStatus = OrderStatus.valueOf(status);
+
+        switch (status) {
+            case "SHIPPED" -> shippedAt = now;
+            case "DELIVERED" -> deliveryAt = now;
+            case "PURCHASE_CONFIRMED" -> purchaseConfirmedAt = now;
+            case "EXCHANGE_REQUESTED" -> exchangeRequestedAt = now;
+            case "EXCHANGE_COMPLETED" -> exchangeCompletedAt = now;
+            case "REFUND_REQUESTED" -> refundRequestedAt = now;
+            case "REFUND_COMPLETED" -> refundCompletedAt = now;
+        }
+    }
+
     @Builder
-    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, String orderStatus,
+    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus,
                         LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
         this.id = id;
         this.order = order;
