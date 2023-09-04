@@ -11,4 +11,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
             " from CategoryEntity c " +
             "where c.useYn = 'Y'")
     List<CategoryEntity> findByUseYnEqualsY();
+
+    List<CategoryEntity> findByParentCategory_Name(String name);
 }

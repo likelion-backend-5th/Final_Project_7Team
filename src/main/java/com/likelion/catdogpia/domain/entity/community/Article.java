@@ -1,5 +1,7 @@
 package com.likelion.catdogpia.domain.entity.community;
 
+import com.likelion.catdogpia.domain.dto.admin.ProductDto;
+import com.likelion.catdogpia.domain.dto.community.ArticleDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
@@ -14,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,5 +78,18 @@ public class Article extends BaseEntity {
         this.attach = attach;
         this.member = member;
         this.reportList = reportList;
+    }
+
+    // 글 수정
+    public void updateTitle(String newTitle) {
+        this.title = newTitle;
+    }
+
+    public void updateContent(String newContent) {
+        this.content = newContent;
+    }
+
+    public void updateCategory(CategoryEntity newCategory) {
+        this.category = newCategory;
     }
 }

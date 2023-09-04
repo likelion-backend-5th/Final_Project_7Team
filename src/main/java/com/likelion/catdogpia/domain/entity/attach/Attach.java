@@ -27,7 +27,7 @@ public class Attach {
     private LocalDateTime createdAt;
 
     //파일상세 연관관계
-    @OneToMany(mappedBy = "attach", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "attach")
     private List<AttachDetail> attachDetailList = new ArrayList<>();
 
     //상품 연관관계
