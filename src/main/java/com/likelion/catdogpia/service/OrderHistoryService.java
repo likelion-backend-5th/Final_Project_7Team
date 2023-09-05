@@ -1,8 +1,10 @@
 package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.dto.mypage.ExchangeRefundDto;
+import com.likelion.catdogpia.domain.dto.mypage.ExchangeRequestDto;
 import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
 import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
+import com.likelion.catdogpia.domain.entity.mypage.ExchangeRefund;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
@@ -31,6 +33,7 @@ public class OrderHistoryService {
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+    private final ExchangeRefundRepository exchangeRefundRepository;
 
     // 주문 내역 리스트 조회
     public Page<OrderListDto> readAllOrder(String loginId, OrderStatus orderStatus, Integer page) {
@@ -83,7 +86,7 @@ public class OrderHistoryService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         OrderProduct op = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if(!(op.getOrderStatus().equals("배송중") || op.getOrderStatus().equals("배송완료"))) {
+        if (!(op.getOrderStatus().equals("배송중") || op.getOrderStatus().equals("배송완료"))) {
             new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
@@ -92,7 +95,7 @@ public class OrderHistoryService {
     }
 
     // 교환,환불 요청 페이지 - 주문 정보
-    public ExchangeRefundDto exchangeRefund(String loginId, Long opId) {
+    public ExchangeRefundDto getOrderInfo(String loginId, Long opId) {
         return orderProductRepository.findByOrderProductId(opId);
     }
 
@@ -101,19 +104,35 @@ public class OrderHistoryService {
 
         // 해당 상품 조회
         Long pId = productRepository.findProductId(opId);
-        log.info("해당 상품 id는 => " + pId);
-
-        // * 재고 확인
-        // * 재고가 이 주문 상품의 수량보다 적으면 fail
 
         List<String> sizeList = productOptionRepository.findSizeByProductIdAndSizeIsNotNull(pId);
         List<String> colorList = productOptionRepository.findSizeByProductIdAndColorIsNotNull(pId);
+
+        // *재고 확인 필요
 
         Map<String, List<String>> response = new HashMap<>();
         response.put("size", sizeList);
         response.put("color", colorList);
 
         return response;
+    }
+
+    // 교환 요청 처리
+    public void exchange(String loginId, ExchangeRequestDto dto) {
+
+        // 주문 상품
+        OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
+        Orders order = orderRespository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (order.getMember().getLoginId() != loginId) {
+            new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        ExchangeRefund exchangeRefund = dto.toEntity(op);
+
+        exchangeRefundRepository.save(exchangeRefund);
+
     }
 
 }

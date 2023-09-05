@@ -13,6 +13,9 @@ public class OrderListDto {
     // 주문 id (Orders)
     private Long id;
 
+    // 주문 상품 id (OrderProduct)
+    private Long opId;
+
     // 주문번호 (Orders)
     private String orderNumber;
 
@@ -23,7 +26,7 @@ public class OrderListDto {
     private int quantity;
 
     // 주문 상태 (OrderProduct)
-    private OrderStatus orderStatus;
+    private String orderStatus;
 
     // 상품 옵션 - size (ProductOption)
     private String size;
@@ -41,12 +44,13 @@ public class OrderListDto {
     private int amount;
 
     @Builder
-    public OrderListDto(Long id, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount) {
+    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount) {
         this.id = id;
+        this.opId = opId;
         this.orderNumber = orderNumber;
         this.orderAt = orderAt;
         this.quantity = quantity;
-        this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus.getStatus();
         this.size = size;
         this.color = color;
         this.name = name;

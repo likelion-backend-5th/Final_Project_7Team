@@ -70,15 +70,22 @@ public class MypageController {
     // 교환 요청 페이지
     @GetMapping("/order-list/exchange/{opId}")
     public String exchangePage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.exchangeRefund("testtest", opId));
+        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
         model.addAttribute("option", orderHistoryService.getProductOption(opId));
         return "page/mypage/exchange.html";
+    }
+
+    @PostMapping("/order-list/exchange")
+    @ResponseBody
+    public ResponseDto exchangePost(@RequestBody ExchangeRequestDto dto) {
+        orderHistoryService.exchange("testtest", dto);
+        return new ResponseDto("success");
     }
 
     // 환불 요청 페이지
     @GetMapping("/order-list/refund/{opId}")
     public String refundPage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.exchangeRefund("testtest", opId));
+        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
         return "page/mypage/refund.html";
     }
 

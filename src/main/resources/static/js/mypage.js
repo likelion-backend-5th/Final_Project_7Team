@@ -49,9 +49,53 @@ function handleOrderAction(opId, action) {
     }
 }
 
-// 교환 및 환불 요청
-function exchangeRefund() {
+// 교환 요청
+function exchangeRequest(opId) {
+    // 선택한 교환 사유
+    const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
+    if(!selectRadio) {
+        alert("교환 사유를 선택해주세요.")
+        return;
+    }
+    const selectReason = selectRadio.value;
 
+    // 상세 사유
+    const detailReason = document.getElementById('detailReason').value;
+
+    if (detailReason == '') {
+        alert("상세 사유를 입력해주세요.");
+        return;
+    }
+
+    // 선택한 교환 희망 옵션
+    const selectColor = document.getElementById('selectColor').value;
+    const selectSize = document.getElementById('selectSize').value;
+    if (selectColor == '' || selectSize == '') {
+        alert("교환 희망 옵션을 선택해주세요.");
+        return;
+    }
+
+    const data = {
+        opId: opId,
+        reason: selectReason,
+        detailReason: detailReason,
+        color: selectColor,
+        size: selectSize
+    }
+
+    fetch("/mypage/order-list/exchange", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            if(response.ok) {
+                alert('교환 요청 완료')
+                location.href = "/mypage/order-list"
+            }
+        })
 }
 
 // 배송지 (address) ==========================================================

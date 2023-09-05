@@ -224,11 +224,15 @@ ul.order-state li {
 }
 
 /* ======================================================================= */
-/* 교환 및 환불 (exchange_refund) */
+/* 교환 (exchange) */
 
 .exchange-address-table th {
     width: 120px;
     font-weight: normal;
+}
+
+.exchange-option-box select {
+    width: 100px;
 }
 
 
@@ -324,9 +328,18 @@ ul.order-state li {
     font-weight: bold;
 }
 
+.review-box section {
+    text-align: end;
+}
+
+.review-box .review-btn-box button {
+    margin-bottom: 5px;
+    border: 1px solid lightgray;
+}
+
 .review-box .img-box {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
     border: 1px solid lightgray;
 }
 

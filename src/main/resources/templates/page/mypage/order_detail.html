@@ -30,9 +30,7 @@
             <td th:text="${product.name}"></td>
             <td th:text="${product.size}+','+${product.color}"></td>
             <td><div th:text="${product.amount}"></div><span th:text="'('+${product.quantity}+'개)'">(1개)</span></td></td>
-            <td th:text="${product.orderStatus}">
-                <button onclick="location.href='/mypage/exchange-refund'">교환/반품</button>
-            </td>
+            <td th:text="${product.orderStatus}"></td>
         </tr>
     </table>
 
