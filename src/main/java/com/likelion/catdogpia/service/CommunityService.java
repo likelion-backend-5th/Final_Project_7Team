@@ -7,6 +7,7 @@ import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.community.Article;
+import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
@@ -38,6 +39,7 @@ public class CommunityService {
     private final AttachRepository attachRepository;
     private final S3UploadService s3UploadService;
     private final AttachDetailRepository attachDetailRepository;
+    private final CommentRepository commentRepository;
 
     // 커뮤니티 중분류 카테고리 받아오기
     public List<CategoryDto> findCategory() {
@@ -223,5 +225,36 @@ public class CommunityService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         articleRepository.deleteById(articleId);
+    }
+
+    //댓글쓰기
+    @Transactional
+    public void createComment(Long articleId, String loginId, String content) {
+        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        Optional<Member> member = memberRepository.findByLoginId(loginId);
+
+        commentRepository.save(Comment.builder()
+                .article(article)
+                .member(member.get())
+                .content(content)
+                .build());
+        log.info("댓글 등록 완료");
+    }
+
+    //댓글수정
+    @Transactional
+    public void updateComment(Long commentId, String content) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        comment.updateContent(content);
+    }
+
+    //댓글삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        if (comment.getDeletedAt() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        commentRepository.deleteById(commentId);
     }
 }

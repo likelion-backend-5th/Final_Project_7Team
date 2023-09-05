@@ -6,11 +6,6 @@ import com.likelion.catdogpia.jwt.JwtTokenProvider;
 import com.likelion.catdogpia.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,6 +87,41 @@ public class CommunityController {
     public Map<String, String> deleteArticle(@PathVariable("articleId") Long articleId) {
         Map<String, String> response = new HashMap<>();
         communityService.deleteArticle(articleId);
+        response.put("result", "성공");
+        return response;
+    }
+
+    //댓글쓰기
+    @PostMapping("/community/{articleId}/writeComment")
+    public Map<String, String> createComment(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization")String accessToken, @RequestParam("content") String content) {
+        Map<String, String> response = new HashMap<>();
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.createComment(articleId, loginId, content);
+            response.put("result", "성공");
+        }
+        return response;
+    }
+
+    //댓글수정
+    @PostMapping("/community/editComment")
+    public Map<String, String> updateComment(@RequestParam("commentId")Long commendId, @RequestParam("content") String content) {
+        Map<String, String> response = new HashMap<>();
+        log.info(String.valueOf(commendId));
+        communityService.updateComment(commendId, content);
+        response.put("result", "성공");
+        return response;
+    }
+
+    //댓글삭제
+    @PostMapping("/community/deleteComment")
+    public Map<String, String> deleteComment(@RequestParam("commentId")Long commendId) {
+        Map<String, String> response = new HashMap<>();
+        log.info(String.valueOf(commendId));
+        communityService.deleteComment(commendId);
         response.put("result", "성공");
         return response;
     }
