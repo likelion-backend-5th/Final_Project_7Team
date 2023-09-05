@@ -3,6 +3,7 @@ package com.likelion.catdogpia.repository;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
+import com.likelion.catdogpia.domain.entity.community.QComment;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.domain.entity.product.QOrderProduct;
@@ -32,6 +33,9 @@ import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
 import static com.likelion.catdogpia.domain.entity.order.QOrders.*;
 import static com.likelion.catdogpia.domain.entity.community.QArticle.*;
 import static com.likelion.catdogpia.domain.entity.report.QReport.*;
+import static com.likelion.catdogpia.domain.entity.attach.QAttach.*;
+import static com.likelion.catdogpia.domain.entity.attach.QAttachDetail.*;
+
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
 @Slf4j

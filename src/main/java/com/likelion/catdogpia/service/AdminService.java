@@ -4,6 +4,8 @@ import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
+import com.likelion.catdogpia.domain.entity.community.Article;
+import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
@@ -11,12 +13,11 @@ import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.product.ProductOption;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
-import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +47,7 @@ public class AdminService {
     private final OrderProductRepository orderProductRepository;
     // 커뮤니티 관련
     private final CommunityRepository communityRepository;
+    private final CommentRepository commentRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -376,6 +378,61 @@ public class AdminService {
                 throw new IllegalArgumentException();
             }
         }
+    }
+
+    // 커뮤니티 상세
+    public CommunityDto findCommunity(Long communityId) {
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+        // 커뮤니티 조회
+        CommunityDto community = CommunityDto.fromEntity(findArticle);
+        // 파일이 있으면 fileUrl 조회해서 넘김
+        if(findArticle.getAttach() != null) {
+            List<String> findList = attachDetailRepository.findFileUrls(findArticle.getAttach());
+            community.setFileUrlList(findList);
+        }
+        return community;
+    }
+
+    // 댓글 조회
+    public Page<CommentDto> findCommentList(Long communityId, Pageable pageable) {
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+         // 댓글이 있으면 페이지 네이션
+        if(!findArticle.getCommentList().isEmpty()) {
+            return commentRepository.findByArticle(findArticle, pageable)
+                            .map(c -> CommentDto.builder()
+                                    .id(c.getId())
+                                    .content(c.getContent())
+                                    .commentWriter(c.getMember().getName())
+                                    .createdAt(c.getCreatedAt())
+                                    .build());
+
+        } else return null;
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long communityId, Long commentId) {
+        if(commentRepository.existsById(commentId)) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 댓글 등록
+    @Transactional
+    public void createComment(Long communityId, String content) {
+
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+        // 권한에서 사용자에 대한 정보가져오기
+        // 현재는 권한이 구현되지 않아 일단 1번으로 하기로함
+        Member findMember = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+
+        commentRepository.save(Comment.builder()
+                .article(findArticle)
+                .content(content)
+                .member(findMember)
+                .build());
     }
 }
 
