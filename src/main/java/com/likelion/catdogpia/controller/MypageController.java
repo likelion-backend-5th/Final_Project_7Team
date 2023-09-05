@@ -75,6 +75,7 @@ public class MypageController {
         return "page/mypage/exchange.html";
     }
 
+    // 교환 요청 처리
     @PostMapping("/order-list/exchange")
     @ResponseBody
     public ResponseDto exchangePost(@RequestBody ExchangeRequestDto dto) {
@@ -87,6 +88,14 @@ public class MypageController {
     public String refundPage(@PathVariable Long opId, Model model) {
         model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
         return "page/mypage/refund.html";
+    }
+
+    // 환불 요청 처리
+    @PostMapping("/order-list/refund")
+    @ResponseBody
+    public ResponseDto refundPost(@RequestBody RefundRequestDto dto) {
+        orderHistoryService.refund("testtest", dto);
+        return new ResponseDto("success");
     }
 
     // 주문 상세 페이지

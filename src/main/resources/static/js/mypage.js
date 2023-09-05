@@ -47,6 +47,9 @@ function handleOrderAction(opId, action) {
     if (action === '교환요청') {
         location.href = "/mypage/order-list/exchange/" + opId
     }
+    if (action === '환불요청') {
+        location.href = "/mypage/order-list/refund/" + opId
+    }
 }
 
 // 교환 요청
@@ -93,6 +96,45 @@ function exchangeRequest(opId) {
         .then(response => {
             if(response.ok) {
                 alert('교환 요청 완료')
+                location.href = "/mypage/order-list"
+            }
+        })
+}
+
+// 환불 요청
+function refundRequest(opId) {
+    // 선택한 환불 사유
+    const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
+    if(!selectRadio) {
+        alert("환불 사유를 선택해주세요.")
+        return;
+    }
+    const selectReason = selectRadio.value;
+
+    // 상세 사유
+    const detailReason = document.getElementById('detailReason').value;
+
+    if (detailReason == '') {
+        alert("상세 사유를 입력해주세요.");
+        return;
+    }
+
+    const data = {
+        opId: opId,
+        reason: selectReason,
+        detailReason: detailReason
+    }
+
+    fetch("/mypage/order-list/refund", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            if(response.ok) {
+                alert('환불 요청 완료')
                 location.href = "/mypage/order-list"
             }
         })

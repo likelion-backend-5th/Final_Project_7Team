@@ -1,9 +1,6 @@
 package com.likelion.catdogpia.service;
 
-import com.likelion.catdogpia.domain.dto.mypage.ExchangeRefundDto;
-import com.likelion.catdogpia.domain.dto.mypage.ExchangeRequestDto;
-import com.likelion.catdogpia.domain.dto.mypage.OrderDetailDto;
-import com.likelion.catdogpia.domain.dto.mypage.OrderListDto;
+import com.likelion.catdogpia.domain.dto.mypage.*;
 import com.likelion.catdogpia.domain.entity.mypage.ExchangeRefund;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
@@ -118,6 +115,7 @@ public class OrderHistoryService {
     }
 
     // 교환 요청 처리
+    @Transactional
     public void exchange(String loginId, ExchangeRequestDto dto) {
 
         // 주문 상품
@@ -132,6 +130,31 @@ public class OrderHistoryService {
         ExchangeRefund exchangeRefund = dto.toEntity(op);
 
         exchangeRefundRepository.save(exchangeRefund);
+
+        // 주문 상태 변경
+        op.changeOrderStatus(OrderStatus.EXCHANGE_REQUESTED);
+
+    }
+
+    // 환불 요청 처리
+    @Transactional
+    public void refund(String loginId, RefundRequestDto dto) {
+
+        // 주문 상품
+        OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
+        Orders order = orderRespository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (order.getMember().getLoginId() != loginId) {
+            new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        ExchangeRefund exchangeRefund = dto.toEntity(op);
+
+        exchangeRefundRepository.save(exchangeRefund);
+
+        // 주문 상태 변경
+        op.changeOrderStatus(OrderStatus.REFUND_REQUESTED);
 
     }
 
