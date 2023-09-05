@@ -43,9 +43,9 @@ public class CommunityUIController {
     public String article(@PathVariable Long articleId, Model model) {
         ArticleDto article = communityService.findArticle(articleId);
         List<CategoryDto> categoryList = communityService.findCategory();
+        communityService.updateViewCnt(articleId);
         model.addAttribute("article", article);
         model.addAttribute("categoryList", categoryList);
-
         return "page/community/community-article";
     }
 

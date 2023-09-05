@@ -257,4 +257,10 @@ public class CommunityService {
         }
         commentRepository.deleteById(commentId);
     }
+
+    //조회수
+    @Transactional
+    public int updateViewCnt(Long articleId) {
+        return articleRepository.updateViewCnt(articleId);
+    }
 }
