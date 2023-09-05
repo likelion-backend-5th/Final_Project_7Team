@@ -117,23 +117,71 @@ ul, ol {
     margin-top: 30px;
 }
 
-/* 댓글 리스트 스타일 */
-#comment-list {
-    list-style: none;
-    padding: 0;
-}
-
 /* 각 댓글 아이템 스타일 */
 #comment-list li {
-    border: 1px solid #ddd;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f9f9f9;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
 /* 댓글 작성자 및 날짜 스타일 */
 #commentWriter {
     font-weight: bold;
+    font-size: 20px;
+}
+
+.comment-writer {
+    margin-bottom: 30px;
+}
+
+.comment-all {
+    display: flex;
+    flex-direction: row;
+}
+
+.comment-left {
+    flex: 1;
+    text-align: left;
+}
+
+#commentContent {
+    font-size: 20px;
+}
+
+.comment-right {
+    flex: 1;
+    text-align: right;
+}
+
+#commentDate {
+    color: 	darkgray;
+}
+
+.comment-date {
+    margin-right: 10px;
+    margin-bottom: 40px;
+}
+
+#modifyAndDeleteButton {
+    display: flex;
+    margin-top: 10px;
+}
+
+.modifyDeleteBtn {
+    background-color: #D3E4CD;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.modifyDeleteBtn:hover {
+    background-color: white;
+    color: #D3E4CD;
+    border: 1px solid #ADC2A9;
 }
 
 /* 댓글 작성 폼 스타일 */
@@ -148,7 +196,7 @@ ul, ol {
     align-items: center;
 }
 
-#comment-text {
+#commentText {
     flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
@@ -191,22 +239,95 @@ ul, ol {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
     max-width: 400px;
     text-align: center;
     position: relative;
 }
 
-/* 닫기 버튼 스타일 */
-#cancelDeleteButton {
-    background-color: #ccc;
-    color: #000;
-    border: none;
-    padding: 10px 15px;
-    margin: 10px 5px;
-    cursor: pointer;
+.deleteArticleModalBtn {
+    display: flex;
+    justify-content: space-between;
 }
 
-#cancelDeleteButton:hover {
-    background-color: #ddd;
+#confirmDeleteButton,
+#cancelDeleteButton {
+    background-color: #D3E4CD;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    flex: 1;
+    border: 1px solid #ADC2A9;
+}
+
+.modal-comment-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+}
+
+.modal-comment-content h2 {
+    margin-bottom: 20px;
+    color: #ADC2A9;
+    font-weight: bold;
+}
+
+.comment-update-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.comment-update-content button {
+    height: 100px;
+    width: 100px;
+    background-color: #ADC2A9;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.comment-update-content button:hover {
+    background-color: white;
+    color: #ADC2A9;
+    border: 1px solid #D3E4CD;
+}
+
+.comment-update-content textarea {
+    margin-right: 20px;
+}
+
+.deleteCommentModalBtn {
+    display: flex;
+    justify-content: space-between;
+}
+
+#commentDeleteButton,
+#cancelCommentDeleteButton {
+    background-color: #ADC2A9;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    flex: 1;
+    border: 1px solid #D3E4CD;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
 }
