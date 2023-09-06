@@ -1,22 +1,18 @@
 package com.likelion.catdogpia.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
+import com.likelion.catdogpia.domain.entity.product.QnAClassification;
 import com.likelion.catdogpia.service.AdminService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -323,4 +319,47 @@ public class AdminController {
         adminService.createComment(communityId,content);
         return "redirect:/admin/communities/" + communityId;
     }
+
+    // QnA목록
+    @GetMapping("/qna")
+    public String qnaList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate
+    ) {
+        Page<QnaListDto> qnaList = adminService.findQnaList(pageable, filter, keyword, toDate, fromDate);
+        log.info("isEmpty : " + qnaList.isEmpty());
+        for (QnaListDto qnADto : qnaList) {
+            log.info("qna : " + qnADto.toString());
+        }
+        model.addAttribute("qnaList", qnaList);
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("fromDate", fromDate);
+        model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
+        return "/page/admin/qna";
+    }
+
+    // 커뮤니티 삭제
+    @PostMapping("/qna/delete-list")
+    public String qnaDelete(@RequestBody List<Map<String, Object>> requestList) {
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteQnaList(deleteList);
+        }
+
+        return "redirect:/admin/communities";
+    }
+
 }

@@ -28,6 +28,10 @@ public class QnA extends BaseEntity {
     @JoinColumn(name = "qna_id")
     private QnA qna;
 
+    @Column(length = 20, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private QnAClassification classification;
+
     @OneToMany(mappedBy = "qna", cascade = CascadeType.ALL)
     private List<QnA> qnAList = new ArrayList<>();
 
@@ -48,9 +52,10 @@ public class QnA extends BaseEntity {
     private String content;
 
     @Builder
-    public QnA(Long id, QnA qna, List<QnA> qnAList, Product product, Member member, String title, String content) {
+    public QnA(Long id, QnA qna, QnAClassification classification, List<QnA> qnAList, Product product, Member member, String title, String content) {
         this.id = id;
         this.qna = qna;
+        this.classification = classification;
         this.qnAList = qnAList;
         this.product = product;
         this.member = member;

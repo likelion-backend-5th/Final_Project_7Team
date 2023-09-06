@@ -16,7 +16,6 @@ import com.likelion.catdogpia.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +47,8 @@ public class AdminService {
     // 커뮤니티 관련
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
+    // QnA 관련
+    private final QnaRepository qnaRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -433,6 +434,24 @@ public class AdminService {
                 .content(content)
                 .member(findMember)
                 .build());
+    }
+
+    // QnA목록 조회
+    public Page<QnaListDto> findQnaList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        return queryRepository.findByQnaList(pageable, filter, keyword, toDate, fromDate);
+    }
+
+    // QnA삭제
+    @Transactional
+    public void deleteQnaList(List<Long> deleteList) {
+        // QnA id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(qnaRepository.existsById(deleteId)) {
+                qnaRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 }
 
