@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class ReviewDto {
+public class ReviewListDto {
 
     // 리뷰 id (Review)
     private Long id;
@@ -36,7 +36,7 @@ public class ReviewDto {
     private int rating;
 
     @Builder
-    public ReviewDto(Long id, String description, String fileUrl, Long otherImgCnt, String pname, String size, String color, LocalDateTime createdAt, int rating) {
+    public ReviewListDto(Long id, String description, String fileUrl, Long otherImgCnt, String pname, String size, String color, LocalDateTime createdAt, int rating) {
         this.id = id;
         this.description = description;
         this.fileUrl = fileUrl;

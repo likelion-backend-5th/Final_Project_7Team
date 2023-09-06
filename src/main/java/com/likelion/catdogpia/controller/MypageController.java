@@ -7,12 +7,16 @@ import com.likelion.catdogpia.service.AddressService;
 import com.likelion.catdogpia.service.OrderHistoryService;
 import com.likelion.catdogpia.service.PointService;
 import com.likelion.catdogpia.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -65,6 +69,21 @@ public class MypageController {
     public ResponseDto purchaseConfirm(@PathVariable Long opId) {
         orderHistoryService.purchaseConfirm("testtest", opId);
         return new ResponseDto("구매 확정 되었습니다.");
+    }
+
+    // 주문 내역 > 리뷰 작성 페이지
+    @GetMapping("/order-list/review/{opId}")
+    public String reviewPage(@PathVariable Long opId, Model model) {
+        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
+        return "page/mypage/review.html";
+    }
+
+    // 리뷰 작성 요청
+    @PostMapping("/order-list/review/{opId}")
+    @ResponseBody
+    public ResponseDto review(@PathVariable Long opId, @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
+        reviewService.saveReview("testtest", opId, reviewImg, reviewFormDto);
+        return new ResponseDto("success");
     }
 
     // 교환 요청 페이지
@@ -158,7 +177,7 @@ public class MypageController {
     @GetMapping("/review")
     public String reviewPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
         model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
-        return "page/mypage/review.html";
+        return "page/mypage/review_list.html";
     }
 
     // 게시글 관리 페이지

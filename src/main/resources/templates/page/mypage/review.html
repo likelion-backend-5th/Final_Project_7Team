@@ -6,23 +6,50 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 리뷰 작성
+        $(document).ready(function () {
+            const reviewImgInput = $('#review-img-input');
+            const reviewUploadImg = $('#review-upload-img');
+
+            reviewImgInput.on('change', function (e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    // 선택된 파일을 읽어와서 이미지 소스로 할당
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        reviewUploadImg.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            })
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
-<!--    <p class="mypage-title">리뷰 내역</p>-->
-    <div class="review-box" th:each="review : ${reviewList}">
-        <div class="content-box">
-            <p th:text="${review.pname}">상품명</p>
-            <p th:text="${review.size} + ' / ' + ${review.color}">옵션</p>
-            <div class="rating"><span th:text="${review.rating}">평점부분</span></div>
-            <p th:text="${review.description}">리뷰 내용</p>
-            <p th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">작성일자</p>
+    <section class="review-section">
+        <p>별점</p>
+        <div id="rating-box">
+            <input type="radio" name="rate" id="star5" class="star" value="5"><label for="star5">★</label>
+            <input type="radio" name="rate" id="star4" class="star" value="4"><label for="star4">★</label>
+            <input type="radio" name="rate" id="star3" class="star" value="3"><label for="star3">★</label>
+            <input type="radio" name="rate" id="star2" class="star" value="2"><label for="star2">★</label>
+            <input type="radio" name="rate" id="star1" class="star" value="1"><label for="star1">★</label>
         </div>
-        <div class="img-box">
-
-        </div>
-    </div>
+        <textarea id="text-review" placeholder="20자 이상 작성해주세요"></textarea>
+        <img id="review-upload-img" src="../../../img/default-img.jpeg" class="" alt="...">
+        <label for="review-img-input" id="review-img-label">
+            +
+        </label>
+        <input id="review-img-input" type="file" accept="image/*"/>
+        <button id="btn-submit" th:onclick="requestReview([[${orderProduct.id}]])">등록</button>
+    </section>
 </div>
 </body>
+
 </html>

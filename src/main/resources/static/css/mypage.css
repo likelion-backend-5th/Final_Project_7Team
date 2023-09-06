@@ -236,6 +236,63 @@ ul.order-state li {
 }
 
 
+
+/* ======================================================================= */
+/* 리뷰 (review) */
+.review-section > * {
+    display: block;
+}
+
+#rating-box {
+    direction: rtl;
+}
+
+#rating-box input {
+    /*visibility: hidden;*/
+    display: none;
+}
+
+#rating-box label{
+    font-size: 3em;
+    color: #efefef;
+    /*text-shadow: 0 0 0 #f0f0f0;*/
+}
+
+#rating-box input[type=radio]:checked ~ label{
+    /*text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);*/
+    color: #f8d700;
+}
+
+#text-review {
+    width: 1000px;
+    height: 250px;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+#review-upload-img {
+    width: 150px;
+    height: 120px;
+}
+
+#review-img-label {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    line-height: 60px;
+    color: gray;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #eeeded;
+}
+
+#review-img-input {
+    visibility: hidden;
+}
+
+
+
+
 /* ======================================================================= */
 /* 적립금 (point) */
 .point-total {

@@ -13,7 +13,7 @@ function openPetPopup() {
 // 주문내역 (order_list.html) =======================================================
 // 주문 상태에 따른 필터링
 function filterOrderStatus(orderStatus) {
-    if(orderStatus === 'ALL') {
+    if (orderStatus === 'ALL') {
         location.href = "/mypage/order-list"
     } else {
         location.href = "/mypage/order-list?orderStatus=" + orderStatus;
@@ -50,13 +50,17 @@ function handleOrderAction(opId, action) {
     if (action === '환불요청') {
         location.href = "/mypage/order-list/refund/" + opId
     }
+
+    if (action === '리뷰작성') {
+        location.href = "/mypage/order-list/review/" + opId
+    }
 }
 
 // 교환 요청
-function exchangeRequest(opId) {
+function requestExchange(opId) {
     // 선택한 교환 사유
     const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
-    if(!selectRadio) {
+    if (!selectRadio) {
         alert("교환 사유를 선택해주세요.")
         return;
     }
@@ -94,7 +98,7 @@ function exchangeRequest(opId) {
         body: JSON.stringify(data)
     })
         .then(response => {
-            if(response.ok) {
+            if (response.ok) {
                 alert('교환 요청 완료')
                 location.href = "/mypage/order-list"
             }
@@ -102,10 +106,10 @@ function exchangeRequest(opId) {
 }
 
 // 환불 요청
-function refundRequest(opId) {
+function requestRefund(opId) {
     // 선택한 환불 사유
     const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
-    if(!selectRadio) {
+    if (!selectRadio) {
         alert("환불 사유를 선택해주세요.")
         return;
     }
@@ -133,12 +137,57 @@ function refundRequest(opId) {
         body: JSON.stringify(data)
     })
         .then(response => {
-            if(response.ok) {
+            if (response.ok) {
                 alert('환불 요청 완료')
                 location.href = "/mypage/order-list"
             }
         })
 }
+
+// 리뷰 작성 요청
+function requestReview(opId) {
+    const reviewImgInput = document.getElementById('review-img-input')
+
+    const formData = new FormData()
+
+    const reviewImg = reviewImgInput.files[0]
+    formData.append('reviewImg', reviewImg)
+
+    const rating = document.querySelector('input[name="rate"]:checked')
+    if(!rating) {
+        alert('별점을 선택해주세요')
+        return
+    }
+
+    const reviewData = {
+        description: document.getElementById('text-review').value,
+        rating: rating.value
+    }
+
+    // 특수 문자와 공백을 제거 후 글자 수 체크 (20자 이상)
+    const cleanedDescription = reviewData.description.replace(/[^\w\s가-힣]/gi, '').replace(/\s/g, '')
+    if (cleanedDescription.length < 20) {
+        alert('후기 내용을 20자 이상 작성해주세요 (공백, 특수 문자, 단순 문자 제외)')
+        return
+    }
+
+    formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
+
+    fetch("/mypage/order-list/review/" + opId, {
+        method: "POST",
+        body: formData
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("리뷰가 등록되었습니다")
+                location.href = "/mypage/order-list"
+            } else {
+                alert("리뷰 등록에 실패하였습니다")
+                location.href = "/mypage/order-list"
+            }
+        })
+}
+
 
 // 배송지 (address) ==========================================================
 // 배송지 등록 버튼 클릭
