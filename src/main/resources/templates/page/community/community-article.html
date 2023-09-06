@@ -199,6 +199,9 @@
 </head>
 <body>
 <div layout:fragment="content" class="articleDetail">
+    <div class="main-part">
+        <button id="mainBtn" onclick="window.location.href='/community'">목록</button>
+    </div>
     <div class="titleText">
         <div class="titleLine">
             <h1 class="category" th:each="category : ${categoryList}"
