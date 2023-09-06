@@ -3,6 +3,7 @@ package com.likelion.catdogpia.service;
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleDto;
+import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
@@ -14,6 +15,8 @@ import com.likelion.catdogpia.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -34,12 +37,12 @@ import java.util.Optional;
 public class CommunityService {
     private final CategoryRepository categoryRepository;
     private final ArticleRepository articleRepository;
-    private final UserDetailsManager manager;
     private final MemberRepository memberRepository;
     private final AttachRepository attachRepository;
     private final S3UploadService s3UploadService;
     private final AttachDetailRepository attachDetailRepository;
     private final CommentRepository commentRepository;
+    private final QueryRepository queryRepository;
 
     // 커뮤니티 중분류 카테고리 받아오기
     public List<CategoryDto> findCategory() {
@@ -262,5 +265,15 @@ public class CommunityService {
     @Transactional
     public int updateViewCnt(Long articleId) {
         return articleRepository.updateViewCnt(articleId);
+    }
+
+    //전체 글 목록 조회
+    public Page<ArticleListDto> readArticleList(Pageable pageable, String filter, String keyword) {
+        return queryRepository.findByArticleAndFilterAndKeyword(pageable, filter, keyword);
+    }
+
+    //카테고리별 글 목록 조회
+    public Page<ArticleListDto> readArticleListByCategory(Pageable pageable, Long categoryId, String filter, String keyword) {
+        return queryRepository.findByArticleAndCategoryAndFilterAndKeyword(pageable, categoryId, filter, keyword);
     }
 }

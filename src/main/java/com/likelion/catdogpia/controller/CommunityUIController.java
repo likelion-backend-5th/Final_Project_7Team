@@ -2,16 +2,15 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleDto;
-import com.likelion.catdogpia.domain.dto.community.CommentDto;
-import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -21,12 +20,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommunityUIController {
     private final CommunityService communityService;
-    private Boolean writer;
-    private Boolean isWriter;
 
     //커뮤니티 UI
     @GetMapping("/community")
-    public String community() {
+    public String community(Model model, @PageableDefault(page = 0, size = 10) Pageable pageable, @RequestParam(value = "categoryId", required = false) Long categoryId, @RequestParam(value = "filter", required = false) String filter, @RequestParam(value = "keyword", required = false) String keyword) {
+        List<CategoryDto> categoryList = communityService.findCategory();
+        model.addAttribute("categoryList", categoryList);
+        if (categoryId == null) {
+            model.addAttribute("articleList", communityService.readArticleList(pageable, filter, keyword));
+            model.addAttribute("filter", filter);
+            model.addAttribute("keyword", keyword);
+        } else {
+            model.addAttribute("articleList", communityService.readArticleListByCategory(pageable, categoryId, filter, keyword));
+            model.addAttribute("filter", filter);
+            model.addAttribute("keyword", keyword);
+        }
         return "page/community/community";
     }
 
