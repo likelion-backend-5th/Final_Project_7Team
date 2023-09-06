@@ -1,0 +1,176 @@
+.community {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin:auto 20% 5% 20%;
+}
+
+h2 {
+    color: #99A799;
+    font-weight: bold;
+}
+
+select {
+    border: 1px solid #ADC2A9;
+    width: 120px;
+    height: 40px;
+    padding: 5px 10px;
+    margin-right: 10px;
+}
+
+.category-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+li {
+    font-size: 25px;
+    font-weight: bold;
+    margin-right: 100px;
+}
+
+.search-part {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#keyword {
+    border: 1px solid #ADC2A9;
+    width: 300px;
+    height: 40px;
+    padding: 10px 20px;
+    align-items: center;
+    flex-direction: row;
+    margin-right: 10px;
+}
+
+#searchBtn, #writeBtn {
+    height: 40px;
+    width: 80px;
+    background-color: #ADC2A9;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+#searchBtn:hover {
+    background-color: white;
+    color: #ADC2A9;
+    border: 1px solid #D3E4CD;
+}
+
+.article-part {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    border-bottom: 1px solid #ccc; /* 각 행 아래에 1px 높이의 회색 선을 추가합니다. */
+    padding: 8px;
+}
+
+.articleTitle-part {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    color: gray;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.writerDate-part {
+    color: gray;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cnt-part {
+    color: gray;
+    font-weight: bold;
+}
+
+.cnt-text {
+    margin-right: 10px;
+}
+
+#writer {
+    margin-right: 10px;
+}
+
+.view-icon::before {
+    content: "\f06e"; /* 조회수 아이콘(FontAwesome 아이콘 코드) */
+    font-family: FontAwesome;
+    color: #99A799;
+}
+
+.comment-icon::before {
+    content: "\f075"; /* 댓글 아이콘(FontAwesome 아이콘 코드) */
+    font-family: FontAwesome;
+    color: #ADC2A9;
+}
+
+.heart-icon::before {
+    content: "\f004"; /* 하트 아이콘(FontAwesome 아이콘 코드) */
+    font-family: FontAwesome;
+    color: #D3E4CD;
+}
+
+.text-part {
+    padding-left: 20px;
+}
+
+.image-part {
+    width: 200px;
+}
+
+.write-part {
+    margin-top: 10px;
+    text-align: right;
+}
+
+#writeBtn:hover {
+    background-color: white;
+    color: #ADC2A9;
+    border: 1px solid #D3E4CD;
+}
+
+.community-pagination {
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.community-pagination span {
+    margin-right: 10px;
+}
+
+.community-pagination span:hover {
+    color: #ADC2A9;
+}
+
+.community-pagination span.current-page {
+    color: #99A799;
+    text-decoration: underline;
+}
