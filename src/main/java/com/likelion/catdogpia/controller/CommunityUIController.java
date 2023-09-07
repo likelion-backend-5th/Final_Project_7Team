@@ -26,6 +26,7 @@ public class CommunityUIController {
     public String community(Model model, @PageableDefault(page = 0, size = 10) Pageable pageable, @RequestParam(value = "categoryId", required = false) Long categoryId, @RequestParam(value = "filter", required = false) String filter, @RequestParam(value = "keyword", required = false) String keyword) {
         List<CategoryDto> categoryList = communityService.findCategory();
         model.addAttribute("categoryList", categoryList);
+        model.addAttribute("popularArticleList", communityService.findPopularArticlesWithinOneWeek());
         if (categoryId == null) {
             model.addAttribute("articleList", communityService.readArticleList(pageable, filter, keyword));
             model.addAttribute("filter", filter);

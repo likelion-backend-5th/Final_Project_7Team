@@ -26,10 +26,48 @@ select {
     margin-bottom: 20px;
 }
 
-li {
+.category-list li {
     font-size: 25px;
     font-weight: bold;
     margin-right: 100px;
+}
+
+.category-list a {
+    color: black;
+}
+
+.category-list a:hover {
+    text-decoration: none;
+    color: #D3E4CD;
+}
+
+.hotArticle-part {
+    align-items: center;
+}
+
+.hotArticleList {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.hotArticle-part li {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 50px;
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hotArticle-part a {
+    color: black;
+}
+
+.hotArticle-part a:hover {
+    text-decoration: none;
+    color: #D3E4CD;
 }
 
 .search-part {
@@ -90,13 +128,13 @@ td {
     color: gray;
 }
 
-a {
+td a {
     color: black;
 }
 
-a:hover {
+td a:hover {
     text-decoration: none;
-    color: inherit;
+    color: #D3E4CD;
 }
 
 .writerDate-part {

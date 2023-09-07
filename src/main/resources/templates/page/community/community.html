@@ -79,16 +79,20 @@
   </div>
   <div class="hotArticle-part" id="hotArticle-part">
     <h2>인기글</h2>
-    <div class="hotArticle">
-      <div id="hotArticle1">
-        <!-- 대표 이미지, 제목, 좋아요 수 -->
-      </div>
-      <div id="hotArticle2">
-        <!-- 대표 이미지, 제목, 좋아요 수 -->
-      </div>
-      <div id="hotArticle3">
-        <!-- 대표 이미지, 제목, 좋아요 수 -->
-      </div>
+    <div class="hotArticles">
+        <ul class="hotArticleList" style="list-style-type: none; padding: 0; display: flex;">
+          <li th:each="popularArticle : ${popularArticleList}">
+            <a th:href="@{/community/{articleId}(articleId=${popularArticle.id})}">
+              <img th:if="${popularArticle.attach.attachDetailList.size() != 0}" th:src="${popularArticle.attach.attachDetailList.get(0).fileUrl}" width="300" height="300">
+              <img th:if="${popularArticle.attach.attachDetailList.size() == 0}" th:src="@{/img/logo.png}" width="300" height="300">
+            </a>
+            <a th:href="@{/community/{articleId}(articleId=${popularArticle.id})}">
+              <span id="PATitleText" th:text="${popularArticle.title}"></span>
+            </a>
+            <span class="icon heart-icon"></span>
+            <p th:text="${popularArticle.viewCnt}"></p>
+          </li>
+        </ul>
     </div>
     <hr style="border: none; border-top: 2px solid #dddddd;">
   </div>

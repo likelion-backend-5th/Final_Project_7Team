@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -275,5 +276,14 @@ public class CommunityService {
     //카테고리별 글 목록 조회
     public Page<ArticleListDto> readArticleListByCategory(Pageable pageable, Long categoryId, String filter, String keyword) {
         return queryRepository.findByArticleAndCategoryAndFilterAndKeyword(pageable, categoryId, filter, keyword);
+    }
+
+    //인기글 조회
+    public List<ArticleListDto> findPopularArticlesWithinOneWeek() {
+        // 현재 시간에서 일주일 전의 시간 계산
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
+
+        // 일주일 이내에 작성된 인기글 조회
+        return articleRepository.findTop3PopularArticlesWithinOneWeek(oneWeekAgo);
     }
 }
