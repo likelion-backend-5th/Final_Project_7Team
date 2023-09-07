@@ -64,7 +64,12 @@
                             <button th:onclick="handleOrderAction([[${order.opId}]], '환불요청')">환불 요청</button>
                         </th:block>
                         <th:block th:if="${order.orderStatus.equals('구매확정')}">
-                            <button th:onclick="handleOrderAction([[${order.opId}]], '리뷰작성')">리뷰 작성</button>
+                            <th:block th:if="${order.writeReview == false}">
+                                <button th:onclick="handleOrderAction([[${order.opId}]], '리뷰작성')">리뷰 작성</button>
+                            </th:block>
+                            <th:block th:if="${order.writeReview == true}">
+                                리뷰 작성 완료
+                            </th:block>
                         </th:block>
                         <th:block th:if="${order.orderStatus.equals('교환요청') || order.orderStatus.equals('교환완료') || order.orderStatus.equals('환불요청') || order.orderStatus.equals('환불완료')}">
                             리뷰 작성 불가

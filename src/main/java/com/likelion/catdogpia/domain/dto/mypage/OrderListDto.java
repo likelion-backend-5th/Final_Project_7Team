@@ -46,6 +46,9 @@ public class OrderListDto {
     // 상품 이미지
     private String fileUrl;
 
+    // (구매확정 상태일 때) 리뷰 작성 여부
+    private Boolean writeReview;
+
     @Builder
     public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount, String fileUrl) {
         this.id = id;
@@ -60,5 +63,22 @@ public class OrderListDto {
         this.price = price;
         this.amount = amount;
         this.fileUrl = fileUrl;
+    }
+
+    @Builder
+    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount, String fileUrl, boolean writeReview) {
+        this.id = id;
+        this.opId = opId;
+        this.orderNumber = orderNumber;
+        this.orderAt = orderAt;
+        this.quantity = quantity;
+        this.orderStatus = orderStatus.getStatus();
+        this.size = size;
+        this.color = color;
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
+        this.fileUrl = fileUrl;
+        this.writeReview = writeReview;
     }
 }
