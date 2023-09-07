@@ -23,17 +23,12 @@ public class QnA extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Self -Reference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qna_id")
-    private QnA qna;
-
     @Column(length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private QnAClassification classification;
 
-    @OneToMany(mappedBy = "qna", cascade = CascadeType.ALL)
-    private List<QnA> qnAList = new ArrayList<>();
+    @OneToOne(mappedBy = "qna", cascade = CascadeType.ALL)
+    private QnAAnswer qnAAnswer;
 
     // 상품
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,12 +46,12 @@ public class QnA extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+
     @Builder
-    public QnA(Long id, QnA qna, QnAClassification classification, List<QnA> qnAList, Product product, Member member, String title, String content) {
+    public QnA(Long id, QnAClassification classification, QnAAnswer qnAAnswer, Product product, Member member, String title, String content) {
         this.id = id;
-        this.qna = qna;
         this.classification = classification;
-        this.qnAList = qnAList;
+        this.qnAAnswer = qnAAnswer;
         this.product = product;
         this.member = member;
         this.title = title;

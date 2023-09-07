@@ -331,10 +331,6 @@ public class AdminController {
             @RequestParam(required = false) String fromDate
     ) {
         Page<QnaListDto> qnaList = adminService.findQnaList(pageable, filter, keyword, toDate, fromDate);
-        log.info("isEmpty : " + qnaList.isEmpty());
-        for (QnaListDto qnADto : qnaList) {
-            log.info("qna : " + qnADto.toString());
-        }
         model.addAttribute("qnaList", qnaList);
         model.addAttribute("filter", filter);
         model.addAttribute("keyword", keyword);
@@ -360,6 +356,22 @@ public class AdminController {
         }
 
         return "redirect:/admin/communities";
+    }
+
+    // QnA 상세
+    @GetMapping("/qna/{qnaId}")
+    public String qnaDetails(@PathVariable Long qnaId, Model model) {
+        model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
+        model.addAttribute("qna", adminService.findQna(qnaId));
+        return "/page/admin/qna-detail";
+    }
+
+    // QnA 답변 등록 / 업데이트
+    @PostMapping("/qna/{qnaId}/update-answer")
+    public String qnaUpdateAnswer(@PathVariable Long qnaId, @RequestParam("answer") String answer) {
+        adminService.modifyQnaAnswer(qnaId, answer);
+
+        return "redirect:/admin/qna";
     }
 
 }

@@ -5,6 +5,7 @@ import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.*;
+import com.likelion.catdogpia.domain.entity.user.QMember;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -317,7 +318,8 @@ public class QueryRepository {
 
     // 상품 QnA관리 목록
     public Page<QnaListDto> findByQnaList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
-        QQnA childQnA = new QQnA("childQnA");
+        QQnAAnswer qnAAnswer = new QQnAAnswer("qnAAnswer");
+        QMember answerer = new QMember("answerer");
         List<QnaListDto> list =
                 queryFactory.select(Projections.fields(QnaListDto.class,
                         qnA.id,
@@ -326,21 +328,13 @@ public class QueryRepository {
                         qnA.title,
                         qnA.member.name.as("writer"),
                         qnA.createdAt,
-                        ExpressionUtils.as(
-                                JPAExpressions.select(childQnA.createdAt)
-                                        .from(childQnA)
-                                        .where(childQnA.qna.eq(qnA)),
-                                "answeredAt"),
-                        ExpressionUtils.as(
-                                JPAExpressions.select(childQnA.member.name)
-                                        .from(childQnA)
-                                        .where(childQnA.qna.eq(qnA)),
-                                "answerer")))
+                        answerer.name.as("answerer"),
+                        qnAAnswer.createdAt.as("answeredAt")))
                         .from(qnA)
-                        .leftJoin(childQnA).on(childQnA.qna.eq(qnA))
+                        .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
                         .join(product).on(qnA.product.eq(product))
                         .join(member).on(qnA.member.eq(member))
-                        .leftJoin(member).on(childQnA.member.eq(member))
+                        .leftJoin(answerer).on(qnAAnswer.member.eq(answerer))
                         .where(qnaSearchFilter(filter, keyword),
                                 qnaDateFilter(toDate, fromDate))
                         .offset(pageable.getOffset())
@@ -351,10 +345,10 @@ public class QueryRepository {
         Long count =
                 queryFactory.select(qnA.count())
                         .from(qnA)
-                        .leftJoin(childQnA).on(childQnA.qna.eq(qnA))
+                        .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
                         .join(product).on(qnA.product.eq(product))
                         .join(member).on(qnA.member.eq(member))
-                        .leftJoin(member).on(childQnA.member.eq(member))
+                        .leftJoin(answerer).on(qnAAnswer.member.eq(answerer))
                         .where(qnaSearchFilter(filter, keyword),
                                 qnaDateFilter(toDate, fromDate))
                         .fetchOne();
