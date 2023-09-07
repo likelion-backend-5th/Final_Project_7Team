@@ -40,7 +40,7 @@
                 <div class="cart-p-box">
                     <th:block th:if="${cart.stock==0}">
                         <div class="cart-img-box">
-                            <img>
+                            <img th:src="${cart.fileUrl}">
                         </div>
                         <div class="cart-pname-box sold-out">
                             <span>[품절]</span>
@@ -50,7 +50,7 @@
                     </th:block>
                     <th:block th:if="${cart.stock!=0}">
                         <div class="cart-img-box">
-                            <img>
+                            <img th:src="${cart.fileUrl}">
                         </div>
                         <div class="cart-pname-box sell">
                             <a class="pname" href="#" th:text="${cart.name}"></a>

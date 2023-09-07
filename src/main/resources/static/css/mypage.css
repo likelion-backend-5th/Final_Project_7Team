@@ -181,27 +181,45 @@ ul.order-state li {
     height: 100px;
 }
 
-.order-list-table .td-order-status {
-    display: flex;
-}
-
-.order-list-table .td-order-status {
+.order-list-table  .product-info-box {
     display: flex;
     align-items: center;
 }
 
-.order-list-table .td-order-status div:nth-child(1) {
-    display: flex;
-    width: 40%;
-    justify-content: end;
+.order-list-table .product-info-box .img-box {
+    width: 70px;
+    height: 70px;
+    margin-right: 30px;
+    overflow: hidden;
 }
 
-.order-list-table .td-order-status div:nth-child(2) {
+.order-list-table .product-info-box .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-list-table .content-box {
+
+}
+
+.order-list-table .order-status-box {
+    display: flex;
+    align-items: center;
+}
+
+.order-list-table .order-status-box div:nth-child(1) {
+    display: flex;
+    width: 40%;
+    /*justify-content: end;*/
+}
+
+.order-list-table .order-status-box div:nth-child(2) {
     display: block;
     width: 60%;
 }
 
-.order-list-table .td-order-status button {
+.order-list-table .order-status-box button {
     background-color: #f3f3f3;
     border: 1px solid lightgray;
 }
@@ -236,7 +254,6 @@ ul.order-state li {
 }
 
 
-
 /* ======================================================================= */
 /* 리뷰 (review) */
 .review-section > * {
@@ -252,13 +269,13 @@ ul.order-state li {
     display: none;
 }
 
-#rating-box label{
+#rating-box label {
     font-size: 3em;
     color: #efefef;
     /*text-shadow: 0 0 0 #f0f0f0;*/
 }
 
-#rating-box input[type=radio]:checked ~ label{
+#rating-box input[type=radio]:checked ~ label {
     /*text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);*/
     color: #f8d700;
 }
@@ -289,8 +306,6 @@ ul.order-state li {
 #review-img-input {
     visibility: hidden;
 }
-
-
 
 
 /* ======================================================================= */
@@ -385,10 +400,6 @@ ul.order-state li {
     font-weight: bold;
 }
 
-.review-box section {
-    text-align: end;
-}
-
 .review-box .review-btn-box button {
     margin-bottom: 5px;
     border: 1px solid lightgray;
@@ -398,6 +409,13 @@ ul.order-state li {
     width: 110px;
     height: 110px;
     border: 1px solid lightgray;
+    overflow: hidden;
+}
+
+.review-box .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ======================================================================= */

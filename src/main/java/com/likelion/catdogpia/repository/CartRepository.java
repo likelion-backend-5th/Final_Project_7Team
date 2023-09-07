@@ -11,11 +11,13 @@ import org.springframework.data.repository.query.Param;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     // 장바구니에 담긴 상품 목록
-    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.cart.CartListDto(c.id, p.name, po.size, po.color, p.price, c.productCnt, p.price * c.productCnt, po.stock) "+
+    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.cart.CartListDto(c.id, p.name, po.size, po.color, p.price, c.productCnt, p.price * c.productCnt, po.stock, ad.fileUrl) " +
             "FROM Cart c " +
             "JOIN ProductOption po ON c.productOption.id = po.id " +
             "JOIN Product p ON po.product.id = p.id " +
-            "WHERE c.member.id = :memberId")
+            "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id " +
+            "WHERE c.member.id = :memberId " +
+            "AND ad.id = (SELECT MIN(ad2.id) FROM AttachDetail ad2 WHERE ad2.attach.id = p.attach.id)")
     Page<CartListDto> findAllByMemberId(Pageable pageable, @Param("memberId") Long memberId);
 
 }

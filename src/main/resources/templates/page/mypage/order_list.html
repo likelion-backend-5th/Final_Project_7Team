@@ -38,31 +38,39 @@
             <td><a th:href="@{/mypage/order-detail/{orderId}(orderId=${order.id})}" th:text="${order.orderNumber}"></a>
             </td>
             <td>
-                <div th:text="${order.name}"></div>
-                <div th:text="'옵션 : '+${order.size}+' / '+${order.color}"></div>
+                <div class="product-info-box">
+                    <a class="img-box">
+                        <img th:src="${order.fileUrl}">
+                    </a>
+                    <div class="content-box">
+                        <div th:text="${order.name}"></div>
+                        <div th:text="'옵션 : '+${order.size}+' / '+${order.color}"></div>
+                    </div>
+                </div>
             </td>
             <td>
                 <div th:text="${order.amount}"></div>
                 <span th:text="'('+${order.quantity}+'개)'">(1개)</span></td>
-            <td class="td-order-status">
-                <div th:text="${order.orderStatus}"></div>
-                <div>
-                    <th:block th:if="${order.orderStatus.equals('주문접수') || order.orderStatus.equals('배송준비')}">
-                        <button th:onclick="handleOrderAction([[${order.opId}]], '주문취소')">주문 취소</button>
-                    </th:block>
-                    <th:block th:if="${order.orderStatus.equals('배송중') || order.orderStatus.equals('배송완료')}">
-                        <button th:onclick="handleOrderAction([[${order.opId}]], '구매확정')">구매 확정</button>
-                        <button th:onclick="handleOrderAction([[${order.opId}]], '교환요청')">교환 요청</button>
-                        <button th:onclick="handleOrderAction([[${order.opId}]], '환불요청')">환불 요청</button>
-                    </th:block>
-                    <th:block th:if="${order.orderStatus.equals('구매확정')}">
-                        <button th:onclick="handleOrderAction([[${order.opId}]], '리뷰작성')">리뷰 작성</button>
-                    </th:block>
-                    <th:block th:if="${order.orderStatus.equals('교환요청') || order.orderStatus.equals('교환완료') || order.orderStatus.equals('환불요청') || order.orderStatus.equals('환불완료')}">
-                        리뷰 작성 불가
-                    </th:block>
+            <td>
+                <div class="order-status-box">
+                    <div th:text="${order.orderStatus}"></div>
+                    <div>
+                        <th:block th:if="${order.orderStatus.equals('주문접수') || order.orderStatus.equals('배송준비')}">
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '주문취소')">주문 취소</button>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('배송중') || order.orderStatus.equals('배송완료')}">
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '구매확정')">구매 확정</button>
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '교환요청')">교환 요청</button>
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '환불요청')">환불 요청</button>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('구매확정')}">
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '리뷰작성')">리뷰 작성</button>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('교환요청') || order.orderStatus.equals('교환완료') || order.orderStatus.equals('환불요청') || order.orderStatus.equals('환불완료')}">
+                            리뷰 작성 불가
+                        </th:block>
+                    </div>
                 </div>
-
             </td>
         </tr>
     </table>

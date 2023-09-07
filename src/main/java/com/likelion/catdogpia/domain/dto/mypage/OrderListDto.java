@@ -42,9 +42,12 @@ public class OrderListDto {
 
     // 주문 금액 (quantity * price)
     private int amount;
+    
+    // 상품 이미지
+    private String fileUrl;
 
     @Builder
-    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount) {
+    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount, String fileUrl) {
         this.id = id;
         this.opId = opId;
         this.orderNumber = orderNumber;
@@ -56,5 +59,6 @@ public class OrderListDto {
         this.name = name;
         this.price = price;
         this.amount = amount;
+        this.fileUrl = fileUrl;
     }
 }

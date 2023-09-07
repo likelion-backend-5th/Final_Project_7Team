@@ -13,21 +13,25 @@ import org.springframework.data.repository.query.Param;
 public interface OrderRespository extends JpaRepository<Orders, Long> {
 
     // 마이페이지 - 주문 내역 조회
-    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderListDto(o.id, op.id, o.orderNumber, o.orderAt, op.quantity, op.orderStatus, po.size, po.color, p.name, p.price, op.quantity * p.price) " +
+    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderListDto(o.id, op.id, o.orderNumber, o.orderAt, op.quantity, op.orderStatus, po.size, po.color, p.name, p.price, op.quantity * p.price, ad.fileUrl) " +
             "FROM Orders o " +
             "JOIN OrderProduct op ON o.id = op.order.id " +
             "JOIN ProductOption po ON op.productOption.id = po.id " +
             "JOIN Product p ON po.product.id = p.id " +
-            "WHERE o.member.id = :memberId AND (:orderStatus is null or op.orderStatus = :orderStatus)")
+            "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id " +
+            "WHERE o.member.id = :memberId AND (:orderStatus is null or op.orderStatus = :orderStatus) " +
+            "AND ad.id = (SELECT MIN(ad2.id) FROM AttachDetail ad2 WHERE ad2.attach.id = p.attach.id)")
     Page<OrderListDto> findAllByMemberId(Pageable pageable, @Param("memberId") Long memberId, @Param("orderStatus") OrderStatus orderStatus);
 
     // 마이페이지 - 주문 상세 조회 > 특정 주문 번호의 상품들 조회
-    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderListDto(o.id, op.id, o.orderNumber, o.orderAt, op.quantity, op.orderStatus, po.size, po.color, p.name, p.price, op.quantity * p.price) " +
+    @Query("SELECT NEW com.likelion.catdogpia.domain.dto.mypage.OrderListDto(o.id, op.id, o.orderNumber, o.orderAt, op.quantity, op.orderStatus, po.size, po.color, p.name, p.price, op.quantity * p.price, ad.fileUrl) " +
             "FROM Orders o " +
             "JOIN OrderProduct op ON o.id = op.order.id " +
             "JOIN ProductOption po ON op.productOption.id = po.id " +
             "JOIN Product p ON po.product.id = p.id " +
-            "WHERE o.id = :orderId")
+            "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id " +
+            "WHERE o.id = :orderId " +
+            "AND ad.id = (SELECT MIN(ad2.id) FROM AttachDetail ad2 WHERE ad2.attach.id = p.attach.id)")
     Page<OrderListDto> findAllByOrderId(Pageable pageable, @Param("orderId") Long orderId);
 
     // 마이페이지 - 주문 상세 조회 > 배송지 정보, 결제 정보

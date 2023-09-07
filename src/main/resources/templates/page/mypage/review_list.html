@@ -20,7 +20,7 @@
             <p th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">작성일자</p>
         </div>
         <div class="img-box">
-
+            <img th:src="${review.fileUrl}">
         </div>
     </div>
 </div>

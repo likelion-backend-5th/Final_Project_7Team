@@ -31,8 +31,11 @@ public class CartListDto {
     // 재고 (ProductOption)
     private int stock;
 
+    // 상품 이미지
+    private String fileUrl;
+
     @Builder
-    public CartListDto(Long id, String name, String size, String color, int price, int productCnt, int amount, int stock) {
+    public CartListDto(Long id, String name, String size, String color, int price, int productCnt, int amount, int stock, String fileUrl) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -41,5 +44,6 @@ public class CartListDto {
         this.productCnt = productCnt;
         this.amount = amount;
         this.stock = stock;
+        this.fileUrl = fileUrl;
     }
 }
