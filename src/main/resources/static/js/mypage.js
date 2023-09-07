@@ -277,7 +277,7 @@ function updateAddress(addressId) {
 }
 
 // 리뷰 관리 (review) ==========================================================
-// 리뷰 수정 버튼
+// 리뷰 수정 요청 버튼
 function requestReviewUpdate(reviewId) {
 
     if(confirm("리뷰를 수정하시겠습니까?")) {
@@ -308,7 +308,7 @@ function requestReviewUpdate(reviewId) {
 
         formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
 
-        fetch("/mypage/review/update/" + reviewId, {
+        fetch("/mypage/review/" + reviewId, {
             method: "PUT",
             body: formData
         })
@@ -323,4 +323,19 @@ function requestReviewUpdate(reviewId) {
     }
 }
 
-// 리뷰 삭제 버튼
+// 리뷰 삭제 요청 버튼
+function deleteReview(reviewId) {
+    if(confirm("리뷰를 삭제하시겠습니까?")) {
+        fetch("/mypage/review/" + reviewId, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("리뷰가 삭제되었습니다")
+                    location.href = "/mypage/review"
+                } else {
+                    alert("리뷰 삭제가 실패하였습니다")
+                }
+            })
+    }
+}

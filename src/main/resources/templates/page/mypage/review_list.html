@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
@@ -20,8 +21,8 @@
             <p th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}"></p>
         </div>
         <div class="btn-and-img-box">
-            <button type="button" th:onclick="|location.href='/mypage/review/update/${review.id}'|">수정</button>
-            <button >삭제</button>
+            <button type="button" th:onclick="|location.href='/mypage/review/${review.id}'|">수정</button>
+            <button type="button" th:onclick="deleteReview([[${review.id}]])">삭제</button>
             <th:block th:if="${review.fileUrl != null}">
                 <div class="img-box">
                     <img th:src="${review.fileUrl}">

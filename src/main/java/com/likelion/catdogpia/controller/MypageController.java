@@ -181,17 +181,25 @@ public class MypageController {
     }
 
     // 리뷰 수정 페이지
-    @GetMapping("/review/update/{reviewId}")
+    @GetMapping("/review/{reviewId}")
     public String reviewModifyPage(@PathVariable Long reviewId, Model model) {
         model.addAttribute("review", reviewService.getReview("testtest", reviewId));
         return "page/mypage/review_modify.html";
     }
 
     // 리뷰 수정 요청
-    @PutMapping("/review/update/{reviewId}")
+    @PutMapping("/review/{reviewId}")
     @ResponseBody
-    public ResponseDto reviewModify(@PathVariable Long reviewId,  @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
+    public ResponseDto modifyReview(@PathVariable Long reviewId,  @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
         reviewService.updateReview("testtest", reviewId, reviewImg, reviewFormDto);
+        return new ResponseDto("success");
+    }
+
+    // 리뷰 삭제 요청
+    @DeleteMapping("/review/{reviewId}")
+    @ResponseBody
+    public ResponseDto deleteReview(@PathVariable Long reviewId){
+        reviewService.deleteReview("testtest", reviewId);
         return new ResponseDto("success");
     }
 

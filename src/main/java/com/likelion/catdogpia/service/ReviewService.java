@@ -110,7 +110,7 @@ public class ReviewService {
     public void updateReview(String loginId, Long reviewId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
 
         // 리뷰 조회
-        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 이미지 파일 변경
         Attach attach = null;
@@ -158,8 +158,15 @@ public class ReviewService {
 
         // 리뷰 정보 수정
         review.updateReview(reviewFormDto);
-
         log.info("리뷰 수정 완료");
+
+    }
+
+    // 리뷰 삭제
+    public void deleteReview(String testtest, Long reviewId) {
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        reviewRepository.deleteById(reviewId);
 
     }
 }
