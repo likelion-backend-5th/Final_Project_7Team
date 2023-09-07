@@ -370,8 +370,27 @@ ul.order-state li {
 .address-input {
     border: 1px solid lightgray;
     width: 250px;
-    height: 30px;
+    height: 25px;
     padding: 5px;
+}
+
+.address-zipcode-input {
+    border: 1px solid lightgray;
+    width: 120px;
+    height: 25px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.btn-zipcode {
+    height: 30px;
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid lightgray;
+}
+
+.btn-zipcode:hover {
+    cursor: pointer;
 }
 
 /* ======================================================================= */

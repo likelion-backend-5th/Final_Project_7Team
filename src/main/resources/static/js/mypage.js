@@ -233,9 +233,11 @@ function execDaumPostcode() {
                 extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
             }
 
-            // 주소 정보를 해당 필드에 넣는다.
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('zipCode').value = data.zonecode;
             document.getElementById("address").value = roadAddr;
-
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("detailAddress").focus();
         }
     }).open();
 }

@@ -17,6 +17,10 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 우편 번호
+    @Column(nullable = false, length = 10)
+    private String zipCode;
+
     // 배송지 주소
     @Column(nullable = false, length = 100)
     private String address;
@@ -50,8 +54,9 @@ public class Address {
     private Member member;
 
     @Builder
-    public Address(Long id, String address, String detailAddress, Character defaultAddress, String addressName, String name, String phone, String request, Member member) {
+    public Address(Long id, String zipCode, String address, String detailAddress, Character defaultAddress, String addressName, String name, String phone, String request, Member member) {
         this.id = id;
+        this.zipCode = zipCode;
         this.address = address;
         this.detailAddress = detailAddress;
         this.defaultAddress = defaultAddress;
@@ -63,6 +68,7 @@ public class Address {
     }
 
     public void updateAddress(AddressFormDto dto) {
+        this.zipCode = dto.getZipCode();
         this.address = dto.getAddress();
         this.detailAddress = dto.getDetailAddress();
         this.defaultAddress = dto.getDefaultAddress();

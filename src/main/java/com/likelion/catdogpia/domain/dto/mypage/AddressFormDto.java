@@ -11,6 +11,9 @@ import lombok.Setter;
 @Builder
 public class AddressFormDto {
 
+    // 우편 번호
+    private String zipCode;
+
     // 배송지 주소
     private String address;
     
@@ -34,6 +37,7 @@ public class AddressFormDto {
 
     public Address toEntity(Member member) {
         return Address.builder()
+                .zipCode(zipCode)
                 .address(address)
                 .detailAddress(detailAddress)
                 .defaultAddress(defaultAddress)

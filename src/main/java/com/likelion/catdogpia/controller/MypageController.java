@@ -38,7 +38,7 @@ public class MypageController {
     // 회원 정보 수정 페이지
     @GetMapping("/edit-profile")
     public String editProfilePage(Model model) {
-        return "page/mypage/edit_profile.html";
+        return "page/mypage/profile_modify.html";
     }
 
     // 반려동물 등록 페이지
@@ -137,7 +137,7 @@ public class MypageController {
     @GetMapping("/address")
     public String addressPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
-        return "page/mypage/address.html";
+        return "page/mypage/address_list.html";
     }
 
     // 배송지 등록 페이지
@@ -157,7 +157,7 @@ public class MypageController {
     @GetMapping("/address/update/{addressId}")
     public String updateAddressPage(@PathVariable Long addressId, Model model) {
         model.addAttribute("address", addressService.readAddress(addressId));
-        return "page/mypage/edit_address.html";
+        return "page/mypage/address_modify.html";
     }
 
     // 배송지 수정

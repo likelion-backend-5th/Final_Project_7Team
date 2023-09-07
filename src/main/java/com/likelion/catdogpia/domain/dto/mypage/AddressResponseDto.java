@@ -11,6 +11,9 @@ public class AddressResponseDto {
     // 배송지 id
     private Long id;
 
+    // 우편 번호
+    private String zipCode;
+
     // 배송지 주소
     private String address;
 
@@ -35,6 +38,7 @@ public class AddressResponseDto {
     public static AddressResponseDto fromEntity(Address entity) {
         return AddressResponseDto.builder()
                 .id(entity.getId())
+                .zipCode(entity.getZipCode())
                 .address(entity.getAddress())
                 .detailAddress(entity.getDetailAddress())
                 .defaultAddress(entity.getDefaultAddress())

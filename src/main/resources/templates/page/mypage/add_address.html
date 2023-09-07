@@ -29,7 +29,8 @@
     <tr>
       <th>주소</th>
       <td>
-        <input id="address" name="address" class="address-input"><input type="button" onclick="execDaumPostcode()" value="주소 검색"><br>
+        <input id="zipCode" name="zipCode" class="address-zipcode-input" placeholder="우편번호"><input type="button" onclick="execDaumPostcode()" class="btn-zipcode" value="우편번호 찾기"><br>
+        <input id="address" name="address" class="address-input" placeholder="도로명주소"><br>
         <input id="detailAddress" name="detailAddress" class="address-input" placeholder="상세 주소를 입력해주세요">
         <div>
           <input type="checkbox" name="defaultAddress" value="Y"><label>기본 배송지 설정</label>
