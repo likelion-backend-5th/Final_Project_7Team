@@ -75,10 +75,10 @@ public class MypageController {
     @GetMapping("/order-list/review/{opId}")
     public String reviewPage(@PathVariable Long opId, Model model) {
         model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
-        return "page/mypage/review.html";
+        return "page/mypage/review_write.html";
     }
 
-    // 리뷰 작성 요청
+    // 리뷰 등록 요청
     @PostMapping("/order-list/review/{opId}")
     @ResponseBody
     public ResponseDto review(@PathVariable Long opId, @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
@@ -178,6 +178,21 @@ public class MypageController {
     public String reviewPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
         model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
         return "page/mypage/review_list.html";
+    }
+
+    // 리뷰 수정 페이지
+    @GetMapping("/review/update/{reviewId}")
+    public String reviewModifyPage(@PathVariable Long reviewId, Model model) {
+        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
+        return "page/mypage/review_modify.html";
+    }
+
+    // 리뷰 수정 요청
+    @PutMapping("/review/update/{reviewId}")
+    @ResponseBody
+    public ResponseDto reviewModify(@PathVariable Long reviewId,  @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
+        reviewService.updateReview("testtest", reviewId, reviewImg, reviewFormDto);
+        return new ResponseDto("success");
     }
 
     // 게시글 관리 페이지

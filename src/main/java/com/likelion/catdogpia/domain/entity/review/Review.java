@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.review;
 
+import com.likelion.catdogpia.domain.dto.mypage.ReviewFormDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
@@ -51,5 +52,21 @@ public class Review extends BaseEntity {
         this.attach = attach;
         this.description = description;
         this.rating = rating;
+    }
+
+    // 리뷰 수정
+    public void updateReview(ReviewFormDto reviewFormDto) {
+        this.description = reviewFormDto.getDescription();
+        this.rating = reviewFormDto.getRating();
+    }
+
+    // 리뷰 수정 - 파일 추가
+    public void updateReviewAttach(Attach attach) {
+        this.attach = attach;
+    }
+
+    // 리뷰 수정 - 파일 삭제
+    public void deleteReviewAttach() {
+        this.attach = null;
     }
 }

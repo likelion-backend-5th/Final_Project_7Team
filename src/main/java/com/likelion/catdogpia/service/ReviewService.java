@@ -3,6 +3,7 @@ package com.likelion.catdogpia.service;
 import com.likelion.catdogpia.domain.dto.mypage.ReviewFormDto;
 import com.likelion.catdogpia.domain.dto.mypage.ReviewListDto;
 import com.likelion.catdogpia.domain.dto.mypage.ReviewProductDto;
+import com.likelion.catdogpia.domain.dto.mypage.ReviewUpdateDto;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
@@ -62,25 +63,25 @@ public class ReviewService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         OrderProduct orderProduct = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Long orderMemberId = orderRespository.findMemberIdByOrderProductId(opId);
-        if(orderMemberId != member.getId()) {
+        if (orderMemberId != member.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "member 불일치");
         }
 
         // 이미 등록한 리뷰가 있는지 확인
-        if(reviewRepository.findByOrderProductId(opId) != null) {
+        if (reviewRepository.findByOrderProductId(opId) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 등록한 리뷰 존재");
         }
-        
+
         Attach attach = null;
         // (첨부 이미지가 있다면) 리뷰 이미지 S3로 업로드
         if (reviewImg != null) {
             attach = attachRepository.save(Attach.builder().createdAt(LocalDateTime.now()).build());
-            String mainImgFileUrl = s3UploadService.upload(reviewImg, "review");
+            String reviewImgFileUrl = s3UploadService.upload(reviewImg, "review");
             attachDetailRepository.save(AttachDetail.builder()
                     .attach(attach)
                     .fileSize(reviewImg.getSize())
                     .realname(reviewImg.getOriginalFilename())
-                    .fileUrl(mainImgFileUrl)
+                    .fileUrl(reviewImgFileUrl)
                     .build());
             log.info("리뷰 이미지 저장 완료");
         }
@@ -98,4 +99,67 @@ public class ReviewService {
         // TODO 포인트 적립
     }
 
+    // 리뷰 조회
+    public ReviewUpdateDto getReview(String loginId, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return ReviewUpdateDto.fromEntity(review);
+    }
+
+    // 리뷰 수정
+    @Transactional
+    public void updateReview(String loginId, Long reviewId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // 이미지 파일 변경
+        Attach attach = null;
+        if (reviewImg != null && review.getAttach() != null) {
+            AttachDetail attachDetail = review.getAttach().getAttachDetailList().get(0);
+            String filename = attachDetail.getFileUrl();
+            int idx = filename.indexOf("review/");
+
+            String deleteFilename = attachDetail.getFileUrl().substring(idx);
+            s3UploadService.deleteFile(deleteFilename);
+
+            String reviewImgFileUrl = s3UploadService.upload(reviewImg, "review");
+
+            attachDetail.changeFile(
+                    attachDetail.getId(),
+                    reviewImgFileUrl,
+                    reviewImg.getSize(),
+                    reviewImg.getOriginalFilename(),
+                    review.getAttach());
+        } else if (reviewImg != null && review.getAttach() == null) {
+            attach = attachRepository.save(Attach.builder().createdAt(LocalDateTime.now()).build());
+            String mainImgFileUrl = s3UploadService.upload(reviewImg, "review");
+            attachDetailRepository.save(AttachDetail.builder()
+                    .attach(attach)
+                    .fileSize(reviewImg.getSize())
+                    .realname(reviewImg.getOriginalFilename())
+                    .fileUrl(mainImgFileUrl)
+                    .build());
+
+            review.updateReviewAttach(attach);
+        } else if (reviewImg == null && review.getAttach() != null) { // 기존 이미지 삭제
+            AttachDetail attachDetail = review.getAttach().getAttachDetailList().get(0);
+            String filename = attachDetail.getFileUrl();
+            int idx = filename.indexOf("review/");
+
+            String deleteFilename = attachDetail.getFileUrl().substring(idx);
+            s3UploadService.deleteFile(deleteFilename);
+
+            // 연관관계 제거후 attach 삭제
+            Long attachId = review.getAttach().getId();
+            review.deleteReviewAttach();
+            attachDetailRepository.deleteById(attachDetail.getId());
+            attachRepository.deleteById(attachId);
+        }
+
+        // 리뷰 정보 수정
+        review.updateReview(reviewFormDto);
+
+        log.info("리뷰 수정 완료");
+
+    }
 }

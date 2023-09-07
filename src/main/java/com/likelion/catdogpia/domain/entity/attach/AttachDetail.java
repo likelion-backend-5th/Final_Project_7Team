@@ -28,6 +28,15 @@ public class AttachDetail {
     @JoinColumn(name = "attach_id")
     private Attach attach;
 
+    //== 파일 수정 메소드 ==//
+    public void changeFile(Long id, String fileUrl, long fileSize, String realname, Attach attach) {
+        this.id = id;
+        this.fileUrl = fileUrl;
+        this.fileSize = fileSize;
+        this.realname = realname;
+        this.attach = attach;
+    }
+
     @Builder
     public AttachDetail(Long id, String fileUrl, long fileSize, String realname, Attach attach) {
         this.id = id;

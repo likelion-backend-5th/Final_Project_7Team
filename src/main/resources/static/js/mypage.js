@@ -183,7 +183,6 @@ function requestReview(opId) {
                 location.href = "/mypage/order-list"
             } else {
                 alert("리뷰 등록에 실패하였습니다")
-                location.href = "/mypage/order-list"
             }
         })
 }
@@ -276,3 +275,52 @@ function updateAddress(addressId) {
         }
     )
 }
+
+// 리뷰 관리 (review) ==========================================================
+// 리뷰 수정 버튼
+function requestReviewUpdate(reviewId) {
+
+    if(confirm("리뷰를 수정하시겠습니까?")) {
+        const reviewImgInput = document.getElementById('review-img-input')
+
+        const formData = new FormData()
+
+        const reviewImg = reviewImgInput.files[0]
+        formData.append('reviewImg', reviewImg)
+
+        const rating = document.querySelector('input[name="rate"]:checked')
+        if(!rating) {
+            alert('별점을 선택해주세요')
+            return
+        }
+
+        const reviewData = {
+            description: document.getElementById('text-review').value,
+            rating: rating.value
+        }
+
+        // 특수 문자와 공백을 제거 후 글자 수 체크 (20자 이상)
+        const cleanedDescription = reviewData.description.replace(/[^\w\s가-힣]/gi, '').replace(/\s/g, '')
+        if (cleanedDescription.length < 20) {
+            alert('후기 내용을 20자 이상 작성해주세요 (공백, 특수 문자, 단순 문자 제외)')
+            return
+        }
+
+        formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
+
+        fetch("/mypage/review/update/" + reviewId, {
+            method: "PUT",
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("리뷰가 수정되었습니다")
+                    location.href = "/mypage/review"
+                } else {
+                    alert("리뷰 수정에 실패하였습니다")
+                }
+            })
+    }
+}
+
+// 리뷰 삭제 버튼

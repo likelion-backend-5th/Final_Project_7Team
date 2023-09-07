@@ -13,6 +13,7 @@
         $(document).ready(function () {
             const reviewImgInput = $('#review-img-input');
             const reviewUploadImg = $('#review-upload-img');
+            const removeImageButton = $('#btn-remove-image');
 
             reviewImgInput.on('change', function (e) {
                 const file = e.target.files[0];
@@ -26,6 +27,16 @@
                     reader.readAsDataURL(file);
                 }
             })
+
+            // 'X' 버튼 클릭 시 이미지 제거
+            removeImageButton.on('click', function () {
+                if(confirm("첨부 파일을 제거하시겠습니까?")) {
+                    // 이미지 업로드 입력 필드 초기화
+                    reviewImgInput.val('');
+                    // 이미지 미리보기 초기화 (기본 이미지로 변경)
+                    reviewUploadImg.attr('src', '/img/default-img.jpeg');
+                }
+            });
         });
     </script>
 </head>
@@ -43,6 +54,7 @@
         </div>
         <textarea id="text-review" placeholder="20자 이상 작성해주세요"></textarea>
         <img id="review-upload-img" src="../../../img/default-img.jpeg" class="" alt="...">
+        <button id="btn-remove-image">X</button>
         <label for="review-img-input" id="review-img-label">
             +
         </label>

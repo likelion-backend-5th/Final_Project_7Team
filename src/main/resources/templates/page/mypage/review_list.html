@@ -10,17 +10,23 @@
 <body>
 <div layout:fragment="content" class="mypage-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
-<!--    <p class="mypage-title">리뷰 내역</p>-->
+    <!--    <p class="mypage-title">리뷰 내역</p>-->
     <div class="review-box" th:each="review : ${reviewList}">
         <div class="content-box">
             <p th:text="${review.pname}">상품명</p>
-            <p th:text="${review.size} + ' / ' + ${review.color}">옵션</p>
-            <div class="rating"><span th:text="${review.rating}">평점부분</span></div>
-            <p th:text="${review.description}">리뷰 내용</p>
-            <p th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">작성일자</p>
+            <p th:text="${review.size} + ' / ' + ${review.color}"></p>
+            <div class="rating"><span th:text="${review.rating}"></span></div>
+            <p th:text="${review.description}"></p>
+            <p th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}"></p>
         </div>
-        <div class="img-box">
-            <img th:src="${review.fileUrl}">
+        <div class="btn-and-img-box">
+            <button type="button" th:onclick="|location.href='/mypage/review/update/${review.id}'|">수정</button>
+            <button >삭제</button>
+            <th:block th:if="${review.fileUrl != null}">
+                <div class="img-box">
+                    <img th:src="${review.fileUrl}">
+                </div>
+            </th:block>
         </div>
     </div>
 </div>
