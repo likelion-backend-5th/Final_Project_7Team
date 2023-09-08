@@ -42,13 +42,17 @@ public class LoginController {
 
         //AccessToken LocalStorage
         Map<String, String> response = new HashMap<>();
-        response.put("result", "success");
+        if (result.equals("admin")) {
+            response.put("result", "admin");
+        } else {
+            response.put("result", "user");
+        }
         response.put("accessToken", accessToken);
 
         //RefreshToken Cookie
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setMaxAge(24*60*60);
+        refreshTokenCookie.setMaxAge(246060);
         refreshTokenCookie.setPath("/");
         httpResponse.addCookie(refreshTokenCookie);
 

@@ -3,6 +3,7 @@ package com.likelion.catdogpia.repository;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
+import com.likelion.catdogpia.domain.entity.consultation.ConsulClassification;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.*;
 import com.likelion.catdogpia.domain.entity.user.QMember;
@@ -32,6 +33,8 @@ import static com.likelion.catdogpia.domain.entity.order.QOrders.*;
 import static com.likelion.catdogpia.domain.entity.community.QArticle.*;
 import static com.likelion.catdogpia.domain.entity.report.QReport.*;
 import static com.likelion.catdogpia.domain.entity.product.QQnA.*;
+import static com.likelion.catdogpia.domain.entity.consultation.QConsultation.*;
+import static com.likelion.catdogpia.domain.entity.consultation.QConsultationAnswer.*;
 
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
@@ -386,4 +389,72 @@ public class QueryRepository {
         return null;
     }
 
+    // 1:1 문의 목록
+    public Page<ConsultationListDto> findByConsultationList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        QMember answerer = new QMember("answerer");
+        List<ConsultationListDto> list =
+                queryFactory.select(Projections.fields(ConsultationListDto.class,
+                                consultation.id,
+                                consultation.classification,
+                                consultation.orders.orderNumber,
+                                consultation.subject,
+                                consultation.member.name.as("writer"),
+                                consultation.createdAt,
+                                consultationAnswer.createdAt.as("answeredAt"),
+                                answerer.name.as("answerer")))
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .leftJoin(answerer).on(consultationAnswer.member.eq(answerer))
+                        .where(consulSearchFilter(filter, keyword),
+                                consulDateFilter(toDate, fromDate))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(consultation.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(consultation.count())
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .leftJoin(answerer).on(consultationAnswer.member.eq(answerer))
+                        .where(consulSearchFilter(filter, keyword),
+                                consulDateFilter(toDate, fromDate))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // QnA 조건 추가
+    private BooleanExpression consulSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "title" -> consultation.subject.contains(keyword);
+                case "writer" -> consultation.member.name.contains(keyword);
+                case "classification" -> consultation.classification.eq(ConsulClassification.valueOf(keyword));
+                default -> consultation.orders.orderNumber.contains(keyword);
+            };
+        } else {
+            return null;
+        }
+    }
+
+    // 날짜 조건 추가
+    private BooleanExpression consulDateFilter(String toDate, String fromDate) {
+        if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter).plusDays(1);
+                LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
+
+                return consultation.createdAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
+            } catch (DateTimeParseException ex) {
+                // 날짜 형식이 잘못된 경우 처리
+                log.info("날짜 형식이 잘못됨!");
+                ex.printStackTrace();
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
 }

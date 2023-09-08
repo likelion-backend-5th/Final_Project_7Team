@@ -2,8 +2,10 @@ package com.likelion.catdogpia.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.catdogpia.domain.dto.admin.*;
+import com.likelion.catdogpia.domain.entity.consultation.ConsulClassification;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
 import com.likelion.catdogpia.domain.entity.product.QnAClassification;
+import com.likelion.catdogpia.jwt.JwtTokenProvider;
 import com.likelion.catdogpia.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,7 @@ import java.util.*;
 public class AdminController {
 
     private final AdminService adminService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 관리자 메인 페이지
     @GetMapping("/main")
@@ -372,6 +377,79 @@ public class AdminController {
         adminService.modifyQnaAnswer(qnaId, answer);
 
         return "redirect:/admin/qna";
+    }
+
+    // 1:1문의 목록
+    @GetMapping("/consultations")
+    public String consultationsList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate
+    ) {
+        model.addAttribute("consultationList", adminService.findConsultationList(pageable, filter, keyword, toDate, fromDate));
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("fromDate", fromDate);
+        model.addAttribute("classificationList", Arrays.asList(ConsulClassification.values()));
+        return "/page/admin/consultations";
+    }
+
+    // 커뮤니티 삭제
+    @PostMapping("/consultations/delete-list")
+    public ResponseEntity<String> consultationsDelete(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody List<Map<String, Object>> requestList
+    ) {
+        // 토큰이 없으면 오류 발생
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteConsultationList(deleteList);
+        }
+
+        return ResponseEntity.ok(HttpStatus.OK.name());
+    }
+
+    // 1:1 문의 상세
+    @GetMapping("/consultations/{consulId}")
+    public String consultationDetails(@PathVariable Long consulId, Model model) {
+        model.addAttribute("classificationList", Arrays.asList(ConsulClassification.values()));
+        model.addAttribute("consultation", adminService.findConsultation(consulId));
+        return "/page/admin/consultation-detail";
+    }
+
+    // 1:1 문의 답변 등록 / 업데이트
+    @PostMapping("/consultations/{consulId}/update-answer")
+    @ResponseBody
+    public ResponseEntity<String> consultationUpdateAnswer(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long consulId,
+            @RequestParam String answer
+    ){
+        // 토큰이 없으면 오류 발생
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        //
+        adminService.modifyConsultationAnswer(consulId, answer, loginId);
+        return ResponseEntity.ok(HttpStatus.OK.name());
     }
 
 }
