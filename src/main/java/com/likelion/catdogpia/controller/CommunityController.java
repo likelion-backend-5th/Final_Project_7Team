@@ -84,10 +84,16 @@ public class CommunityController {
 
     //글삭제
     @PostMapping("/community/{articleId}/delete")
-    public Map<String, String> deleteArticle(@PathVariable("articleId") Long articleId) {
+    public Map<String, String> deleteArticle(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization")String accessToken) {
         Map<String, String> response = new HashMap<>();
-        communityService.deleteArticle(articleId);
-        response.put("result", "성공");
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.deleteArticle(articleId, loginId);
+            response.put("result", "성공");
+        }
         return response;
     }
 
@@ -108,21 +114,31 @@ public class CommunityController {
 
     //댓글수정
     @PostMapping("/community/editComment")
-    public Map<String, String> updateComment(@RequestParam("commentId")Long commendId, @RequestParam("content") String content) {
+    public Map<String, String> updateComment(@RequestParam("commentId")Long commendId, @RequestHeader("Authorization")String accessToken, @RequestParam("content") String content) {
         Map<String, String> response = new HashMap<>();
-        log.info(String.valueOf(commendId));
-        communityService.updateComment(commendId, content);
-        response.put("result", "성공");
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.updateComment(commendId, loginId, content);
+            response.put("result", "성공");
+        }
         return response;
     }
 
     //댓글삭제
     @PostMapping("/community/deleteComment")
-    public Map<String, String> deleteComment(@RequestParam("commentId")Long commentId) {
+    public Map<String, String> deleteComment(@RequestParam("commentId")Long commentId, @RequestHeader("Authorization")String accessToken) {
         Map<String, String> response = new HashMap<>();
-        log.info(String.valueOf(commentId));
-        communityService.deleteComment(commentId);
-        response.put("result", "성공");
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.deleteComment(commentId, loginId);
+            response.put("result", "성공");
+        }
         return response;
     }
 

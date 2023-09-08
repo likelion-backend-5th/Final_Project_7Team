@@ -222,12 +222,14 @@ public class CommunityService {
 
     //글삭제
     @Transactional
-    public void deleteArticle(Long articleId) {
+    public void deleteArticle(Long articleId, String loginId) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
-        if (article.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (article.getMember().getLoginId().equals(loginId)) {
+            if (article.getDeletedAt() != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            articleRepository.deleteById(articleId);
         }
-        articleRepository.deleteById(articleId);
     }
 
     //댓글쓰기
@@ -246,19 +248,26 @@ public class CommunityService {
 
     //댓글수정
     @Transactional
-    public void updateComment(Long commentId, String content) {
+    public void updateComment(Long commentId, String loginId, String content) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
-        comment.updateContent(content);
+        if (comment.getMember().getLoginId().equals(loginId)) {
+            if (comment.getDeletedAt() != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            comment.updateContent(content);
+        }
     }
 
     //댓글삭제
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, String loginId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
-        if (comment.getDeletedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (comment.getMember().getLoginId().equals(loginId)) {
+            if (comment.getDeletedAt() != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            commentRepository.deleteById(commentId);
         }
-        commentRepository.deleteById(commentId);
     }
 
     //조회수
