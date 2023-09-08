@@ -34,7 +34,6 @@ public class SecurityConfig {
                                 .requestMatchers("/authorize").authenticated()
                                 .requestMatchers("/signout").authenticated()
                                 //.requestMatchers("/login", "/signup").anonymous()
-                                //.requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
