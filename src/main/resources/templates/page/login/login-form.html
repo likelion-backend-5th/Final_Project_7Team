@@ -48,27 +48,5 @@
         </div>
     </form>
 </div>
-<script>
-    document.getElementById("loginForm").addEventListener("submit", e => {
-        e.preventDefault();
-        const loginId = document.getElementById("loginId").value
-        const password = document.getElementById("password").value
-        fetch("/issue", {
-            method : "post",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ loginId, password })
-        }).then(data => {
-            if (data.result === 'success') {
-                localStorage.setItem('accessToken', data.accessToken);
-                window.location.href = '/';
-            }
-        })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    })
-</script>
 </body>
 </html>

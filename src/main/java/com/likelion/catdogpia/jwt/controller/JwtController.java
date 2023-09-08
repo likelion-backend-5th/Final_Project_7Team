@@ -37,6 +37,7 @@ public class JwtController {
 
         Optional<Member> member = memberRepository.findByLoginId(loginId);
         response.put("nickname", member.get().getNickname());
+        response.put("role", String.valueOf(member.get().getRole()));
         return response;
     }
 
