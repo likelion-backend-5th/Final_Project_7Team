@@ -35,8 +35,7 @@ public class SecurityConfig {
                         authHttp -> authHttp
                                 .requestMatchers("/authorize").authenticated()
                                 .requestMatchers("/signout").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/community/write").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/community/{articleId}/like").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/community/**").authenticated()
                                 //.requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().permitAll()
                 )
