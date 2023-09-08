@@ -7,16 +7,12 @@ import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.domain.entity.order.Orders;
-import com.likelion.catdogpia.domain.entity.product.OrderProduct;
-import com.likelion.catdogpia.domain.entity.product.OrderStatus;
-import com.likelion.catdogpia.domain.entity.product.Product;
-import com.likelion.catdogpia.domain.entity.product.ProductOption;
+import com.likelion.catdogpia.domain.entity.product.*;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +44,9 @@ public class AdminService {
     // 커뮤니티 관련
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
+    // QnA 관련
+    private final QnaRepository qnaRepository;
+    private final QnAAnswerRepository qnAAnswerRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -433,6 +432,51 @@ public class AdminService {
                 .content(content)
                 .member(findMember)
                 .build());
+    }
+
+    // QnA목록 조회
+    public Page<QnaListDto> findQnaList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        return queryRepository.findByQnaList(pageable, filter, keyword, toDate, fromDate);
+    }
+
+    // QnA삭제
+    @Transactional
+    public void deleteQnaList(List<Long> deleteList) {
+        // QnA id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(qnaRepository.existsById(deleteId)) {
+                qnaRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    // QnA 상세 조회
+    public QnADto findQna(Long qnaId) {
+        QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
+        return QnADto.fromEntity(findQna);
+    }
+
+    // QnA 답변 등록 / 업데이트
+    @Transactional
+    public void modifyQnaAnswer(Long qnaId, String answer) {
+        QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
+
+        // 사용자 권한 가져오도록 변경 필요
+        Member answerer = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+
+        // 답글이 존재하지 않으면 새로 등록
+        if(findQna.getQnAAnswer() == null) {
+            qnAAnswerRepository.save(QnAAnswer.builder()
+                            .answer(answer)
+                            .qna(findQna)
+                            .member(answerer)
+                            .build());
+        } else {
+            // 답글이 이미 등록되어 있지만 답변을 변경하고 싶으면 답변을 수정하도록 함
+            findQna.getQnAAnswer().changeAnswer(answer, answerer);
+        }
     }
 }
 

@@ -3,11 +3,9 @@ package com.likelion.catdogpia.repository;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
-import com.likelion.catdogpia.domain.entity.community.QComment;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
-import com.likelion.catdogpia.domain.entity.product.OrderStatus;
-import com.likelion.catdogpia.domain.entity.product.QOrderProduct;
-import com.likelion.catdogpia.domain.entity.product.QProductOption;
+import com.likelion.catdogpia.domain.entity.product.*;
+import com.likelion.catdogpia.domain.entity.user.QMember;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
@@ -33,8 +31,7 @@ import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
 import static com.likelion.catdogpia.domain.entity.order.QOrders.*;
 import static com.likelion.catdogpia.domain.entity.community.QArticle.*;
 import static com.likelion.catdogpia.domain.entity.report.QReport.*;
-import static com.likelion.catdogpia.domain.entity.attach.QAttach.*;
-import static com.likelion.catdogpia.domain.entity.attach.QAttachDetail.*;
+import static com.likelion.catdogpia.domain.entity.product.QQnA.*;
 
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
@@ -196,7 +193,7 @@ public class QueryRepository {
         if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
-                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter);
+                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter).plusDays(1);
                 LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
 
                 return orders.orderAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
@@ -220,6 +217,7 @@ public class QueryRepository {
         }
     }
 
+    // 주문 내역 목록
     public List<OrderDto> findOrder(Long orderId) {
         QProductOption productOption = new QProductOption("productOption");
         QAttach attach = new QAttach("attach");
@@ -317,4 +315,79 @@ public class QueryRepository {
             return null;
         }
     }
+
+    // 상품 QnA관리 목록
+    public Page<QnaListDto> findByQnaList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        QQnAAnswer qnAAnswer = new QQnAAnswer("qnAAnswer");
+        QMember answerer = new QMember("answerer");
+        List<QnaListDto> list =
+                queryFactory.select(Projections.fields(QnaListDto.class,
+                        qnA.id,
+                        qnA.classification,
+                        product.name.as("productName"),
+                        qnA.title,
+                        qnA.member.name.as("writer"),
+                        qnA.createdAt,
+                        answerer.name.as("answerer"),
+                        qnAAnswer.createdAt.as("answeredAt")))
+                        .from(qnA)
+                        .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
+                        .join(product).on(qnA.product.eq(product))
+                        .join(member).on(qnA.member.eq(member))
+                        .leftJoin(answerer).on(qnAAnswer.member.eq(answerer))
+                        .where(qnaSearchFilter(filter, keyword),
+                                qnaDateFilter(toDate, fromDate))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(qnA.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(qnA.count())
+                        .from(qnA)
+                        .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
+                        .join(product).on(qnA.product.eq(product))
+                        .join(member).on(qnA.member.eq(member))
+                        .leftJoin(answerer).on(qnAAnswer.member.eq(answerer))
+                        .where(qnaSearchFilter(filter, keyword),
+                                qnaDateFilter(toDate, fromDate))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // QnA 조건 추가
+    private BooleanExpression qnaSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "title" -> qnA.title.contains(keyword);
+                case "writer" -> qnA.member.name.contains(keyword);
+                case "classification" -> qnA.classification.eq(QnAClassification.valueOf(keyword));
+                default -> qnA.product.name.contains(keyword);
+            };
+        } else {
+            return null;
+        }
+    }
+
+    // 날짜 조건 추가
+    private BooleanExpression qnaDateFilter(String toDate, String fromDate) {
+        if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter).plusDays(1);
+                LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
+
+                return qnA.createdAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
+            } catch (DateTimeParseException ex) {
+                // 날짜 형식이 잘못된 경우 처리
+                log.info("날짜 형식이 잘못됨!");
+                ex.printStackTrace();
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
 }
