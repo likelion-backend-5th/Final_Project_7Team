@@ -49,6 +49,7 @@ public class Comment extends BaseEntity {
         this.member = member;
         this.content = content;
         this.article = article;
+        this.member = member;
         this.reportList = reportList;
     }
 

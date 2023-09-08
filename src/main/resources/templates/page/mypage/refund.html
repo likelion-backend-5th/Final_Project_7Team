@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+</head>
+
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <table class="mypage-table">
+        <tr>
+            <th width="45%">상품명</th>
+            <th width="15%">옵션</th>
+            <th width="10%">수량</th>
+            <th width="15%">총 금액<p>(할인+배송비 포함)</p></th>
+            <th width="15%">주문 상태</th>
+        </tr>
+        <tr>
+            <td th:text="${order.pname}"></td>
+            <td th:text="${order.size}+' / '+${order.color}"></td>
+            <td th:text="${order.quantity}"></td>
+            <td th:text="${order.totalAmount}"></td>
+            <td th:text="${order.orderStatus}"></td>
+        </tr>
+    </table>
+    <div class="exchange-reason">
+        <p class="mypage-title">사유 선택</p>
+        <p>구매자 책임 사유</p>
+        <input type="radio" name="exchangeReason" value="BUYER_SIMPLE_REMORSE"><label>단순 변심</label><br>
+        <input type="radio" name="exchangeReason" value="BUYER_WRONG_OPTION"><label>잘못된 옵션 선택</label><br>
+        <input type="radio" name="exchangeReason" value="BUYER_WRONG_SIZE"><label>사이즈가 맞지 않음</label><br>
+        <input type="radio" name="exchangeReason" value="BUYER_OTHER"><label>기타</label><br>
+
+        <p>판매자 책임 사유</p>
+        <input type="radio" name="exchangeReason" value="SELLER_DEFECTIVE_PRODUCT"><label>상품 불량</label><br>
+        <input type="radio" name="exchangeReason" value="SELLER_WRONG_PRODUCT_INFO"><label>상품 등록 정보 오류</label><br>
+        <input type="radio" name="exchangeReason" value="SELLER_WRONG_PRODUCT_DELIVERY"><label>주문과 다른 상품 배송</label><br>
+        <input type="radio" name="exchangeReason" value="SELLER_OTHER"><label>기타</label><br>
+
+        <textarea id="detailReason" placeholder="상세 사유를 입력하세요"></textarea>
+    </div>
+    <div class="exchange-address">
+        <p class="mypage-title">회수지 정보</p>
+        <table class="exchange-address-table">
+            <tr>
+                <th>이름</th>
+                <td th:text="${order.oname}"></td>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <td th:text="${order.address}"></td>
+            </tr>
+            <tr>
+                <th>연락처</th>
+                <td th:text="${order.phone}"></td>
+            </tr>
+        </table>
+    </div>
+    <!--    <div>-->
+    <!--        <p>반품 배송비</p>-->
+    <!--    </div>-->
+    <button th:onclick="requestRefund([[${order.opId}]])">환불 요청</button>
+</div>
+</body>
+
+</html>
