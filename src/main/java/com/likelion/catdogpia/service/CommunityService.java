@@ -10,6 +10,7 @@ import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.domain.entity.community.LikeArticle;
+import com.likelion.catdogpia.domain.entity.report.Report;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
 import jakarta.transaction.Transactional;
@@ -42,6 +43,7 @@ public class CommunityService {
     private final CommentRepository commentRepository;
     private final QueryRepository queryRepository;
     private final LikeArticleRepository likeArticleRepository;
+    private final ReportRepository reportRepository;
 
     // 커뮤니티 중분류 카테고리 받아오기
     public List<CategoryDto> findCategory() {
@@ -285,6 +287,7 @@ public class CommunityService {
     }
 
     //좋아요
+    @Transactional
     public String likeUnlike(Long articleId, String loginId) {
         Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
@@ -318,5 +321,37 @@ public class CommunityService {
         }
 
         return likeMemberList;
+    }
+
+    //게시글 신고
+    @Transactional
+    public void reportArticle(Long articleId, String loginId, Long writerId, String content) {
+        Optional<Article> article = articleRepository.findById(articleId);
+        Optional<Member> member = memberRepository.findByLoginId(loginId);
+        Optional<Member> writer = memberRepository.findById(writerId);
+
+        reportRepository.save(Report.builder()
+                .article(article.get())
+                .member(member.get())
+                .writer(writer.get())
+                .content(content)
+                .build());
+        log.info("신고 완료");
+    }
+
+    //댓글 신고
+    @Transactional
+    public void reportComment(Long commentId, String loginId, Long writerId, String content) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        Optional<Member> member = memberRepository.findByLoginId(loginId);
+        Optional<Member> writer = memberRepository.findById(writerId);
+
+        reportRepository.save(Report.builder()
+                .comment(comment.get())
+                .member(member.get())
+                .writer(writer.get())
+                .content(content)
+                .build());
+        log.info("신고 완료");
     }
 }

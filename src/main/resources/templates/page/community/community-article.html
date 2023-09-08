@@ -53,6 +53,11 @@
                         document.getElementById("default").style.display = "none";
                     }
 
+                    document.getElementById("article-report-part").style.display = "block";
+                    const commentRepostParts = document.querySelectorAll('#comment-report-part');
+                    commentRepostParts.forEach(commentRepostPart => {
+                        commentRepostPart.style.display = "block";
+                    });
                     document.getElementById("comment-form").style.display = "block";
                 } else if (response.status === 401 || response.status === 403) {
                     const reissueResponse = await fetch('/reissue', {
@@ -249,6 +254,114 @@
                 window.location.href="/login";
             }
         }
+
+        //게시글 신고
+        async function reportArticle() {
+            const content = document.getElementById("articleReportTextarea").value;
+            const writer = document.getElementById("articleWriterId").value;
+
+            if (content === '') {
+                alert('신고 사유를 입력해주세요.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("content", content);
+            formData.append("writerId", writer);
+
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch(`/community/[[${articleId}]]/report`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('해당 게시글을 신고했습니다.');
+                    cancelReportArticleModal();
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await reportArticle();
+                    } else {
+                        alert('권한이 없습니다.');
+                        window.location.href="/login";
+                    }
+                } else {
+                    alert("신고 사유를 입력해주세요");
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                alert('권한이 없습니다.');
+                window.location.href="/login";
+            }
+        }
+
+        //댓글 신고
+        async function reportComment() {
+            const content = document.getElementById("commentReportTextarea").value;
+            const writer = document.getElementById("commentReportWriterText").value;
+            const commentId = document.getElementById("commentReportIdText").value;
+
+            if (content === '') {
+                alert('신고 사유를 입력해주세요.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("content", content);
+            formData.append("writerId", writer);
+            formData.append("commentId", commentId);
+
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch("/community/reportComment", {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('해당 댓글을 신고했습니다.');
+                    cancelReportCommentModal();
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await reportComment();
+                    } else {
+                        alert('권한이 없습니다.');
+                        window.location.href="/login";
+                    }
+                } else {
+                    alert("신고 사유를 입력해주세요");
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                alert('권한이 없습니다.');
+                window.location.href="/login";
+            }
+        }
     </script>
 </head>
 <body>
@@ -267,10 +380,28 @@
         </div>
         <hr style="border: none; border-top: 2px solid #dddddd;">
     </div>
-    <div class="contentHeader">
-        <p id="writer" th:text="${article.member.nickname}">작성자 닉네임</p>
-        <p id="createdAt" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성일</p>
-        <p id="viewCnt">조회 <span th:text="${article.viewCnt}">조회수</span></p>
+    <div class="titleTotal">
+        <div class="contentHeader">
+            <p id="writer" th:text="${article.member.nickname}">작성자 닉네임</p>
+            <p id="createdAt" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}">작성일</p>
+            <p id="viewCnt">조회 <span th:text="${article.viewCnt}">조회수</span></p>
+        </div>
+        <div class="report-part" id="article-report-part" style="display: none">
+            <button class="reportBtn" onclick="showReportArticleModal()">신고</button>
+
+            <!-- 글 신고 모달 -->
+            <div id="reportArticleModal" class="modal">
+                <div class="modal-content">
+                    <p style="font-size: 20px; color: black">신고 사유를 입력해주세요.</p>
+                    <input type="hidden" id="articleWriterId" th:value="${article.member.id}">
+                    <textarea id="articleReportTextarea" rows="4" cols="50"></textarea>
+                    <div class="reportArticleModalBtn">
+                        <button id="articleReportButton" onclick="reportArticle()">신고</button>
+                        <button id="cancelArticleReportButton" onclick="cancelReportArticleModal()">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class = "contentBody">
         <ul>
@@ -299,7 +430,7 @@
         <button id="editButton" onclick="goToEditPage()">글 수정</button>
         <button id="deleteButton" onclick="showModal()">글 삭제</button>
 
-        <!-- 모달 대화 상자 -->
+        <!-- 글 삭제 모달 -->
         <div id="confirmDeleteModal" class="modal">
             <div class="modal-content">
                 <p>정말로 글을 삭제하시겠습니까?</p>
@@ -321,6 +452,24 @@
                     <div class="comment-left">
                         <div class="comment-writer">
                             <span id="commentWriter" th:text="${comment.member.nickname}">작성자</span><br>
+                            <span id="separator"> | </span>
+                            <div class="report-part" id="comment-report-part" style="display: none">
+                                <button class="reportBtn" data-comment-writer="${comment.member.id}" th:attr="data-comment-writer=${comment.member.id},data-comment-id=${comment.id}" onclick="showReportCommentModal(this)">신고</button>
+
+                                <!-- 댓글 신고 모달 -->
+                                <div id="reportCommentModal" class="modal">
+                                    <div class="modal-content">
+                                        <p style="font-size: 20px; color: black">신고 사유를 입력해주세요.</p>
+                                        <input type="hidden" id="commentReportIdText" th:value="${comment.id}">
+                                        <input type="hidden" id="commentReportWriterText" th:value="${comment.member.id}">
+                                        <textarea id="commentReportTextarea" rows="4" cols="50"></textarea>
+                                        <div class="reportCommentModalBtn">
+                                            <button id="commentReportButton" onclick="reportComment()">신고</button>
+                                            <button id="cancelCommentReportButton" onclick="cancelReportCommentModal()">취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <span id="commentContent" th:text="${comment.content}">댓글 내용</span>
                     </div>
@@ -332,35 +481,35 @@
                         <div id="modifyAndDeleteCommentButton" style="display: none">
                             <button class="modifyDeleteBtn" data-comment-id="${comment.id}" data-comment-content="${comment.content}" th:attr="data-comment-content=${comment.content},data-comment-id=${comment.id}" onclick="commentUpdateModal(this)">댓글 수정</button>
                             <button class="modifyDeleteBtn" data-comment-id="${comment.id}" th:attr="data-comment-id=${comment.id}" onclick="commentDeleteModal(this)">댓글 삭제</button>
+
+                            <!-- 댓글 수정 모달 -->
+                            <div id="commentModal" class="modal">
+                                <div class="modal-comment-content">
+                                    <span class="close" id="closeModal" onclick="closeCommentUpdateModal()">&times;</span>
+                                    <h2>댓글 수정</h2>
+                                    <input type="hidden" id="commentIdText" th:value="${comment.id}">
+                                    <div class="comment-update-content">
+                                        <textarea id="commentEditTextarea" rows="4" cols="50"></textarea>
+                                        <button id="saveCommentButton" onclick="updateComment()">저장</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 댓글 삭제 모달 -->
+                            <div id="commentDeleteModal" class="modal">
+                                <div class="modal-content">
+                                    <p>정말로 댓글을 삭제하시겠습니까?</p>
+                                    <input type="hidden" id="commentIdTextDelete" th:value="${comment.id}">
+                                    <div class="deleteCommentModalBtn">
+                                        <button id="commentDeleteButton" onclick="deleteComment()">확인</button>
+                                        <button id="cancelCommentDeleteButton" onclick="cancelCommentDeleteButton()">취소</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <hr>
-
-                <!-- 댓글 수정 모달 -->
-                <div id="commentModal" class="modal">
-                    <div class="modal-comment-content">
-                        <span class="close" id="closeModal" onclick="closeCommentUpdateModal()">&times;</span>
-                        <h2>댓글 수정</h2>
-                        <input type="hidden" id="commentIdText" th:value="${comment.id}">
-                        <div class="comment-update-content">
-                            <textarea id="commentEditTextarea" rows="4" cols="50"></textarea>
-                            <button id="saveCommentButton" onclick="updateComment()">저장</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 댓글 삭제 모달 -->
-                <div id="commentDeleteModal" class="modal">
-                    <div class="modal-content">
-                        <p>정말로 댓글을 삭제하시겠습니까?</p>
-                        <input type="hidden" id="commentIdTextDelete" th:value="${comment.id}">
-                        <div class="deleteCommentModalBtn">
-                            <button id="commentDeleteButton" onclick="deleteComment()">확인</button>
-                            <button id="cancelCommentDeleteButton" onclick="cancelCommentDeleteButton()">취소</button>
-                        </div>
-                    </div>
-                </div>
             </li>
         </ul>
 

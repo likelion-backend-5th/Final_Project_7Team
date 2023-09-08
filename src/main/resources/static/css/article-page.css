@@ -49,6 +49,11 @@
     font-weight: bold;
 }
 
+.titleTotal {
+    display: flex;
+    justify-content: space-between;
+}
+
 /* 작성자, 작성일, 조회수 */
 .contentHeader {
     display: flex;
@@ -71,6 +76,19 @@
 #viewCnt {
     font-size: 24px;
 }
+
+.reportBtn {
+    color: #ADC2A9;
+    font-size: 20px;
+    border: none;
+    text-decoration: none;
+    background: none;
+}
+
+.reportBtn:hover {
+    font-weight: bold;
+}
+
 
 /* 리스트 스타일 제거 */
 ul, ol {
@@ -166,7 +184,25 @@ ul, ol {
 }
 
 .comment-writer {
+    display: flex;
+    flex-direction: row;
     margin-bottom: 30px;
+}
+
+#separator {
+    font-size: 22px;
+    margin-left: 10px;
+    color: #dddddd;
+}
+
+#reportBtn2 {
+    margin-left: 10px;
+    color: #ADC2A9;
+    font-size: 20px;
+}
+
+#reportBtn2:hover {
+    font-weight: bold;
 }
 
 .comment-all {
@@ -282,6 +318,36 @@ ul, ol {
 .deleteArticleModalBtn {
     display: flex;
     justify-content: space-between;
+}
+
+.reportArticleModalBtn {
+    display: flex;
+    justify-content: space-between;
+}
+
+#articleReportButton,
+#cancelArticleReportButton {
+    background-color: #ADC2A9;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    flex: 1;
+    border: 1px solid #D3E4CD;
+}
+
+.reportCommentModalBtn {
+    display: flex;
+    justify-content: space-between;
+}
+
+#commentReportButton,
+#cancelCommentReportButton {
+    background-color: #ADC2A9;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    flex: 1;
+    border: 1px solid #D3E4CD;
 }
 
 #confirmDeleteButton,

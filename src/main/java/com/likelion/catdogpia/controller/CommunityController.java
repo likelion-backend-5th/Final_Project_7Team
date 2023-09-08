@@ -118,10 +118,10 @@ public class CommunityController {
 
     //댓글삭제
     @PostMapping("/community/deleteComment")
-    public Map<String, String> deleteComment(@RequestParam("commentId")Long commendId) {
+    public Map<String, String> deleteComment(@RequestParam("commentId")Long commentId) {
         Map<String, String> response = new HashMap<>();
-        log.info(String.valueOf(commendId));
-        communityService.deleteComment(commendId);
+        log.info(String.valueOf(commentId));
+        communityService.deleteComment(commentId);
         response.put("result", "성공");
         return response;
     }
@@ -137,6 +137,36 @@ public class CommunityController {
             String loginId = jwtTokenProvider.parseClaims(token).getSubject();
             String result = communityService.likeUnlike(articleId, loginId);
             response.put("result", result);
+        }
+        return response;
+    }
+
+    //게시글 신고
+    @PostMapping("/community/{articleId}/report")
+    public Map<String, String> reportArticle(@PathVariable("articleId")Long articleId, @RequestHeader("Authorization")String accessToken, @RequestParam("writerId")Long writerId, @RequestParam("content")String content) {
+        Map<String, String> response = new HashMap<>();
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.reportArticle(articleId, loginId, writerId, content);
+            response.put("result", "성공");
+        }
+        return response;
+    }
+
+    //댓글 신고
+    @PostMapping("/community/reportComment")
+    public Map<String, String> reportComment(@RequestParam("commentId")Long commentId, @RequestHeader("Authorization")String accessToken, @RequestParam("writerId")Long writerId, @RequestParam("content")String content) {
+        Map<String, String> response = new HashMap<>();
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            communityService.reportComment(commentId, loginId, writerId, content);
+            response.put("result", "성공");
         }
         return response;
     }
