@@ -1,15 +1,15 @@
 package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
-import com.likelion.catdogpia.domain.dto.admin.ProductDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.dto.community.LikeArticleDto;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
-import com.likelion.catdogpia.domain.entity.product.Product;
+import com.likelion.catdogpia.domain.entity.community.LikeArticle;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
 import jakarta.transaction.Transactional;
@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,6 +41,7 @@ public class CommunityService {
     private final AttachDetailRepository attachDetailRepository;
     private final CommentRepository commentRepository;
     private final QueryRepository queryRepository;
+    private final LikeArticleRepository likeArticleRepository;
 
     // 커뮤니티 중분류 카테고리 받아오기
     public List<CategoryDto> findCategory() {
@@ -66,6 +64,7 @@ public class CommunityService {
 
         return returnList;
     }
+
     //글쓰기(이미지X)
     @Transactional
     public void createArticle(String title, String content, Long categoryId, String loginId) throws IOException {
@@ -74,7 +73,6 @@ public class CommunityService {
         Attach saveAttach = attachRepository.save(Attach.builder().createdAt(LocalDateTime.now()).build());
         articleRepository.save(Article.builder()
                 .viewCnt(0)
-                .likeCnt(0)
                 .title(title)
                 .content(content)
                 .category(findCategory)
@@ -102,7 +100,6 @@ public class CommunityService {
         }
         articleRepository.save(Article.builder()
                 .viewCnt(0)
-                .likeCnt(0)
                 .title(title)
                 .content(content)
                 .category(findCategory)
@@ -285,5 +282,41 @@ public class CommunityService {
 
         // 일주일 이내에 작성된 인기글 조회
         return articleRepository.findTop3PopularArticlesWithinOneWeek(oneWeekAgo);
+    }
+
+    //좋아요
+    public String likeUnlike(Long articleId, String loginId) {
+        Article article = articleRepository.findById(articleId).orElseThrow(IllegalArgumentException::new);
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        Optional<LikeArticle> optionalLikeArticle = likeArticleRepository.findByArticle_IdAndMember_LoginId(articleId, loginId);
+        if(optionalLikeArticle.isEmpty()) {
+            likeArticleRepository.save(LikeArticle.builder()
+                    .article(article)
+                    .member(member)
+                    .build());
+            return "like";
+        }
+        else {
+            LikeArticle like = optionalLikeArticle.get();
+            likeArticleRepository.deleteById(like.getId());
+            return "unlike";
+        }
+    }
+
+    //해당 글 좋아요 리스트
+    public List<String> checkLike(Long articleId) {
+        List<String> likeMemberList = new ArrayList<>();
+        List<LikeArticle> likeList = likeArticleRepository.findByArticle_Id(articleId);
+
+        if(likeList.isEmpty()) {
+            return likeMemberList;
+        }
+
+        // Entity -> DTO
+        for (LikeArticle likeArticle : likeList) {
+            likeMemberList.add(likeArticle.getMember().getNickname());
+        }
+
+        return likeMemberList;
     }
 }

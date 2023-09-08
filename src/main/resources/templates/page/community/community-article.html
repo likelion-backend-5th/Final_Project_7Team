@@ -35,14 +35,23 @@
                     if (responseData.nickname === writer) {
                         document.getElementById("modifyAndDeleteButton").style.display = "block";
                     }
+
                     //댓글 작성자인지 확인
                     const commentWriters = document.querySelectorAll('#comment-list #commentWriter');
-
                     commentWriters.forEach(commentWriter => {
                         if (commentWriter.textContent.trim() === responseData.nickname) {
                             commentWriter.closest('li').querySelector('#modifyAndDeleteCommentButton').style.display = "block";
                         }
                     });
+
+                    //좋아요 했는지 안 했는지 확인
+                    if ([[${likeList}]].includes(responseData.nickname)) {
+                        document.getElementById("like").style.display = "block";
+                        document.getElementById("default").style.display = "none";
+                    } else {
+                        document.getElementById("unlike").style.display = "block";
+                        document.getElementById("default").style.display = "none";
+                    }
 
                     document.getElementById("comment-form").style.display = "block";
                 } else if (response.status === 401 || response.status === 403) {
@@ -195,6 +204,51 @@
                 window.location.href = "/login";
             }
         }
+
+        //좋아요
+        async function like() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch(`/community/[[${articleId}]]/like`, {
+                    method: 'POST',
+                    headers: headers
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    if (responseData.result === "like") {
+                        alert('회원님이 이 게시물을 좋아합니다.');
+                    } else {
+                        alert('이 게시물에 대한 좋아요를 취소했습니다.');
+                    }
+                    window.location.href=`/community/[[${articleId}]]`;
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await like();
+                    } else {
+                        alert('권한이 없습니다.');
+                        window.location.href="/login";
+                    }
+                } else {
+                    alert("오류");
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                alert('권한이 없습니다.');
+                window.location.href="/login";
+            }
+        }
     </script>
 </head>
 <body>
@@ -227,14 +281,19 @@
 
         <p th:text="${article.content}">내용</p>
 
-<!--        &lt;!&ndash; 좋아요 하기 버튼. 사용자가 좋아요 했으면 빨간하트 아니면 하얀하트 &ndash;&gt;-->
-<!--        <div class="unlike">-->
-<!--            <i class="bi bi-heart"></i>-->
-<!--        </div>-->
-<!--        <div class="like">-->
-<!--            <i class="bi bi-heart-fill"></i>-->
-<!--        </div>-->
-<!--        <p th:text="${article.likeCnt}">좋아요 수</p>-->
+        <!-- 좋아요 -->
+        <div class="like-part">
+            <div class="unlike" style="display: none" id="unlike">
+                <button class="icon-button" id="unlikeBtn" onclick="like()"><i class="bi bi-heart"></i></button>
+            </div>
+            <div class="like" style="display: none" id="like">
+                <button class="icon-button" id="likeBtn" onclick="like()"><i class="bi bi-heart-fill"></i></button>
+            </div>
+            <div class="default" id="default">
+                <i class="bi bi-heart-fill" id="default-heart"></i>
+            </div>
+            <p id="likeCntText" th:text="${article.likeCnt}">좋아요 수</p>
+        </div>
     </div>
     <div id="modifyAndDeleteButton" style="display: none">
         <button id="editButton" onclick="goToEditPage()">글 수정</button>

@@ -2,6 +2,7 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleDto;
+import com.likelion.catdogpia.domain.dto.community.LikeArticleDto;
 import com.likelion.catdogpia.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class CommunityUIController {
         List<CategoryDto> categoryList = communityService.findCategory();
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("popularArticleList", communityService.findPopularArticlesWithinOneWeek());
+        log.info(communityService.findPopularArticlesWithinOneWeek().toString());
         if (categoryId == null) {
             model.addAttribute("articleList", communityService.readArticleList(pageable, filter, keyword));
             model.addAttribute("filter", filter);
@@ -52,9 +54,11 @@ public class CommunityUIController {
     public String article(@PathVariable Long articleId, Model model) {
         ArticleDto article = communityService.findArticle(articleId);
         List<CategoryDto> categoryList = communityService.findCategory();
+        List<String> likeList = communityService.checkLike(articleId);
         communityService.updateViewCnt(articleId);
         model.addAttribute("article", article);
         model.addAttribute("categoryList", categoryList);
+        model.addAttribute("likeList", likeList);
         return "page/community/community-article";
     }
 

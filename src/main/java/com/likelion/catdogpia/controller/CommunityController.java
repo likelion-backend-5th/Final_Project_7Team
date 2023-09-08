@@ -125,4 +125,19 @@ public class CommunityController {
         response.put("result", "성공");
         return response;
     }
+
+    //좋아요/취소
+    @PostMapping("/community/{articleId}/like")
+    public Map<String, String> likeAndUnlike(@PathVariable("articleId")Long articleId, @RequestHeader("Authorization")String accessToken) {
+        Map<String, String> response = new HashMap<>();
+        if (accessToken == null) {
+            response.put("result", "실패");
+        } else {
+            String token = accessToken.split(" ")[1];
+            String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+            String result = communityService.likeUnlike(articleId, loginId);
+            response.put("result", result);
+        }
+        return response;
+    }
 }

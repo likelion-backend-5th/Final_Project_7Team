@@ -40,9 +40,6 @@ public class Article extends BaseEntity {
     @Column(nullable = false)
     private int viewCnt;
 
-    @Column(nullable = false)
-    private int likeCnt;
-
     //카테고리 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -66,18 +63,20 @@ public class Article extends BaseEntity {
     @OneToMany(mappedBy = "article")
     private List<Report> reportList = new ArrayList<>();
 
+    //좋아요 연관관계
+    @OneToMany(mappedBy = "article")
+    private List<LikeArticle> likeArticles = new ArrayList<>();
+
     @Builder
-    public Article(Long id, String title, String content, int viewCnt, int likeCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member, List<Report> reportList) {
+    public Article(Long id, String title, String content, int viewCnt, CategoryEntity category, List<Comment> commentList, Attach attach, Member member) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.viewCnt = viewCnt;
-        this.likeCnt = likeCnt;
         this.category = category;
         this.commentList = commentList;
         this.attach = attach;
         this.member = member;
-        this.reportList = reportList;
     }
 
     // 글 수정

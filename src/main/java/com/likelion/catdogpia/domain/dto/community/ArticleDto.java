@@ -4,6 +4,7 @@ import com.likelion.catdogpia.domain.dto.admin.AttachDetailDto;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
+import com.likelion.catdogpia.domain.entity.community.LikeArticle;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class ArticleDto {
 
         List<CommentDto> commentList = new ArrayList<>();
         List<AttachDetailDto> attachDetailList = new ArrayList<>();
+        int likeCount = 0;
 
         if(article.getAttach() != null) {
             for (AttachDetail attachDetail : article.getAttach().getAttachDetailList()) {
@@ -49,6 +51,14 @@ public class ArticleDto {
             }
         }
 
+        if(article.getLikeArticles() != null) {
+            for (LikeArticle likeArticle : article.getLikeArticles()) {
+                if (likeArticle.getArticle().getId().equals(article.getId())) {
+                    likeCount++;
+                }
+            }
+        }
+
         return ArticleDto.builder()
                 .id(article.getId())
                 .categoryId(article.getCategory().getId())
@@ -58,7 +68,7 @@ public class ArticleDto {
                 .attachDetailList(attachDetailList)
                 .member(article.getMember())
                 .viewCnt(article.getViewCnt())
-                .likeCnt(article.getLikeCnt())
+                .likeCnt(likeCount)
                 .commentList(article.getCommentList())
                 .createdAt(article.getCreatedAt())
                 .build();

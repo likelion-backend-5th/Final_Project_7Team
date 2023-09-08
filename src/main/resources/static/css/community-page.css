@@ -70,6 +70,15 @@ select {
     color: #D3E4CD;
 }
 
+.community-pagination a {
+    color: black;
+}
+
+.community-pagination a:hover {
+    text-decoration: none;
+    color: #D3E4CD;
+}
+
 .search-part {
     display: flex;
     justify-content: center;

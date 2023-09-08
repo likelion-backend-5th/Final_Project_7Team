@@ -9,6 +9,7 @@ import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
 import com.likelion.catdogpia.domain.entity.community.QArticle;
 import com.likelion.catdogpia.domain.entity.community.QComment;
+import com.likelion.catdogpia.domain.entity.community.QLikeArticle;
 import com.likelion.catdogpia.domain.entity.product.QProduct;
 import com.likelion.catdogpia.domain.entity.product.QProductOption;
 import com.querydsl.core.types.ExpressionUtils;
@@ -131,6 +132,7 @@ public class QueryRepository {
     public Page<ArticleListDto> findByArticleAndFilterAndKeyword(Pageable pageable, String filter, String keyword) {
         QArticle article = QArticle.article;
         QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
 
         List<ArticleListDto> articleList =
                 queryFactory.select(Projections.fields(ArticleListDto.class,
@@ -140,7 +142,13 @@ public class QueryRepository {
                                 article.member,
                                 article.attach,
                                 article.viewCnt,
-                                article.likeCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
                                 Expressions.as(
                                         JPAExpressions
                                                 .select(comment.count())
@@ -171,6 +179,7 @@ public class QueryRepository {
     public Page<ArticleListDto> findByArticleAndCategoryAndFilterAndKeyword(Pageable pageable, Long category, String filter, String keyword) {
         QArticle article = QArticle.article;
         QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
 
         List<ArticleListDto> articleList =
                 queryFactory.select(Projections.fields(ArticleListDto.class,
@@ -180,7 +189,13 @@ public class QueryRepository {
                                 article.member,
                                 article.attach,
                                 article.viewCnt,
-                                article.likeCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
                                 Expressions.as(
                                         JPAExpressions
                                                 .select(comment.count())

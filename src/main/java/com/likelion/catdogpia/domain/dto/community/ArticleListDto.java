@@ -26,12 +26,12 @@ public class ArticleListDto {
     private Member member; //작성자
     private Attach attach; // 이미지
     private int viewCnt; //조회수
-    private int likeCnt; //좋아요
+    private Long likeCnt; //좋아요
     private Long commentCnt; //댓글수
     private LocalDateTime createdAt; //작성일
 
     @Builder
-    public ArticleListDto(Long id, Long categoryId, String title, Member member, Attach attach, int viewCnt, int likeCnt, Long commentCnt, LocalDateTime createdAt) {
+    public ArticleListDto(Long id, Long categoryId, String title, Member member, Attach attach, int viewCnt, Long likeCnt, Long commentCnt, LocalDateTime createdAt) {
         this.id = id;
         this.categoryId = categoryId;
         this.title = title;

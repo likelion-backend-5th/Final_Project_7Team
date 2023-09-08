@@ -15,7 +15,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("update Article p set p.viewCnt = p.viewCnt + 1 where p.id = :id")
     int updateViewCnt(Long id);
 
-    //일주일 이내에 작성된 인기글 중에서 상위 3개만 조회
-    @Query("SELECT new com.likelion.catdogpia.domain.dto.community.ArticleListDto(a.id, a.category.id, a.title, a.member, a.attach, a.viewCnt, a.likeCnt, count(c), a.createdAt) FROM Article a LEFT JOIN Comment c ON a.id = c.article.id WHERE a.createdAt >= :oneWeekAgo GROUP BY a.id ORDER BY a.viewCnt DESC limit 3")
+    //일주일 내에 작성된 글 중 좋아요 수 상위 3개만 조회
+    @Query("SELECT new com.likelion.catdogpia.domain.dto.community.ArticleListDto(a.id, a.category.id, a.title, a.member, a.attach, a.viewCnt, COUNT(DISTINCT l), COUNT(DISTINCT c), a.createdAt) FROM Article a LEFT JOIN LikeArticle l ON a.id = l.article.id LEFT JOIN Comment c ON a.id = c.article.id WHERE a.createdAt >= :oneWeekAgo GROUP BY a.id ORDER BY COUNT(DISTINCT l) DESC, a.viewCnt DESC limit 3")
     List<ArticleListDto> findTop3PopularArticlesWithinOneWeek(LocalDateTime oneWeekAgo);
 }

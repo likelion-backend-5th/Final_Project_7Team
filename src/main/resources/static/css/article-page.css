@@ -92,20 +92,36 @@ ul, ol {
     color: black;
 }
 
-/*.bi {*/
-/*    background-color: rgba(0, 0, 0, 0.1);*/
-/*    border: rgba(0, 0, 0, 0.1);*/
-/*    color: rgba(0, 0, 0, 0.1);*/
-/*    color: #ff5353;*/
-/*    font-size: 50px;*/
-/*}*/
+.like-part {
+    margin-top: 50px;
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-/*!* 좋아요 수 스타일 *!*/
-/*.contentBody p:last-child {*/
-/*    font-weight: bold;*/
-/*    margin-top: 20px;*/
-/*    text-align: center;*/
-/*}*/
+/* 좋아요 버튼 */
+.bi {
+    color: #ff5353;
+    font-size: 50px;
+}
+
+#default-heart {
+    color: #D3E4CD;
+    font-size: 50px;
+}
+
+.icon-button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* 좋아요 수 스타일 */
+.contentBody p:last-child {
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0px;
+}
 
 /* 글 수정, 글 삭제 버튼 스타일 */
 #modifyAndDeleteButton {
