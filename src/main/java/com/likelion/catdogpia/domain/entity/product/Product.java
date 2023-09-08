@@ -1,8 +1,10 @@
 package com.likelion.catdogpia.domain.entity.product;
 
+import com.likelion.catdogpia.domain.dto.admin.ProductDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
+import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -40,9 +42,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int price;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
-
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
@@ -50,19 +49,29 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private List<ProductOption> productOptionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<QnA> qnAList = new ArrayList<>();
 
-    @Builder
+    //== 상품 수정 메소드 ==//
+    // 카테고리 수정
+    public void changeCategory(CategoryEntity category) {
+        this.category = category;
+    }
 
-    public Product(Long id, CategoryEntity category, Attach attach, String name,
-                   int price, String content, ProductStatus status, List<ProductOption> productOptionList, List<QnA> qnAList) {
+    // 상품 정보 수정
+    public void changeProduct(ProductDto productDto) {
+        this.name = productDto.getName();
+        this.price = productDto.getPrice();
+        this.status = productDto.getStatus();
+    }
+
+    @Builder
+    public Product(Long id, CategoryEntity category, Attach attach, String name, int price, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
         this.category = category;
         this.attach = attach;
         this.name = name;
         this.price = price;
-        this.content = content;
         this.status = status;
         this.productOptionList = productOptionList;
         this.qnAList = qnAList;

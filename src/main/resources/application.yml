@@ -1,19 +1,16 @@
 spring:
   profiles:
     active: secret
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
+
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate.format_sql: true
-      hibernate:
-        show_sql: true
-    defer-datasource-initialization: true
-    datasource.initialization-mode: always
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-sql:
-  init:
-    mode: always
+    show-sql: true

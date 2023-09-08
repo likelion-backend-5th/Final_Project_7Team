@@ -222,3 +222,26 @@
     });
 
 })(jQuery);
+
+//소셜 로그인 토큰 발급 요청
+const currentURL = window.location.href;
+if (currentURL.includes('localhost:8080')) {
+    fetch("/reissue", {
+        method: "POST"
+    })
+        .then(response => {
+            if (response.status === 403 || response.status === 400) {
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.result === 'success') {
+                localStorage.setItem('accessToken', data.accessToken);
+            } else {
+                console.error('Reissue failed:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}

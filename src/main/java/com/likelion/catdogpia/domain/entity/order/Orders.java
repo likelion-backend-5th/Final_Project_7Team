@@ -43,6 +43,10 @@ public class Orders {
     @Column(length = 30)
     private String cardCompany;
 
+    private int deliveryCharge;
+
+    private int discountAmount;
+
     private int totalAmount;
 
     @CreatedDate
@@ -51,17 +55,11 @@ public class Orders {
 
     private LocalDateTime cancelAt;
 
-    // 배송비
-    private int deliveryCharge;
-
-    // 할인금액
-    private int discountAmount;
-
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProductList = new ArrayList<>();
 
     @Builder
-    public Orders(Long id, String orderNumber, Member member, String name, String phone, String address, String request, String cardCompany, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, int deliveryCharge, int discountAmount, List<OrderProduct> orderProductList) {
+    public Orders(Long id, String orderNumber, Member member, String name, String phone, String address, String request, String cardCompany, int deliveryCharge, int discountAmount, int totalAmount, LocalDateTime orderAt, LocalDateTime cancelAt, List<OrderProduct> orderProductList) {
         this.id = id;
         this.orderNumber = orderNumber;
         this.member = member;
@@ -70,11 +68,11 @@ public class Orders {
         this.address = address;
         this.request = request;
         this.cardCompany = cardCompany;
+        this.deliveryCharge = deliveryCharge;
+        this.discountAmount = discountAmount;
         this.totalAmount = totalAmount;
         this.orderAt = orderAt;
         this.cancelAt = cancelAt;
-        this.deliveryCharge = deliveryCharge;
-        this.discountAmount = discountAmount;
         this.orderProductList = orderProductList;
     }
 }

@@ -42,8 +42,10 @@ public class OrderProduct {
     // 구매 확정 일시
     private LocalDateTime purchaseConfirmedAt;
 
+
     @OneToOne(mappedBy = "orderProduct")
     private Review review;
+
 
     @Builder
     public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt, Review review, LocalDateTime deliveryAt, LocalDateTime purchaseConfirmedAt) {
@@ -57,6 +59,23 @@ public class OrderProduct {
         this.review = review;
         this.deliveryAt = deliveryAt;
         this.purchaseConfirmedAt = purchaseConfirmedAt;
+    }
+
+    //== 상태변경 메소드 ==//
+    public void changeStatus(String status) {
+        LocalDateTime now = LocalDateTime.now();
+
+        this.orderStatus = OrderStatus.valueOf(status);
+
+        switch (status) {
+            case "SHIPPED" -> shippedAt = now;
+            case "DELIVERED" -> deliveryAt = now;
+            case "PURCHASE_CONFIRMED" -> purchaseConfirmedAt = now;
+            case "EXCHANGE_REQUESTED" -> exchangeRequestedAt = now;
+            case "EXCHANGE_COMPLETED" -> exchangeCompletedAt = now;
+            case "REFUND_REQUESTED" -> refundRequestedAt = now;
+            case "REFUND_COMPLETED" -> refundCompletedAt = now;
+        }
     }
 
     // 주문 상태 변경
