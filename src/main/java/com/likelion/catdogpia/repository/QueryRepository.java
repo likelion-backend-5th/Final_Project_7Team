@@ -120,7 +120,7 @@ public class QueryRepository {
         if (StringUtils.hasText(filter)) {
             return switch (filter) {
                 case "name" -> product.name.contains(keyword);
-                default -> product.status.eq(keyword);
+                default -> product.status.eq(ProductStatus.valueOf(keyword));
             };
         } else {
             return null;
@@ -254,10 +254,6 @@ public class QueryRepository {
                                         orderProduct.orderStatus,
                                         orderProduct.deliveryAt,
                                         orderProduct.purchaseConfirmedAt,
-                                        orderProduct.exchangeRequestedAt,
-                                        orderProduct.exchangeCompletedAt,
-                                        orderProduct.refundRequestedAt,
-                                        orderProduct.refundCompletedAt,
                                         orderProduct.quantity,
                                         product.name.as("productName"),
                                         product.price,

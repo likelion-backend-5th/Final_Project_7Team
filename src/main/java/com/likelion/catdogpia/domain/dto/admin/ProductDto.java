@@ -3,6 +3,7 @@ package com.likelion.catdogpia.domain.dto.admin;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.product.ProductOption;
+import com.likelion.catdogpia.domain.entity.product.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ public class ProductDto {
     private Long categoryId;
     private Long parentCategoryId;
     private String name;
-    private String status;
+    private ProductStatus status;
     private int price;
     private List<ProductOptionDto> productOptionList;
     private List<AttachDetailDto> attachDetailList;
@@ -56,8 +57,7 @@ public class ProductDto {
     }
 
     @Builder
-
-    public ProductDto(Long id, Long categoryId, Long parentCategoryId, String name, String status, int price, List<ProductOptionDto> productOptionList, List<AttachDetailDto> attachDetailList) {
+    public ProductDto(Long id, Long categoryId, Long parentCategoryId, String name, ProductStatus status, int price, List<ProductOptionDto> productOptionList, List<AttachDetailDto> attachDetailList) {
         this.id = id;
         this.categoryId = categoryId;
         this.parentCategoryId = parentCategoryId;

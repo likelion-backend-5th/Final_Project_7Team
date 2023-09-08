@@ -22,10 +22,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findByIdAndName(Long productId, String name);
 
     Product findByName(String name);
-  
-  @Query("SELECT p.id " +
+
+    @Query("SELECT p.id " +
             "FROM Product p " +
             "JOIN OrderProduct op ON op.id = :opId " +
             "JOIN ProductOption po ON po.id = op.productOption.id " +
             "WHERE p.id = po.product.id ")
     Long findProductId(@Param("opId") Long opId);
+}

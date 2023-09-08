@@ -2,6 +2,7 @@ package com.likelion.catdogpia.domain.dto.product;
 
 import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.product.ProductOption;
+import com.likelion.catdogpia.domain.entity.product.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +48,7 @@ public class ProductFormDto {
         return Product.builder()
                 .name(name)
                 .price(price)
-                .status(status)
+                .status(ProductStatus.valueOf(status))
                 .productOptionList(options)
                 // TODO Images, categories
 //                .category(productCategories)

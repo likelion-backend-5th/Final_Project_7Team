@@ -71,10 +71,6 @@ public class OrderProduct {
             case "SHIPPED" -> shippedAt = now;
             case "DELIVERED" -> deliveryAt = now;
             case "PURCHASE_CONFIRMED" -> purchaseConfirmedAt = now;
-            case "EXCHANGE_REQUESTED" -> exchangeRequestedAt = now;
-            case "EXCHANGE_COMPLETED" -> exchangeCompletedAt = now;
-            case "REFUND_REQUESTED" -> refundRequestedAt = now;
-            case "REFUND_COMPLETED" -> refundCompletedAt = now;
         }
     }
 

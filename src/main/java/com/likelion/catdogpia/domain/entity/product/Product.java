@@ -66,7 +66,7 @@ public class Product extends BaseEntity {
     }
 
     @Builder
-    public Product(Long id, CategoryEntity category, Attach attach, String name, int price, String status, List<ProductOption> productOptionList, List<QnA> qnAList) {
+    public Product(Long id, CategoryEntity category, Attach attach, String name, int price, ProductStatus status, List<ProductOption> productOptionList, List<QnA> qnAList) {
         this.id = id;
         this.category = category;
         this.attach = attach;
