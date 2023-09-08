@@ -1,0 +1,475 @@
+.mypage-container {
+    font-size: 14px;
+}
+
+.mypage-container {
+    width: 60%;
+    margin: auto;
+}
+
+/* 카테고리 */
+.mypage-category {
+    display: flex;
+    justify-content: space-between;
+    width: 70%;
+    margin: 20px auto 50px auto;
+    padding: 0;
+    list-style: none;
+}
+
+.mypage-category li a {
+    color: black;
+    text-decoration-line: none;
+}
+
+.mypage-category li a:hover {
+    text-decoration: underline #D3E4CD solid 5px;
+}
+
+/* 공통 사용 */
+.mypage-table {
+    width: 100%;
+    margin: 0 auto 50px auto;
+    text-align: center;
+}
+
+.mypage-table tr {
+    height: 50px;
+}
+
+.mypage-table th {
+    border-bottom: 3px solid #D3E4CD;
+}
+
+.mypage-table td {
+    border-bottom: 1px solid #e5e3e3;
+}
+
+.mypage-table a {
+    color: black;
+}
+
+.mypage-table a:hover {
+    text-decoration: underline;
+}
+
+.mypage-title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+
+/* ======================================================================= */
+/* 회원 정보 */
+.member-info-box {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.member-info-box .nickname {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.member-info-box .name {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.mypage-button {
+    width: 90px;
+    height: 30px;
+    color: #545353;
+    background-color: #D3E4CD;
+    border: none;
+    border-radius: 10px;
+}
+
+.mypage-box {
+    margin-top: 70px;
+}
+
+.mypage-box hr {
+    border: 2px solid #D3E4CD;
+    margin: 10px 0 15px 0;
+}
+
+/* 프로필 수정 */
+.edit-profile-container {
+    width: 90%;
+    margin: auto;
+    padding: 30px;
+}
+
+.edit-profile-container form {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+.edit-profile-container form div {
+    text-align: start;
+    margin-bottom: 15px;
+}
+
+.edit-profile-container form label {
+    display: inline-block;
+    width: 90px;
+}
+
+.edit-profile-container form input {
+    width: 250px;
+    height: 30px;
+    border: 1px solid lightgray;
+}
+
+
+/* 펫 등록 */
+.add-pet-container {
+    width: 90%;
+    margin: auto;
+    padding: 30px;
+    padding-top: 150px;
+}
+
+.add-pet-container form {
+    text-align: center;
+}
+
+.add-pet-container .info-box {
+    width: 200px;
+    text-align: start;
+    margin: auto;
+}
+
+.add-pet-container .info-box input {
+    width: 180px;
+    height: 25px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid lightgray;
+}
+
+.add-pet-container #btn-submit {
+    width: 200px;
+    height: 40px;
+    background-color: #D3E4CD;
+    border: none;
+}
+
+.add-pet-container .info-box .weight {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.add-pet-container .info-box span {
+    color: gray;
+}
+
+/* 주문 처리 현황 */
+.order-state-box table {
+    margin: auto;
+    text-align: center;
+}
+
+.order-state-box th {
+    padding-top: 15px;
+}
+
+.order-state-box td {
+    width: 150px;
+    padding: 15px 0;
+    font-size: 30px;
+}
+
+/* ======================================================================= */
+/* 주문 내역 (order_list) */
+
+ul.order-state {
+    display: flex;
+    justify-content: start;
+    height: 40px;
+    list-style: none;
+    margin: 50px 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+ul.order-state li {
+    height: 30px;
+    margin-right: 10px;
+    padding: 0 10px;
+    text-align: center;
+    font-size: 14px;
+    border: 2px solid #ADC2A9;
+    border-radius: 30px;
+    line-height: 28px;
+}
+
+.order-list-table td {
+    height: 100px;
+}
+
+.order-list-table  .product-info-box {
+    display: flex;
+    align-items: center;
+}
+
+.order-list-table .product-info-box .img-box {
+    width: 70px;
+    height: 70px;
+    margin-right: 30px;
+    overflow: hidden;
+}
+
+.order-list-table .product-info-box .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-list-table .content-box {
+
+}
+
+.order-list-table .order-status-box {
+    display: flex;
+    align-items: center;
+}
+
+.order-list-table .order-status-box div:nth-child(1) {
+    display: flex;
+    width: 40%;
+    /*justify-content: end;*/
+}
+
+.order-list-table .order-status-box div:nth-child(2) {
+    display: block;
+    width: 60%;
+}
+
+.order-list-table .order-status-box button {
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+}
+
+/* ======================================================================= */
+/* 주문 상세 (order_detail) */
+
+.order-detail-ul {
+    display: flex;
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.order-detail-ul li {
+    margin-right: 10px;
+}
+
+.order-detail-ul li:nth-child(2) {
+    margin-right: 50px;
+}
+
+/* ======================================================================= */
+/* 교환 (exchange) */
+
+.exchange-address-table th {
+    width: 120px;
+    font-weight: normal;
+}
+
+.exchange-option-box select {
+    width: 100px;
+}
+
+
+/* ======================================================================= */
+/* 리뷰 (review) */
+.review-section > * {
+    display: block;
+}
+
+#rating-box {
+    direction: rtl;
+}
+
+#rating-box input {
+    /*visibility: hidden;*/
+    display: none;
+}
+
+#rating-box label {
+    font-size: 3em;
+    color: #efefef;
+    /*text-shadow: 0 0 0 #f0f0f0;*/
+}
+
+#rating-box input[type=radio]:checked ~ label {
+    /*text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);*/
+    color: #f8d700;
+}
+
+#text-review {
+    width: 1000px;
+    height: 250px;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+#review-upload-img {
+    width: 150px;
+    height: 120px;
+}
+
+#review-img-label {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    line-height: 60px;
+    color: gray;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #eeeded;
+}
+
+#review-img-input {
+    visibility: hidden;
+}
+
+
+/* ======================================================================= */
+/* 적립금 (point) */
+.point-total {
+    font-size: 20px;
+    font-weight: bold;
+    color: #99A799;
+}
+
+
+/* ======================================================================= */
+/* 배송지 관리 */
+.td-address {
+    display: flex;
+    align-items: center;
+}
+
+.td-address span {
+    margin-right: 15px;
+    width: 100px;
+    height: 30px;
+    color: #99A799;
+    font-weight: bold;
+    border: 1px solid #99A799;
+}
+
+
+/* 배송지 등록 */
+.add-address-container {
+    width: 90%;
+    margin: auto;
+    padding: 30px;
+}
+
+.add-address-container p:nth-child(1) {
+    font-size: 30px;
+}
+
+.add-address-container table tr {
+    height: 50px;
+}
+
+.add-address-container table th {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.add-address-container table tr:nth-child(4) {
+    height: 100px;
+}
+
+.add-address-container table tr:nth-child(4) th {
+    vertical-align: top;
+    padding-top: 20px;
+}
+
+.add-address-container table tr:nth-child(4) .address-input {
+    margin-bottom: 10px;
+}
+
+.address-input {
+    border: 1px solid lightgray;
+    width: 250px;
+    height: 25px;
+    padding: 5px;
+}
+
+.address-zipcode-input {
+    border: 1px solid lightgray;
+    width: 120px;
+    height: 25px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.btn-zipcode {
+    height: 30px;
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid lightgray;
+}
+
+.btn-zipcode:hover {
+    cursor: pointer;
+}
+
+/* ======================================================================= */
+/* 리뷰 관리 */
+.review-box {
+    display: flex;
+    height: 130px;
+    margin-bottom: 50px;
+}
+
+.review-box .btn-box {
+    width: 100%;
+}
+
+.review-box .content-box {
+    width: 80%;
+}
+
+.review-box .content-box p {
+    margin: 5px 0;
+}
+
+.review-box .content-box p:nth-child(1) {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.review-box .content-box p:nth-child(2) {
+    color: #b4b4b4;
+    font-weight: bold;
+}
+
+.review-box .review-btn-box button {
+    margin-bottom: 5px;
+    border: 1px solid lightgray;
+}
+
+.review-box .img-box {
+    width: 110px;
+    height: 110px;
+    border: 1px solid lightgray;
+    overflow: hidden;
+}
+
+.review-box .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ======================================================================= */
+/* 게시글 관리 */

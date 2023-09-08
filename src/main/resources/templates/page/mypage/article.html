@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+  <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+  <button>삭제</button>
+  <table class="mypage-table">
+    <tr>
+      <th><input type="checkbox"></th>
+      <th>번호</th>
+      <th>제목</th>
+      <th>카테고리</th>
+      <th>조회수</th>
+      <th>좋아요수</th>
+    </tr>
+    <tr>
+      <td><input type="checkbox"></td>
+      <td>1</td>
+      <td>제목입니당</td>
+      <td>카테고리입니당</td>
+      <td>10</td>
+      <td>5</td>
+    </tr>
+  </table>
+</div>
+</div>
+</body>
+</html>

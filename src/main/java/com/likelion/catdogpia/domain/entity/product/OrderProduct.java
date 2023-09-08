@@ -36,16 +36,30 @@ public class OrderProduct {
 
     private LocalDateTime shippedAt;
 
+    // 배송 완료 일시
     private LocalDateTime deliveryAt;
+
+    // 구매 확정 일시
     private LocalDateTime purchaseConfirmedAt;
-    private LocalDateTime exchangeRequestedAt;
-    private LocalDateTime exchangeCompletedAt;
-    private LocalDateTime refundRequestedAt;
-    private LocalDateTime refundCompletedAt;
+
 
     @OneToOne(mappedBy = "orderProduct")
     private Review review;
 
+
+    @Builder
+    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus, LocalDateTime receivedAt, LocalDateTime shippedAt, Review review, LocalDateTime deliveryAt, LocalDateTime purchaseConfirmedAt) {
+        this.id = id;
+        this.order = order;
+        this.productOption = productOption;
+        this.quantity = quantity;
+        this.orderStatus = orderStatus;
+        this.receivedAt = receivedAt;
+        this.shippedAt = shippedAt;
+        this.review = review;
+        this.deliveryAt = deliveryAt;
+        this.purchaseConfirmedAt = purchaseConfirmedAt;
+    }
 
     //== 상태변경 메소드 ==//
     public void changeStatus(String status) {
@@ -64,16 +78,13 @@ public class OrderProduct {
         }
     }
 
-    @Builder
-    public OrderProduct(Long id, Orders order, ProductOption productOption, int quantity, OrderStatus orderStatus,
-                        LocalDateTime receivedAt, LocalDateTime shippedAt, Review review) {
-        this.id = id;
-        this.order = order;
-        this.productOption = productOption;
-        this.quantity = quantity;
-        this.orderStatus = orderStatus;
-        this.receivedAt = receivedAt;
-        this.shippedAt = shippedAt;
-        this.review = review;
+    // 주문 상태 변경
+    public void changeOrderStatus(OrderStatus status) {
+        this.orderStatus = status;
+    }
+
+    // 구매 확정 일시 변경
+    public void changePurchaseConfirmAt() {
+        this.purchaseConfirmedAt = LocalDateTime.now();
     }
 }

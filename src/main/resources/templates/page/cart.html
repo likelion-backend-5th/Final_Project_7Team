@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/cart.css}" type="text/css">
+    <script src="/js/cart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const allCheck = document.querySelector(".allCheck");
+            const rowChecks = document.querySelectorAll(".rowCheck");
+
+            allCheck.addEventListener("change", function () {
+                const isChecked = allCheck.checked;
+                rowChecks.forEach(rowCheck => {
+                    rowCheck.checked = isChecked;
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="cart-container">
+    <p class="cart-total-quantity">총 <span th:text="${cartList.totalElements}"></span>개</p>
+    <button class="btn-cart-delete" onclick="deleteCart()">선택 상품 삭제</button>
+    <table class="cart-table">
+        <tr>
+            <th width="5%"><input type="checkbox" class="allCheck"></th>
+            <th width="55%">상품명(옵션)</th>
+            <th width="15%">판매가</th>
+            <th width="10%">수량</th>
+            <th width="15%">총 금액</th>
+        </tr>
+        <tr th:each="cart : ${cartList}">
+            <td><input type="checkbox" class="rowCheck" th:value="${cart.id}"></td>
+            <td>
+                <div class="cart-p-box">
+                    <th:block th:if="${cart.stock==0}">
+                        <div class="cart-img-box">
+                            <img th:src="${cart.fileUrl}">
+                        </div>
+                        <div class="cart-pname-box sold-out">
+                            <span>[품절]</span>
+                            <a class="pname" href="#" th:text="${cart.name}"></a>
+                            <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${cart.stock!=0}">
+                        <div class="cart-img-box">
+                            <img th:src="${cart.fileUrl}">
+                        </div>
+                        <div class="cart-pname-box sell">
+                            <a class="pname" href="#" th:text="${cart.name}"></a>
+                            <p class="poption" th:text="${cart.size}+' / '+${cart.color}"></p>
+                        </div>
+                    </th:block>
+                </div>
+            </td>
+            <td>
+                <div th:text="${cart.price}+'원'"></div>
+            </td>
+            <td>
+                <div>
+                    <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus', [[${cart.price}]])">-</button>
+                    <p th:id="'quantity-'+${cart.id}" th:text="${cart.productCnt}"></p>
+                    <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus', [[${cart.price}]])">+</button>
+                </div>
+            </td>
+            <td th:id="'price-'+${cart.id}" class="p-price" th:text="${cart.price * cart.productCnt}+'원'"></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <p>전체 상품 금액</p>
+                <p th:id="total-price" th:text="${totalAmount}+'원'"></p>
+            </td>
+        </tr>
+    </table>
+    <section class="section-order-btn">
+        <button class="btn-cart-order" type="button">주문하기</button>
+    </section>
+</div>
+
+</body>
+</html>

@@ -26,14 +26,14 @@ public class Pet {
 
     // 몸무게
     @Column(nullable = false)
-    private Integer weight;
+    private Double weight;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Pet(Long id, String name, String breed, Integer weight, Member member) {
+    public Pet(Long id, String name, String breed, Double weight, Member member) {
         this.id = id;
         this.name = name;
         this.breed = breed;

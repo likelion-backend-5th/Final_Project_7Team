@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.mypage;
 
+import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,9 +19,10 @@ public class Point {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 상태
+    // 상태 (USED, SAVED)
     @Column(nullable = false, length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PointStatus status;
     
     // 적립금
     @Column(nullable = false)
@@ -38,13 +40,18 @@ public class Point {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Orders order;
+
     @Builder
-    public Point(Long id, String status, int point, String pointSource, LocalDateTime usedAt, Member member) {
+    public Point(Long id, PointStatus status, int point, String pointSource, LocalDateTime usedAt, Member member, Orders order) {
         this.id = id;
         this.status = status;
         this.point = point;
         this.pointSource = pointSource;
         this.usedAt = usedAt;
         this.member = member;
+        this.order = order;
     }
 }
