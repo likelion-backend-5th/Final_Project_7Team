@@ -1,190 +1,214 @@
 // 프로필 (profile.html) =======================================================
 // 회원 정보 수정
 function openProfilePopup() {
-    window.open("/mypage/edit-profile", "회원 정보 수정", "width=600, height=600")
+    window.open("/mypage/profile", "회원 정보 수정", "width=600, height=600")
 }
 
 // 펫 등록
 function openPetPopup() {
-    window.open("/mypage/edit-pet", "우리 아이 등록/수정", "width=600, height=600")
+    window.open("/mypage/pet", "반려동물 등록/수정", "width=600, height=600")
+}
+
+function submitPet() {
+    const form = document.getElementById('pet-form')
+
+    const formData = new FormData(form)
+
+    if (confirm("등록하시겠습니까?")) {
+        fetch("/mypage/pet", {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                self.close();
+                alert("등록되었습니다.");
+                opener.parent.location.reload();
+            } else {
+                alert("등록이 실패하였습니다.");
+            }
+        }).catch(error => {
+            console.error('오류 발생:', error);
+        })
+    }
 }
 
 
 // 주문내역 (order_list.html) =======================================================
 // 주문 상태에 따른 필터링
-function filterOrderStatus(orderStatus) {
-    if (orderStatus === 'ALL') {
-        location.href = "/mypage/order-list"
-    } else {
-        location.href = "/mypage/order-list?orderStatus=" + orderStatus;
-    }
-}
-
-// 주문 상태별 버튼 클릭
-function handleOrderAction(opId, action) {
-    if (action === '구매확정') {
-        if (confirm("구매 확정을 하시겠습니까? 구매 확정 시 교환 또는 환불 요청이 불가능합니다.")) {
-            fetch("/mypage/order-list/purchase-confirm/" + opId, {
-                method: "put"
-            }).then(response => {
-                if (response.ok) {
-                    return response.json()
-                } else {
-                    throw new Error('구매 확정 실패');
-                }
-            }).then(data => {
-                alert(data.message)
-                location.reload()
-            }).catch(error => {
-                alert(error.message)
-            })
+    function filterOrderStatus(orderStatus) {
+        if (orderStatus === 'ALL') {
+            location.href = "/mypage/order-list"
         } else {
-            return false
+            location.href = "/mypage/order-list?orderStatus=" + orderStatus;
         }
     }
 
-    // if (action === '교환요청' || action === '환불요청') {
-    if (action === '교환요청') {
-        location.href = "/mypage/order-list/exchange/" + opId
-    }
-    if (action === '환불요청') {
-        location.href = "/mypage/order-list/refund/" + opId
-    }
+// 주문 상태별 버튼 클릭
+    function handleOrderAction(opId, action) {
+        if (action === '구매확정') {
+            if (confirm("구매 확정을 하시겠습니까? 구매 확정 시 교환 또는 환불 요청이 불가능합니다.")) {
+                fetch("/mypage/order-list/purchase-confirm/" + opId, {
+                    method: "put"
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error('구매 확정 실패');
+                    }
+                }).then(data => {
+                    alert(data.message)
+                    location.reload()
+                }).catch(error => {
+                    alert(error.message)
+                })
+            } else {
+                return false
+            }
+        }
 
-    if (action === '리뷰작성') {
-        location.href = "/mypage/order-list/review/" + opId
+        // if (action === '교환요청' || action === '환불요청') {
+        if (action === '교환요청') {
+            location.href = "/mypage/order-list/exchange/" + opId
+        }
+        if (action === '환불요청') {
+            location.href = "/mypage/order-list/refund/" + opId
+        }
+
+        if (action === '리뷰작성') {
+            location.href = "/mypage/order-list/review/" + opId
+        }
     }
-}
 
 // 교환 요청
-function requestExchange(opId) {
-    // 선택한 교환 사유
-    const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
-    if (!selectRadio) {
-        alert("교환 사유를 선택해주세요.")
-        return;
-    }
-    const selectReason = selectRadio.value;
+    function requestExchange(opId) {
+        // 선택한 교환 사유
+        const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
+        if (!selectRadio) {
+            alert("교환 사유를 선택해주세요.")
+            return;
+        }
+        const selectReason = selectRadio.value;
 
-    // 상세 사유
-    const detailReason = document.getElementById('detailReason').value;
+        // 상세 사유
+        const detailReason = document.getElementById('detailReason').value;
 
-    if (detailReason == '') {
-        alert("상세 사유를 입력해주세요.");
-        return;
-    }
+        if (detailReason == '') {
+            alert("상세 사유를 입력해주세요.");
+            return;
+        }
 
-    // 선택한 교환 희망 옵션
-    const selectColor = document.getElementById('selectColor').value;
-    const selectSize = document.getElementById('selectSize').value;
-    if (selectColor == '' || selectSize == '') {
-        alert("교환 희망 옵션을 선택해주세요.");
-        return;
-    }
+        // 선택한 교환 희망 옵션
+        const selectColor = document.getElementById('selectColor').value;
+        const selectSize = document.getElementById('selectSize').value;
+        if (selectColor == '' || selectSize == '') {
+            alert("교환 희망 옵션을 선택해주세요.");
+            return;
+        }
 
-    const data = {
-        opId: opId,
-        reason: selectReason,
-        detailReason: detailReason,
-        color: selectColor,
-        size: selectSize
-    }
+        const data = {
+            opId: opId,
+            reason: selectReason,
+            detailReason: detailReason,
+            color: selectColor,
+            size: selectSize
+        }
 
-    fetch("/mypage/order-list/exchange", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('교환 요청 완료')
-                location.href = "/mypage/order-list"
-            }
+        fetch("/mypage/order-list/exchange", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         })
-}
+            .then(response => {
+                if (response.ok) {
+                    alert('교환 요청 완료')
+                    location.href = "/mypage/order-list"
+                }
+            })
+    }
 
 // 환불 요청
-function requestRefund(opId) {
-    // 선택한 환불 사유
-    const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
-    if (!selectRadio) {
-        alert("환불 사유를 선택해주세요.")
-        return;
-    }
-    const selectReason = selectRadio.value;
+    function requestRefund(opId) {
+        // 선택한 환불 사유
+        const selectRadio = document.querySelector('input[name="exchangeReason"]:checked');
+        if (!selectRadio) {
+            alert("환불 사유를 선택해주세요.")
+            return;
+        }
+        const selectReason = selectRadio.value;
 
-    // 상세 사유
-    const detailReason = document.getElementById('detailReason').value;
+        // 상세 사유
+        const detailReason = document.getElementById('detailReason').value;
 
-    if (detailReason == '') {
-        alert("상세 사유를 입력해주세요.");
-        return;
-    }
+        if (detailReason == '') {
+            alert("상세 사유를 입력해주세요.");
+            return;
+        }
 
-    const data = {
-        opId: opId,
-        reason: selectReason,
-        detailReason: detailReason
-    }
+        const data = {
+            opId: opId,
+            reason: selectReason,
+            detailReason: detailReason
+        }
 
-    fetch("/mypage/order-list/refund", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('환불 요청 완료')
-                location.href = "/mypage/order-list"
-            }
+        fetch("/mypage/order-list/refund", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         })
-}
+            .then(response => {
+                if (response.ok) {
+                    alert('환불 요청 완료')
+                    location.href = "/mypage/order-list"
+                }
+            })
+    }
 
 // 리뷰 작성 요청
-function requestReview(opId) {
-    const reviewImgInput = document.getElementById('review-img-input')
+    function requestReview(opId) {
+        const reviewImgInput = document.getElementById('review-img-input')
 
-    const formData = new FormData()
+        const formData = new FormData()
 
-    const reviewImg = reviewImgInput.files[0]
-    formData.append('reviewImg', reviewImg)
+        const reviewImg = reviewImgInput.files[0]
+        formData.append('reviewImg', reviewImg)
 
-    const rating = document.querySelector('input[name="rate"]:checked')
-    if(!rating) {
-        alert('별점을 선택해주세요')
-        return
-    }
+        const rating = document.querySelector('input[name="rate"]:checked')
+        if (!rating) {
+            alert('별점을 선택해주세요')
+            return
+        }
 
-    const reviewData = {
-        description: document.getElementById('text-review').value,
-        rating: rating.value
-    }
+        const reviewData = {
+            description: document.getElementById('text-review').value,
+            rating: rating.value
+        }
 
-    // 특수 문자와 공백을 제거 후 글자 수 체크 (20자 이상)
-    const cleanedDescription = reviewData.description.replace(/[^\w\s가-힣]/gi, '').replace(/\s/g, '')
-    if (cleanedDescription.length < 20) {
-        alert('후기 내용을 20자 이상 작성해주세요 (공백, 특수 문자, 단순 문자 제외)')
-        return
-    }
+        // 특수 문자와 공백을 제거 후 글자 수 체크 (20자 이상)
+        const cleanedDescription = reviewData.description.replace(/[^\w\s가-힣]/gi, '').replace(/\s/g, '')
+        if (cleanedDescription.length < 20) {
+            alert('후기 내용을 20자 이상 작성해주세요 (공백, 특수 문자, 단순 문자 제외)')
+            return
+        }
 
-    formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
+        formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
 
-    fetch("/mypage/order-list/review/" + opId, {
-        method: "POST",
-        body: formData
-    })
-        .then(response => {
-            if (response.ok) {
-                alert("리뷰가 등록되었습니다")
-                location.href = "/mypage/order-list"
-            } else {
-                alert("리뷰 등록에 실패하였습니다")
-            }
+        fetch("/mypage/order-list/review/" + opId, {
+            method: "POST",
+            body: formData
         })
+            .then(response => {
+                if (response.ok) {
+                    alert("리뷰가 등록되었습니다")
+                    location.href = "/mypage/order-list"
+                } else {
+                    alert("리뷰 등록에 실패하였습니다")
+                }
+            })
+
 }
 
 
@@ -282,7 +306,7 @@ function updateAddress(addressId) {
 // 리뷰 수정 요청 버튼
 function requestReviewUpdate(reviewId) {
 
-    if(confirm("리뷰를 수정하시겠습니까?")) {
+    if (confirm("리뷰를 수정하시겠습니까?")) {
         const reviewImgInput = document.getElementById('review-img-input')
 
         const formData = new FormData()
@@ -291,7 +315,7 @@ function requestReviewUpdate(reviewId) {
         formData.append('reviewImg', reviewImg)
 
         const rating = document.querySelector('input[name="rate"]:checked')
-        if(!rating) {
+        if (!rating) {
             alert('별점을 선택해주세요')
             return
         }
@@ -327,7 +351,7 @@ function requestReviewUpdate(reviewId) {
 
 // 리뷰 삭제 요청 버튼
 function deleteReview(reviewId) {
-    if(confirm("리뷰를 삭제하시겠습니까?")) {
+    if (confirm("리뷰를 삭제하시겠습니까?")) {
         fetch("/mypage/review/" + reviewId, {
             method: "DELETE"
         })

@@ -3,10 +3,7 @@ package com.likelion.catdogpia.controller;
 
 import com.likelion.catdogpia.domain.dto.mypage.*;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
-import com.likelion.catdogpia.service.AddressService;
-import com.likelion.catdogpia.service.OrderHistoryService;
-import com.likelion.catdogpia.service.PointService;
-import com.likelion.catdogpia.service.ReviewService;
+import com.likelion.catdogpia.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +25,7 @@ public class MypageController {
     private final OrderHistoryService orderHistoryService;
     private final PointService pointService;
     private final ReviewService reviewService;
+    private final PetService petService;
 
     // 프로필 페이지
     @GetMapping("")
@@ -36,21 +34,23 @@ public class MypageController {
     }
 
     // 회원 정보 수정 페이지
-    @GetMapping("/edit-profile")
+    @GetMapping("/profile")
     public String editProfilePage(Model model) {
         return "page/mypage/profile_modify.html";
     }
 
     // 반려동물 등록 페이지
-    @GetMapping("/edit-pet")
+    @GetMapping("/pet")
     public String addPetPage(Model model) {
         return "page/mypage/add_pet.html";
     }
 
     // 반려동물 등록
-    @PostMapping("/edit-pet")
-    public String addPet(Model model) {
-        return "page/mypage/add_pet.html";
+    @PostMapping("/pet")
+    @ResponseBody
+    public ResponseDto petPost(PetFormDto petFormDto) {
+        petService.savePet("testtest", petFormDto);
+        return new ResponseDto("success");
     }
 
     // 주문 내역 페이지
@@ -81,7 +81,7 @@ public class MypageController {
     // 리뷰 등록 요청
     @PostMapping("/order-list/review/{opId}")
     @ResponseBody
-    public ResponseDto review(@PathVariable Long opId, @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
+    public ResponseDto reviewPost(@PathVariable Long opId, @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
         reviewService.saveReview("testtest", opId, reviewImg, reviewFormDto);
         return new ResponseDto("success");
     }

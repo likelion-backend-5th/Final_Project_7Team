@@ -4,19 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
 </head>
 <body>
 <div class="add-pet-container">
-    <form method="post">
-        <input type="radio"><label>강아지</label>
-        <input type="radio"><label>고양이</label>
-        <br>
-        <input placeholder="이름"><br>
-        <input placeholder="견종/묘종"><br>
-        <input placeholder="몸무게"><br>
-        <button>등록</button>
+    <form id="pet-form" method="post">
+        <div class="info-box">
+            <input name="name" placeholder="이름"><br>
+            <input name="breed" placeholder="견종/묘종"><br>
+            <input name="weight" class="weight" placeholder="몸무게"><span>kg</span>
+        </div>
+        <button type="button" id="btn-submit" onclick="submitPet()">등록</button>
     </form>
-</div>
 </div>
 </body>
 </html>

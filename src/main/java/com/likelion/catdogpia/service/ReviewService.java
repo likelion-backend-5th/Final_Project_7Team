@@ -167,6 +167,8 @@ public class ReviewService {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         reviewRepository.deleteById(reviewId);
+        
+        // TODO 포인트 회수
 
     }
 }

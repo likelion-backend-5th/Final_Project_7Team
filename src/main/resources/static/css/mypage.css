@@ -130,11 +130,41 @@
     width: 90%;
     margin: auto;
     padding: 30px;
+    padding-top: 150px;
 }
 
 .add-pet-container form {
-    margin: auto;
     text-align: center;
+}
+
+.add-pet-container .info-box {
+    width: 200px;
+    text-align: start;
+    margin: auto;
+}
+
+.add-pet-container .info-box input {
+    width: 180px;
+    height: 25px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid lightgray;
+}
+
+.add-pet-container #btn-submit {
+    width: 200px;
+    height: 40px;
+    background-color: #D3E4CD;
+    border: none;
+}
+
+.add-pet-container .info-box .weight {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.add-pet-container .info-box span {
+    color: gray;
 }
 
 /* 주문 처리 현황 */
