@@ -124,3 +124,7 @@ function deleteFile(num) {
     document.querySelector("#file" + num).remove();
     filesArr[num].is_delete = true;
 }
+
+function cancelCreateArticle() {
+    window.location.href = "/community";
+}
