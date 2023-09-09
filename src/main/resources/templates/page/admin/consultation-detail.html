@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1:1문의 상세</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="../../../js/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../../js/authentication.js"></script>
+    <script src="../../../js/consultation-detail.js"></script>
+  </head>
+  <body>
+
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+      <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+
+      <div class="flex flex-col flex-1">
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              1:1문의 상세
+            </h2>
+
+            <!-- General elements -->
+            <h4
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+              질문
+            </h4>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+            >
+              <input type="hidden" id="consulId" th:value="${consulId}">
+              <label class="text-sm">
+                <span class="text-gray-700 dark:text-gray-400">주문번호</span>
+                <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                  th:value="${consultation.orderNumber}" style="border: none; width: 80%" readonly
+                />
+              </label>
+              <label class="text-sm">
+                <span class="text-gray-700 mt-6 dark:text-gray-400">제목</span>
+                <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700 focus:outline-none  dark:text-gray-300  form-input"
+                       th:value="${consultation.subject}" style="border: none; width: 80%" readonly
+                />
+              </label>
+              <div class="mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">분류</span>
+                <div class="mt-2">
+                  <label  th:each="classification : ${classificationList}"
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400 mr-3"
+                  >
+                    <input type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      th:checked="${classification == consultation.classification}" onclick="return(false);"
+                    />
+                    <span class="ml-2" th:text="${classification.getClassification()}"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="mt-4 text-sm flex">
+                <label class="inline-block text-sm">
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">이름</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${consultation.writer}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class="text-gray-700 mt-6 dark:text-gray-400">연락처</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${#strings.substring(consultation.phone, 0, 3) + '-' + #strings.substring(consultation.phone, 3, 7) + '-' + #strings.substring(consultation.phone, 7)}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">등록일시</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${#temporals.format(consultation.createdAt, 'yyyy-MM-dd HH:mm')}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class="text-gray-700 mt-6 dark:text-gray-400">답변일시</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:if="${consultation.answeredAt} != null" th:value="${#temporals.format(consultation.answeredAt, 'yyyy-MM-dd HH:mm')}" style="border: none;" readonly
+                  />
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:unless="${consultation.answeredAt} != null" value="미답변" style="border: none;" readonly
+                  />
+                </label>
+              </div>
+              <div class="mt-4 text-sm mb-8">
+                <label class="text-sm" >
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">질문</span>
+                  <textarea th:text="${consultation.content}" rows="10" cols="100" class="w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none" readonly></textarea>
+                </label>
+              </div>
+            </div>
+            <!-- 답변 영역 -->
+            <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+              답변
+            </h4>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <label class="text-sm w-full">
+                <span class=" text-gray-700 mt-6 dark:text-gray-400">답변</span>
+                <textarea th:if="${consultation.answer} != null" th:text="${consultation.answer}" rows="10" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+                <textarea th:unless="${consultation.answer} != null" rows="10" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+              </label>
+            </div>
+          </div>
+          <!-- 버튼 영역 -->
+          <div class="col text-center">
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submit-btn" type="submit">
+              확인
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button onclick="deleteConsultation()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              삭제
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button th:onclick="|location.href='@{/admin/consultations}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              취소
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

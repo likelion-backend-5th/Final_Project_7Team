@@ -1,6 +1,8 @@
 package com.likelion.catdogpia.domain.entity.consultation;
 
 import com.likelion.catdogpia.domain.entity.BaseEntity;
+import com.likelion.catdogpia.domain.entity.order.Orders;
+import com.likelion.catdogpia.domain.entity.product.Product;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -34,25 +36,31 @@ public class Consultation extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(length = 20, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ConsulClassification classification;
+
     //== 연관관계 ==/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "parent_consul_id")
-    private Consultation parentConsul;
+    @OneToOne(mappedBy = "consultation")
+    private ConsultationAnswer consultationAnswer;
 
-    @OneToMany(mappedBy = "parentConsul", cascade = CascadeType.ALL)
-    private List<Consultation> consultationList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Orders orders;
+
 
     @Builder
-    public Consultation(Long id, String subject, String content, Member member, Consultation parentConsul, List<Consultation> consultationList) {
+    public Consultation(Long id, String subject, String content, ConsulClassification classification, Member member, ConsultationAnswer consultationAnswer, Orders orders) {
         this.id = id;
         this.subject = subject;
         this.content = content;
+        this.classification = classification;
         this.member = member;
-        this.parentConsul = parentConsul;
-        this.consultationList = consultationList;
+        this.consultationAnswer = consultationAnswer;
+        this.orders = orders;
     }
 }
