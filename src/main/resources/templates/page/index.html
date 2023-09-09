@@ -14,6 +14,25 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
 
+    <script>
+        window.addEventListener('load', function () {
+            const leftSpan = document.querySelector('.fa.fa-angle-left');
+            const rightSpan = document.querySelector('.fa.fa-angle-right');
+
+            // <img> 요소 생성
+            const leftImgElement = document.createElement('img');
+            const rightImgElement = document.createElement('img');
+
+            // <img> 요소에 src 속성을 설정
+            leftImgElement.src = '/img/main-page/arrow-left-icon.png';
+            rightImgElement.src = '/img/main-page/arrow-right-icon.png';
+
+            // <img> 요소를 <span class="fa fa-angle-left"></span> 요소 내부에 삽입합니다.
+            leftSpan.appendChild(leftImgElement);
+            rightSpan.appendChild(rightImgElement);
+        });
+    </script>
+
 </head>
 
 <body>
@@ -100,13 +119,13 @@
                     <!--                            </form>-->
                     <!--                        </div>-->
                     <!--                    </div>-->
-                    <div class="hero__item set-bg" data-setbg="img/sample/banner.jpg">
-                        <div class="hero__text">
-                            <span>FRUIT FRESH</span>
-                            <h2>Vegetable <br/>100% Organic</h2>
-                            <p>Free Pickup and Delivery Available</p>
-                            <a href="#" class="primary-btn">SHOP NOW</a>
-                        </div>
+                    <div class="hero__item set-bg" data-setbg="/img/sample/main_banner_4_3.jpg">
+                        <!--                        <div class="hero__text">-->
+                        <!--                            <span>FRUIT FRESH</span>-->
+                        <!--                            <h2>Vegetable <br/>100% Organic</h2>-->
+                        <!--                            <p>Free Pickup and Delivery Available</p>-->
+                        <!--                            <a href="#" class="primary-btn">SHOP NOW</a>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -126,31 +145,33 @@
         <div class="container">
             <div class="row">
                 <div class="categories__slider owl-carousel">
-                    <div class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/sample/cat-1.jpg">
-                            <h5><a href="#">Fresh Fruit</a></h5>
+                    <th:block th:each="hotProduct : ${hotProductList}">
+                        <div class="col-lg-3">
+                            <div class="categories__item set-bg" th:data-setbg="${hotProduct.FileUrl}">
+                                <h5><a href="#" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/sample/cat-2.jpg">
-                            <h5><a href="#">Dried Fruit</a></h5>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/sample/cat-3.jpg">
-                            <h5><a href="#">Vegetables</a></h5>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/sample/cat-4.jpg">
-                            <h5><a href="#">drink fruits</a></h5>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/sample/cat-5.jpg">
-                            <h5><a href="#">drink fruits</a></h5>
-                        </div>
-                    </div>
+                    </th:block>
+                    <!--                    <div class="col-lg-3">-->
+                    <!--                        <div class="categories__item set-bg" data-setbg="img/sample/cat-2.jpg">-->
+                    <!--                            <h5><a href="#">Dried Fruit</a></h5>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="col-lg-3">-->
+                    <!--                        <div class="categories__item set-bg" data-setbg="img/sample/cat-3.jpg">-->
+                    <!--                            <h5><a href="#">Vegetables</a></h5>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="col-lg-3">-->
+                    <!--                        <div class="categories__item set-bg" data-setbg="img/sample/cat-4.jpg">-->
+                    <!--                            <h5><a href="#">drink fruits</a></h5>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="col-lg-3">-->
+                    <!--                        <div class="categories__item set-bg" data-setbg="img/sample/cat-5.jpg">-->
+                    <!--                            <h5><a href="#">drink fruits</a></h5>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -170,271 +191,241 @@
                             <li class="active" data-filter="*">All</li>
                             <li data-filter=".oranges">의류</li>
                             <li data-filter=".fresh-meat">잡화</li>
-                            <li data-filter=".vegetables">기타1</li>
-                            <li data-filter=".fastfood">기타2</li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="row featured__filter">
-                <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-1.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
+                <th:block th:each="newProduct : ${newProductList}">
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
+                        <div class="featured__item">
+                            <div class="featured__item__pic set-bg" th:data-setbg="${newProduct.FileUrl}">
+                                <ul class="featured__item__pic__hover">
+                                    <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png"
+                                                         alt=""></a>
+                                    </li>
+                                    <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
+                                                         alt=""></a></li>
+                                </ul>
+                            </div>
+                            <div class="featured__item__text">
+                                <h6><a href="#" th:text="${newProduct.getName}"></a></h6>
+                                <hr>
+                                <div class="main-product-summary">
+                                    <h6 th:text="${#numbers.formatInteger(newProduct.price, 0, 'COMMA')+'원'}"></h6>
+                                    <div class="main-product-rating">
+                                        <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
+                                        5.0</h6>
+                                    </div>
+                                    <h6>후기1</h6>
                                 </div>
-                                <h6>후기1</h6>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-2.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fresh-meat">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-3.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood oranges">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-4.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-5.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fastfood">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-6.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-7.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood vegetables">
-                    <div class="featured__item">
-                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-8.jpg">
-                            <ul class="featured__item__pic__hover">
-                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>
-                                </li>
-                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
-                                                     alt=""></a></li>
-                            </ul>
-                        </div>
-                        <div class="featured__item__text">
-                            <h6><a href="#">Crab Pool Security</a></h6>
-                            <hr>
-                            <div class="main-product-summary">
-                                <h6>36,000원</h6>
-                                <div class="main-product-rating">
-                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                    5.0</h6>
-                                </div>
-                                <h6>후기1</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </th:block>
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" th:data-setbg="${newProductList.get(1).getFileUrl()}">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#" th:text="${newProductList.get(1).getName()}"></a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6 th:text="${#numbers.formatInteger(newProductList.get(1).getPrice(), 0, 'COMMA')+'원'}"></h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fresh-meat">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" th:data-setbg="${newProductList.get(2).getFileUrl()}">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood oranges">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-4.jpg">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-5.jpg">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fastfood">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-6.jpg">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-7.jpg">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood vegetables">-->
+                <!--                    <div class="featured__item">-->
+                <!--                        <div class="featured__item__pic set-bg" data-setbg="img/sample/feature-8.jpg">-->
+                <!--                            <ul class="featured__item__pic__hover">-->
+                <!--                                <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png" alt=""></a>-->
+                <!--                                </li>-->
+                <!--                                <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"-->
+                <!--                                                     alt=""></a></li>-->
+                <!--                            </ul>-->
+                <!--                        </div>-->
+                <!--                        <div class="featured__item__text">-->
+                <!--                            <h6><a href="#">Crab Pool Security</a></h6>-->
+                <!--                            <hr>-->
+                <!--                            <div class="main-product-summary">-->
+                <!--                                <h6>36,000원</h6>-->
+                <!--                                <div class="main-product-rating">-->
+                <!--                                    <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>-->
+                <!--                                    5.0</h6>-->
+                <!--                                </div>-->
+                <!--                                <h6>후기1</h6>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
     </section>
     <!-- New End -->
 
-    <!-- 인기 스냅 -->
+    <!-- 인기글 -->
     <section class="from-blog spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title from-blog__title">
-                        <h2>인기 스냅</h2>
+                        <h2>인기글</h2>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic">
-                            <img src="/img/sample/blog-1.jpg" alt="">
-                        </div>
-                        <div class="blog__item__text">
-                            <ul>
-                                <li>2023 / 08 / 18</li>
-                                <li><img class="main-comment-icon" src="/img/main-page/comment-icon.png" alt=""> 5</li>
-                                <li><img class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt=""> 5</li>
-                            </ul>
-                            <h5><a href="#">Cooking tips make cooking simple</a></h5>
-                            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic">
-                            <img src="/img/sample/blog-2.jpg" alt="">
-                        </div>
-                        <div class="blog__item__text">
-                            <ul>
-                                <li>2023 / 08 / 19</li>
-                                <li><img class="main-comment-icon" src="/img/main-page/comment-icon.png" alt=""> 5</li>
-                                <li><img class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt=""> 5
-                                </li>
-                            </ul>
-                            <h5><a href="#">6 ways to prepare breakfast for 30</a></h5>
-                            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
+                <th:block th:each="hotArticle : ${hotArticleList}">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="blog__item">
+                            <div class="blog__item__pic">
+                                <img src="/img/sample/blog-1.jpg" alt="">
+                            </div>
+                            <div class="blog__item__text">
+                                <ul>
+                                    <li th:text="${#temporals.format(hotArticle.createdAt, 'yyyy / MM / dd')}"></li>
+                                    <li><img th:text="${hotArticle.commentCnt}" class="main-comment-icon" src="/img/main-page/comment-icon.png" alt="">
+                                    </li>
+                                    <li><img th:text="${hotArticle.likeCnt}" class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt="">
+                                    </li>
+                                </ul>
+                                <h5><a href="#" th:text="${hotArticle.title}"></a></h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="blog__item">
-                        <div class="blog__item__pic">
-                            <img src="/img/sample/blog-3.jpg" alt="">
-                        </div>
-                        <div class="blog__item__text">
-                            <ul>
-                                <li>2023 / 08 / 19</li>
-                                <li><img class="main-comment-icon" src="/img/main-page/comment-icon.png" alt=""> 5</li>
-                                <li><img class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt=""> 5
-                                </li>
-                            </ul>
-                            <h5><a href="#">Visit the clean farm in the US</a></h5>
-                            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
-                        </div>
-                    </div>
-                </div>
+                </th:block>
             </div>
         </div>
     </section>

@@ -743,6 +743,7 @@ ol {
 
 .hero__item {
     height: 431px;
+    margin: auto;
     display: flex;
     align-items: center;
     padding-left: 75px;
@@ -787,9 +788,9 @@ ol {
 }
 
 .categories__item h5 a {
-    font-size: 18px;
+    font-size: 15px;
     color: #1c1c1c;
-    font-weight: 700;
+    font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 2px;
     padding: 12px 0 10px;
@@ -1049,9 +1050,13 @@ ol {
     margin-bottom: 70px;
 }
 
-/*---------------------
-  Breadcrumb
------------------------*/
+.from-blog__title h2:after {
+    width: 120px;
+}
+
+    /*---------------------
+      Breadcrumb
+    -----------------------*/
 
 .breadcrumb-section {
     display: flex;
