@@ -208,40 +208,6 @@ public class QueryRepository {
         }
     }
 
-    //커뮤니티 글 전체 리스트
-    public Page<ArticleListDto> findByArticleAndFilterAndKeyword(Pageable pageable, String filter, String keyword) {
-        QArticle article = QArticle.article;
-        QComment comment = QComment.comment;
-        QLikeArticle likeArticle = QLikeArticle.likeArticle;
-
-        List<ArticleListDto> articleList =
-                queryFactory.select(Projections.fields(ArticleListDto.class,
-                                article.id.as("id"),
-                                article.category.id.as("categoryId"),
-                                article.title,
-                                article.member,
-                                article.attach,
-                                article.viewCnt,
-                                Expressions.as(
-                                        JPAExpressions
-                                                .select(likeArticle.count())
-                                                .from(likeArticle)
-                                                .where(likeArticle.article.eq(article)),
-                                        "likeCnt"
-                                ),
-                                Expressions.as(
-                                        JPAExpressions
-                                                .select(comment.count())
-                                                .from(comment)
-                                                .where(comment.article.eq(article)),
-                                        "commentCnt"
-                                ),
-                                article.createdAt
-                        ))
-                        .from(article)
-                        .join(member).on(article.member.eq(member))
-                        .where(articleSearchFilter(filter,keyword))
-
     // 날짜 조건 추가
     private BooleanExpression orderDateFilter(String toDate, String fromDate) {
         if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
@@ -341,73 +307,6 @@ public class QueryRepository {
                         .limit(pageable.getPageSize())
                         .orderBy(article.id.desc())
                         .fetch();
-
-        // 카운트
-        Long count = queryFactory.select(article.count())
-                        .from(article)
-                        .join(member).on(article.member.eq(member))
-                        .where(articleSearchFilter(filter, keyword))
-                        .fetchOne();
-
-        return new PageImpl<>(articleList, pageable, count);
-    }
-
-    //커뮤니티 카테고리별 글 리스트
-    public Page<ArticleListDto> findByArticleAndCategoryAndFilterAndKeyword(Pageable pageable, Long category, String filter, String keyword) {
-        QArticle article = QArticle.article;
-        QComment comment = QComment.comment;
-        QLikeArticle likeArticle = QLikeArticle.likeArticle;
-
-        List<ArticleListDto> articleList =
-                queryFactory.select(Projections.fields(ArticleListDto.class,
-                                article.id.as("id"),
-                                article.category.id.as("categoryId"),
-                                article.title,
-                                article.member,
-                                article.attach,
-                                article.viewCnt,
-                                Expressions.as(
-                                        JPAExpressions
-                                                .select(likeArticle.count())
-                                                .from(likeArticle)
-                                                .where(likeArticle.article.eq(article)),
-                                        "likeCnt"
-                                ),
-                                Expressions.as(
-                                        JPAExpressions
-                                                .select(comment.count())
-                                                .from(comment)
-                                                .where(comment.article.eq(article)),
-                                        "commentCnt"
-                                ),
-                                article.createdAt
-                        ))
-                        .from(article)
-                        .join(member).on(article.member.eq(member))
-                        .where(article.category.id.eq(category), articleSearchFilter(filter,keyword))
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .orderBy(article.id.desc())
-                        .fetch();
-        // 카운트
-        Long count = queryFactory.select(article.count())
-                .from(article)
-                .join(member).on(article.member.eq(member))
-                .where(article.category.id.eq(category), articleSearchFilter(filter, keyword))
-                .fetchOne();
-
-        return new PageImpl<>(articleList, pageable, count);
-    }
-
-    //상태 조건 추가
-    private BooleanExpression articleSearchFilter(String filter, String keyword) {
-        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
-            return switch (filter) {
-                case "제목+내용" -> article.title.contains(keyword).or(article.content.contains(keyword));
-                case "제목" -> article.title.contains(keyword);
-                case "내용" -> article.content.contains(keyword);
-                case "작성자" -> article.member.nickname.contains(keyword);
-                default -> null;
 
         Long count =
                 queryFactory.select(article.count())
@@ -575,4 +474,114 @@ public class QueryRepository {
         }
         return null;
     }
+
+    //커뮤니티 글 전체 리스트
+    public Page<ArticleListDto> findByArticleAndFilterAndKeyword(Pageable pageable, String filter, String keyword) {
+        QArticle article = QArticle.article;
+        QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
+
+        List<ArticleListDto> articleList =
+                queryFactory.select(Projections.fields(ArticleListDto.class,
+                                article.id.as("id"),
+                                article.category.id.as("categoryId"),
+                                article.title,
+                                article.member,
+                                article.attach,
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(comment.count())
+                                                .from(comment)
+                                                .where(comment.article.eq(article)),
+                                        "commentCnt"
+                                ),
+                                article.createdAt
+                        ))
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(articleSearchFilter(filter,keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(article.id.desc())
+                        .fetch();
+        // 카운트
+        Long count = queryFactory.select(article.count())
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(articleSearchFilter(filter, keyword))
+                        .fetchOne();
+
+        return new PageImpl<>(articleList, pageable, count);
+    }
+
+    //커뮤니티 카테고리별 글 리스트
+    public Page<ArticleListDto> findByArticleAndCategoryAndFilterAndKeyword(Pageable pageable, Long category, String filter, String keyword) {
+        QArticle article = QArticle.article;
+        QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
+
+        List<ArticleListDto> articleList =
+                queryFactory.select(Projections.fields(ArticleListDto.class,
+                                article.id.as("id"),
+                                article.category.id.as("categoryId"),
+                                article.title,
+                                article.member,
+                                article.attach,
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(comment.count())
+                                                .from(comment)
+                                                .where(comment.article.eq(article)),
+                                        "commentCnt"
+                                ),
+                                article.createdAt
+                        ))
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(article.category.id.eq(category), articleSearchFilter(filter,keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(article.id.desc())
+                        .fetch();
+        // 카운트
+        Long count = queryFactory.select(article.count())
+                .from(article)
+                .join(member).on(article.member.eq(member))
+                .where(article.category.id.eq(category), articleSearchFilter(filter, keyword))
+                .fetchOne();
+
+        return new PageImpl<>(articleList, pageable, count);
+    }
+
+    //상태 조건 추가
+    private BooleanExpression articleSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "제목+내용" -> article.title.contains(keyword).or(article.content.contains(keyword));
+                case "제목" -> article.title.contains(keyword);
+                case "내용" -> article.content.contains(keyword);
+                case "작성자" -> article.member.nickname.contains(keyword);
+                default -> null;
+            };
+        } else {
+            return null;
+        }
+    }
+}
 }
