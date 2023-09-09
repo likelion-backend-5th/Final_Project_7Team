@@ -254,7 +254,7 @@ public class QueryRepository {
                                 JPAExpressions.select(attachDetail.id.min())
                                         .from(attachDetail)
                                         .where(attachDetail.attach.eq(attach))
-                )))
+                        )))
                 .where(orders.id.eq(orderId))
                 .transform(GroupBy.groupBy(orders.id).list(
                         Projections.fields(OrderDto.class,
@@ -280,25 +280,32 @@ public class QueryRepository {
                                         productOption.size,
                                         productOption.color,
                                         attachDetail.fileUrl.as("imgUrl")
-                                        )).as("orderProductList")
-                )));
+                                )).as("orderProductList")
+                        )));
     }
 
     // 커뮤니티 목록
     public Page<CommunityListDto> findByCommunityList(Pageable pageable, String filter, String keyword) {
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
 
         List<CommunityListDto> communityList =
                 queryFactory.select(Projections.fields(CommunityListDto.class,
-                        article.id,
-                        article.title,
-                        article.member.name.as("writer"),
-                        article.viewCnt,
-                        article.likeCnt,
-                        ExpressionUtils.as(
-                            JPAExpressions.select(report.id.count().castToNum(Integer.class))
-                                    .from(report)
-                                    .where(report.article.id.eq(article.id)),
-                                "reportCnt")
+                                article.id,
+                                article.title,
+                                article.member.name.as("writer"),
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                ExpressionUtils.as(
+                                        JPAExpressions.select(report.id.count().castToNum(Integer.class))
+                                                .from(report)
+                                                .where(report.article.id.eq(article.id)),
+                                        "reportCnt")
                         ))
                         .from(article)
                         .join(member).on(article.member.eq(member))
@@ -338,14 +345,14 @@ public class QueryRepository {
         QMember answerer = new QMember("answerer");
         List<QnaListDto> list =
                 queryFactory.select(Projections.fields(QnaListDto.class,
-                        qnA.id,
-                        qnA.classification,
-                        product.name.as("productName"),
-                        qnA.title,
-                        qnA.member.name.as("writer"),
-                        qnA.createdAt,
-                        answerer.name.as("answerer"),
-                        qnAAnswer.createdAt.as("answeredAt")))
+                                qnA.id,
+                                qnA.classification,
+                                product.name.as("productName"),
+                                qnA.title,
+                                qnA.member.name.as("writer"),
+                                qnA.createdAt,
+                                answerer.name.as("answerer"),
+                                qnAAnswer.createdAt.as("answeredAt")))
                         .from(qnA)
                         .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
                         .join(product).on(qnA.product.eq(product))
@@ -514,10 +521,10 @@ public class QueryRepository {
                         .fetch();
         // 카운트
         Long count = queryFactory.select(article.count())
-                        .from(article)
-                        .join(member).on(article.member.eq(member))
-                        .where(articleSearchFilter(filter, keyword))
-                        .fetchOne();
+                .from(article)
+                .join(member).on(article.member.eq(member))
+                .where(articleSearchFilter(filter, keyword))
+                .fetchOne();
 
         return new PageImpl<>(articleList, pageable, count);
     }
