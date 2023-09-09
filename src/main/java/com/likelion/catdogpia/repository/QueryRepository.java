@@ -1,5 +1,17 @@
 package com.likelion.catdogpia.repository;
 
+import com.likelion.catdogpia.domain.dto.admin.AttachDetailDto;
+import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
+import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
+import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
+import com.likelion.catdogpia.domain.entity.attach.QAttach;
+import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
+import com.likelion.catdogpia.domain.entity.community.QArticle;
+import com.likelion.catdogpia.domain.entity.community.QComment;
+import com.likelion.catdogpia.domain.entity.community.QLikeArticle;
+import com.likelion.catdogpia.domain.entity.product.QProduct;
+import com.likelion.catdogpia.domain.entity.product.QProductOption;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
@@ -15,8 +27,12 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,6 +46,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import static com.likelion.catdogpia.domain.entity.community.QArticle.article;
 import static com.likelion.catdogpia.domain.entity.user.QMember.*;
 import static com.likelion.catdogpia.domain.entity.product.QProduct.*;
 import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
@@ -242,7 +259,7 @@ public class QueryRepository {
                                 JPAExpressions.select(attachDetail.id.min())
                                         .from(attachDetail)
                                         .where(attachDetail.attach.eq(attach))
-                )))
+                        )))
                 .where(orders.id.eq(orderId))
                 .transform(GroupBy.groupBy(orders.id).list(
                         Projections.fields(OrderDto.class,
@@ -268,25 +285,32 @@ public class QueryRepository {
                                         productOption.size,
                                         productOption.color,
                                         attachDetail.fileUrl.as("imgUrl")
-                                        )).as("orderProductList")
-                )));
+                                )).as("orderProductList")
+                        )));
     }
 
     // 커뮤니티 목록
     public Page<CommunityListDto> findByCommunityList(Pageable pageable, String filter, String keyword) {
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
 
         List<CommunityListDto> communityList =
                 queryFactory.select(Projections.fields(CommunityListDto.class,
-                        article.id,
-                        article.title,
-                        article.member.name.as("writer"),
-                        article.viewCnt,
-                        article.likeCnt,
-                        ExpressionUtils.as(
-                            JPAExpressions.select(report.id.count().castToNum(Integer.class))
-                                    .from(report)
-                                    .where(report.article.id.eq(article.id)),
-                                "reportCnt")
+                                article.id,
+                                article.title,
+                                article.member.name.as("writer"),
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                ExpressionUtils.as(
+                                        JPAExpressions.select(report.id.count().castToNum(Integer.class))
+                                                .from(report)
+                                                .where(report.article.id.eq(article.id)),
+                                        "reportCnt")
                         ))
                         .from(article)
                         .join(member).on(article.member.eq(member))
@@ -326,14 +350,14 @@ public class QueryRepository {
         QMember answerer = new QMember("answerer");
         List<QnaListDto> list =
                 queryFactory.select(Projections.fields(QnaListDto.class,
-                        qnA.id,
-                        qnA.classification,
-                        product.name.as("productName"),
-                        qnA.title,
-                        qnA.member.name.as("writer"),
-                        qnA.createdAt,
-                        answerer.name.as("answerer"),
-                        qnAAnswer.createdAt.as("answeredAt")))
+                                qnA.id,
+                                qnA.classification,
+                                product.name.as("productName"),
+                                qnA.title,
+                                qnA.member.name.as("writer"),
+                                qnA.createdAt,
+                                answerer.name.as("answerer"),
+                                qnAAnswer.createdAt.as("answeredAt")))
                         .from(qnA)
                         .leftJoin(qnAAnswer).on(qnAAnswer.qna.eq(qnA))
                         .join(product).on(qnA.product.eq(product))
@@ -463,7 +487,113 @@ public class QueryRepository {
         return null;
     }
 
-    // 신고 목록
+    //커뮤니티 글 전체 리스트
+    public Page<ArticleListDto> findByArticleAndFilterAndKeyword(Pageable pageable, String filter, String keyword) {
+        QArticle article = QArticle.article;
+        QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
+
+        List<ArticleListDto> articleList =
+                queryFactory.select(Projections.fields(ArticleListDto.class,
+                                article.id.as("id"),
+                                article.category.id.as("categoryId"),
+                                article.title,
+                                article.member,
+                                article.attach,
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(comment.count())
+                                                .from(comment)
+                                                .where(comment.article.eq(article)),
+                                        "commentCnt"
+                                ),
+                                article.createdAt
+                        ))
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(articleSearchFilter(filter,keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(article.id.desc())
+                        .fetch();
+        // 카운트
+        Long count = queryFactory.select(article.count())
+                .from(article)
+                .join(member).on(article.member.eq(member))
+                .where(articleSearchFilter(filter, keyword))
+                .fetchOne();
+
+        return new PageImpl<>(articleList, pageable, count);
+    }
+
+    //커뮤니티 카테고리별 글 리스트
+    public Page<ArticleListDto> findByArticleAndCategoryAndFilterAndKeyword(Pageable pageable, Long category, String filter, String keyword) {
+        QArticle article = QArticle.article;
+        QComment comment = QComment.comment;
+        QLikeArticle likeArticle = QLikeArticle.likeArticle;
+
+        List<ArticleListDto> articleList =
+                queryFactory.select(Projections.fields(ArticleListDto.class,
+                                article.id.as("id"),
+                                article.category.id.as("categoryId"),
+                                article.title,
+                                article.member,
+                                article.attach,
+                                article.viewCnt,
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(likeArticle.count())
+                                                .from(likeArticle)
+                                                .where(likeArticle.article.eq(article)),
+                                        "likeCnt"
+                                ),
+                                Expressions.as(
+                                        JPAExpressions
+                                                .select(comment.count())
+                                                .from(comment)
+                                                .where(comment.article.eq(article)),
+                                        "commentCnt"
+                                ),
+                                article.createdAt
+                        ))
+                        .from(article)
+                        .join(member).on(article.member.eq(member))
+                        .where(article.category.id.eq(category), articleSearchFilter(filter,keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(article.id.desc())
+                        .fetch();
+        // 카운트
+        Long count = queryFactory.select(article.count())
+                .from(article)
+                .join(member).on(article.member.eq(member))
+                .where(article.category.id.eq(category), articleSearchFilter(filter, keyword))
+                .fetchOne();
+
+        return new PageImpl<>(articleList, pageable, count);
+    }
+
+    //상태 조건 추가
+    private BooleanExpression articleSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "제목+내용" -> article.title.contains(keyword).or(article.content.contains(keyword));
+                case "제목" -> article.title.contains(keyword);
+                case "내용" -> article.content.contains(keyword);
+                case "작성자" -> article.member.nickname.contains(keyword);
+                default -> null;
+
+           
+  
+   // 신고 목록
     public Page<ReportListDto> findByReportList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
         QReview review = new QReview("review");
         QComment comment = new QComment("comment");
@@ -516,11 +646,12 @@ public class QueryRepository {
             return switch (filter) {
                 case "content" -> report.content.contains(keyword);
                 default -> report.member.name.contains(keyword);
-            };
+                 };
         } else {
             return null;
         }
     }
+
 
     // 날짜 조건 추가
     private BooleanExpression reportDateFilter(String toDate, String fromDate) {
@@ -542,3 +673,5 @@ public class QueryRepository {
         return null;
     }
 }
+
+

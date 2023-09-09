@@ -1,0 +1,152 @@
+h2 {
+    font-weight: bold;
+    color: #99A799;
+}
+
+.writePost {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 100px;
+}
+
+.titleText {
+    margin-right: 700px;
+}
+
+.writing-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+select {
+    border: 1px solid #ADC2A9;
+    width: 120px;
+    height: 40px;
+    padding: 5px 10px;
+}
+
+.contentTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px;
+}
+
+.contentTitle > select {
+    margin-right: 10px;
+}
+
+#title {
+    border: 1px solid #ADC2A9;
+    width: 670px;
+    height: 40px;
+    padding: 10px 20px;
+    align-items: center;
+    flex-direction: row;
+}
+
+.imageUpload {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.imageUpload > label {
+    margin-right: 10px;
+}
+
+.imageBtn {
+    border: 1px solid #ADC2A9;
+    padding: 5px 10px;
+    display: inline-block;
+    background-color: #D3E4CD;
+    cursor: pointer;
+}
+
+span {
+    color: white;
+    font-weight: bold;
+}
+
+span:hover {
+    color: #ADC2A9;
+}
+
+input[type=file] {
+    display: none;
+}
+
+.contentArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px;
+}
+
+textarea {
+    border: 1px solid #ADC2A9;
+    width: 800px;
+    height: 500px;
+    padding: 10px 20px;
+}
+
+.writeBtn {
+    font-size: 20px;
+    padding: 10px 20px;
+    width: 100px;
+    color: white;
+    background-color: #D3E4CD;
+    border: 1px solid #ADC2A9;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.writeBtn:hover {
+    color: #D3E4CD;
+    background-color: white;
+}
+
+.cancelBtn {
+    font-size: 20px;
+    padding: 10px 20px;
+    width: 100px;
+    color: white;
+    background-color: darkgray;
+    border: 1px solid gray;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.cancelBtn:hover {
+    color: darkgray;
+    background-color: white;
+}
+
+.uploadPost {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px;
+}
+
+.file-list {
+    height: 200px;
+    width: 670px;
+    overflow: auto;
+    border: 1px solid #ADC2A9;
+    padding: 10px;
+}
+.file-list .filebox p {
+    font-size: 14px;
+    margin-top: 10px;
+    display: inline-block;
+}
+.file-list .filebox .delete i{
+    color: #ff5353;
+    margin-left: 5px;
+}

@@ -5,6 +5,7 @@ import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.cart.Cart;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
+import com.likelion.catdogpia.domain.entity.community.LikeArticle;
 import com.likelion.catdogpia.domain.entity.consultation.Consultation;
 import com.likelion.catdogpia.domain.entity.mypage.Address;
 import com.likelion.catdogpia.domain.entity.mypage.Pet;
@@ -120,6 +121,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<QnA> qnAList = new ArrayList<>();
 
+    //좋아요 연관관계
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<LikeArticle> likeArticles = new ArrayList<>();
+
     //== 회원 수정 ==//
     public void changeMember(MemberDto member) {
         this.name = member.getName();
@@ -135,7 +140,7 @@ public class Member extends BaseEntity {
     }
 
     @Builder
-    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notion> notionList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> orderList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList) {
+    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notion> notionList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> orderList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList, List<LikeArticle> likeArticles) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
@@ -159,6 +164,7 @@ public class Member extends BaseEntity {
         this.cartList = cartList;
         this.wishLists = wishLists;
         this.qnAList = qnAList;
+        this.likeArticles = likeArticles;
     }
 
     //임시 비밀번호 세팅

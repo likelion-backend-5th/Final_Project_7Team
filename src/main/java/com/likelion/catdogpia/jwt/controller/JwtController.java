@@ -47,6 +47,8 @@ public class JwtController {
         Map<String, String> response = new HashMap<>();
         if (refreshToken == null) {
             response.put("result", "fail");
+
+            log.info("토큰 재발급 완료");
         } else {
             JwtTokenResponseDto newJwt = jwtTokenProvider.reissue(refreshToken);
 
@@ -60,6 +62,8 @@ public class JwtController {
             refreshTokenCookie.setMaxAge(24*60*60);
             refreshTokenCookie.setPath("/");
             httpResponse.addCookie(refreshTokenCookie);
+
+            log.info("토큰 재발급 완료");
         }
         return response;
     }

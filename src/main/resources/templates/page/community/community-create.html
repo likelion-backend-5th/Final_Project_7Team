@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatDogPia</title>
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/writing.js"></script>
+<!--    <script src="/js/writing.js" defer></script>-->
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/writing-page.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script>
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const body = document.getElementsByTagName("body");
+            body[0].style.display = "none";
+
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    body[0].style.display = "block";
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    } else {
+                        alert('권한이 없습니다.');
+                        window.location.href = "/login";
+                    }
+                } else {
+                    alert('권한이 없습니다.');
+                    window.location.href = "/login";
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                alert('권한이 없습니다.');
+                window.location.href = "/login";
+            }
+        });
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="writePost">
+    <div class="titleText">
+        <h2>글쓰기</h2>
+        <hr>
+    </div>
+    <form action="/community/write" method="post" id="writingForm" enctype="multipart/form-data" class="writing-form">
+        <div class="contentTitle">
+            <select id="selectedCategory">
+                <option disabled selected>카테고리</option>
+                <option
+                        th:each="category : ${categoryList}"
+                        th:value="${category.id}" th:utext="${category.name}"
+                >
+                </option>
+            </select>
+            <input type="text" id="title" placeholder="제목" maxlength="50">
+        </div>
+        <div class="imageUpload">
+            <label for="images" class="imageBtn">
+                <span>이미지 업로드</span>
+                <input type="file" id="images" onchange="addFile(this)" multiple/>
+            </label>
+            <div class="file-list"></div>
+        </div>
+        <div class="contentArea">
+            <textarea id="content" placeholder="내용"></textarea>
+        </div>
+        <div class="uploadPost">
+            <button type="button" class="writeBtn" id="writeBtn" onclick="createArticle()">등록</button>
+            <button type="button" class="cancelBtn" id="cancelBtn" onclick="cancelCreateArticle()">취소</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
