@@ -1,5 +1,7 @@
 package com.likelion.catdogpia.repository;
 
+import com.likelion.catdogpia.domain.entity.community.Comment;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
 import org.springframework.data.domain.Page;

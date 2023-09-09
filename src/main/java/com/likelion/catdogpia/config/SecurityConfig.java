@@ -3,8 +3,10 @@ package com.likelion.catdogpia.config;
 import com.likelion.catdogpia.jwt.JwtTokenFilter;
 import com.likelion.catdogpia.oauth.OAuth2SuccessHandler;
 import com.likelion.catdogpia.oauth.OAuth2UserServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,6 +35,7 @@ public class SecurityConfig {
                         authHttp -> authHttp
                                 .requestMatchers("/authorize").authenticated()
                                 .requestMatchers("/signout").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/community/**").authenticated()
                                 //.requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().permitAll()
                 )
@@ -43,6 +46,10 @@ public class SecurityConfig {
                                 .userService(oAuth2UserService)
                         )
                 )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                        }))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, AuthorizationFilter.class);
         return http.build();

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Report {
 
     @Id
@@ -30,6 +32,7 @@ public class Report {
     private String content;
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime reportedAt;
 
     private LocalDateTime processedAt;
@@ -38,6 +41,10 @@ public class Report {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "writer_id")
+    private Member writer;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "review_id")
@@ -52,12 +59,13 @@ public class Report {
     private Article article;
 
     @Builder
-    public Report(Long id, String content, LocalDateTime reportedAt, LocalDateTime processedAt, Member member, Review review, Comment comment, Article article) {
+    public Report(Long id, String content, LocalDateTime reportedAt, LocalDateTime processedAt, Member member, Member writer, Review review, Comment comment, Article article) {
         this.id = id;
         this.content = content;
         this.reportedAt = reportedAt;
         this.processedAt = processedAt;
         this.member = member;
+        this.writer = writer;
         this.review = review;
         this.comment = comment;
         this.article = article;
