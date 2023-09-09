@@ -3,14 +3,18 @@ package com.likelion.catdogpia.repository;
 import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
+import com.likelion.catdogpia.domain.entity.community.QComment;
 import com.likelion.catdogpia.domain.entity.consultation.ConsulClassification;
 import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.*;
+import com.likelion.catdogpia.domain.entity.report.QReport;
+import com.likelion.catdogpia.domain.entity.review.QReview;
 import com.likelion.catdogpia.domain.entity.user.QMember;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,7 @@ import static com.likelion.catdogpia.domain.entity.report.QReport.*;
 import static com.likelion.catdogpia.domain.entity.product.QQnA.*;
 import static com.likelion.catdogpia.domain.entity.consultation.QConsultation.*;
 import static com.likelion.catdogpia.domain.entity.consultation.QConsultationAnswer.*;
+import static com.likelion.catdogpia.domain.entity.report.QReport.*;
 
 
 // 특정 엔티티 타입에 구애받지 않는 QueryDSL 관련 Repository
@@ -447,6 +452,85 @@ public class QueryRepository {
                 LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
 
                 return consultation.createdAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
+            } catch (DateTimeParseException ex) {
+                // 날짜 형식이 잘못된 경우 처리
+                log.info("날짜 형식이 잘못됨!");
+                ex.printStackTrace();
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
+    // 신고 목록
+    public Page<ReportListDto> findByReportList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        QReview review = new QReview("review");
+        QComment comment = new QComment("comment");
+        QReport subReport = new QReport("subReport");
+
+        List<ReportListDto> list =
+                queryFactory.select(Projections.fields(ReportListDto.class,
+                        report.id,
+                        report.content,
+                        report.member.name.as("reporter"),
+                        report.reportedAt,
+                        report.processedAt,
+                        ExpressionUtils.as(
+                            JPAExpressions.select(
+                                        new CaseBuilder()
+                                                .when(report.article.isNotNull()).then("커뮤니티")
+                                                .when(report.comment.isNotNull()).then("댓글")
+                                                .otherwise("리뷰")
+                                    )
+                                    .from(subReport)
+                                    .where(subReport.id.eq(report.id)),
+                                "classification")
+                        ))
+                        .from(report)
+                        .leftJoin(article).on(report.article.eq(article))
+                        .leftJoin(review).on(report.review.eq(review))
+                        .leftJoin(comment).on(report.comment.eq(comment))
+                        .where(reportSearchFilter(filter, keyword),
+                                reportDateFilter(toDate, fromDate))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(report.id.desc())
+                        .fetch();
+        Long count =
+                queryFactory.select(report.count())
+                        .from(report)
+                        .leftJoin(article).on(report.article.eq(article))
+                        .leftJoin(review).on(report.review.eq(review))
+                        .leftJoin(comment).on(report.comment.eq(comment))
+                        .where(reportSearchFilter(filter, keyword),
+                                reportDateFilter(toDate, fromDate))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // QnA 조건 추가
+    private BooleanExpression reportSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return switch (filter) {
+                case "content" -> report.content.contains(keyword);
+                default -> report.member.name.contains(keyword);
+            };
+        } else {
+            return null;
+        }
+    }
+
+    // 날짜 조건 추가
+    private BooleanExpression reportDateFilter(String toDate, String fromDate) {
+        if (StringUtils.hasText(toDate) && StringUtils.hasText(fromDate)) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate parseToDate = LocalDate.parse(toDate, dateFormatter).plusDays(1);
+                LocalDate parseFromDate = LocalDate.parse(fromDate, dateFormatter);
+
+                return report.reportedAt.between(parseFromDate.atStartOfDay(), parseToDate.atStartOfDay());
             } catch (DateTimeParseException ex) {
                 // 날짜 형식이 잘못된 경우 처리
                 log.info("날짜 형식이 잘못됨!");

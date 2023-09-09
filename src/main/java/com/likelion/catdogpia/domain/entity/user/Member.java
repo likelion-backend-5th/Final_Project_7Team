@@ -85,6 +85,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Report> reportList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
+    private List<Report> writerList = new ArrayList<>();
+
     //댓글 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
@@ -124,6 +127,11 @@ public class Member extends BaseEntity {
         this.phone = member.getPhone();
         this.email = member.getEmail();
         this.blackListYn = member.getBlackListYn();
+    }
+
+    //== 블랙 리스트 변경 ==/
+    public void changeBlackListYn() {
+        this.blackListYn = 'Y';
     }
 
     @Builder
