@@ -1,6 +1,7 @@
 package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.entity.user.Member;
+import com.likelion.catdogpia.domain.entity.user.Role;
 import com.likelion.catdogpia.jwt.repository.RefreshTokenRepository;
 import com.likelion.catdogpia.repository.MemberRepository;
 import jakarta.mail.MessagingException;
@@ -43,9 +44,14 @@ public class LoginService {
             return "fail";
         }
 
-        //토큰 발급 & 메인으로 이동
-        log.info("로그인 성공");
-        return "success";
+        //토큰 발급 &  이동
+        if(optionalMember.get().getRole().equals(Role.ADMIN)) {
+            log.info("관리자 로그인 성공");
+            return "admin";
+        } else {
+            log.info("회원 로그인 성공");
+            return "user";
+        }
     }
 
     //아이디 찾기
