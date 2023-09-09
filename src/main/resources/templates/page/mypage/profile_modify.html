@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+</head>
+<body>
+<div class="edit-profile-container">
+    <form method="post">
+        <div><label>아이디</label><input placeholder="영문, 숫자 조합 8~15자리로 입력해주세요"><br></div>
+        <div><label>이름</label><input placeholder="이름을 입력해주세요"></div>
+        <div><label>휴대폰 번호</label><input placeholder="-없이 번호만 입력해주세요"></div>
+        <div><label>이메일</label><input placeholder="사용하시는 이메일 주소를 입력해주세요">
+            <button>인증번호 전송</button>
+        </div>
+        <div><label>닉네임</label><input placeholder="사용하실 닉네임을 입력해주세요"></div>
+        <button>수정</button>
+    </form>
+</div>
+</div>
+</body>
+</html>

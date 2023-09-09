@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 리뷰 작성
+        $(document).ready(function () {
+            const reviewImgInput = $('#review-img-input');
+            const reviewUploadImg = $('#review-upload-img');
+            const removeImageButton = $('#btn-remove-image');
+
+            reviewImgInput.on('change', function (e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    // 선택된 파일을 읽어와서 이미지 소스로 할당
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        reviewUploadImg.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            })
+
+            // 'X' 버튼 클릭 시 이미지 제거
+            removeImageButton.on('click', function () {
+                if(confirm("첨부 파일을 제거하시겠습니까?")) {
+                    // 이미지 업로드 입력 필드 초기화
+                    reviewImgInput.val('');
+                    // 이미지 미리보기 초기화 (기본 이미지로 변경)
+                    reviewUploadImg.attr('src', '/img/default-img.jpeg');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <section class="review-section">
+        <p>별점</p>
+        <div id="rating-box">
+            <input type="radio" name="rate" id="star5" class="star" value="5" th:checked="${review.rating == 5}"><label for="star5">★</label>
+            <input type="radio" name="rate" id="star4" class="star" value="4" th:checked="${review.rating == 4}"><label for="star4">★</label>
+            <input type="radio" name="rate" id="star3" class="star" value="3" th:checked="${review.rating == 3}"><label for="star3">★</label>
+            <input type="radio" name="rate" id="star2" class="star" value="2" th:checked="${review.rating == 2}"><label for="star2">★</label>
+            <input type="radio" name="rate" id="star1" class="star" value="1" th:checked="${review.rating == 1}"><label for="star1">★</label>
+        </div>
+        <textarea id="text-review" placeholder="20자 이상 작성해주세요" th:text="${review.description}"></textarea>
+        <img id="review-upload-img" th:src="${review.attachDetailList != null ? review.attachDetailList[0].fileUrl : '/img/default-img.jpeg'}" src="../../../img/default-img.jpeg" class="" alt="...">
+        <button id="btn-remove-image">X</button>
+        <label for="review-img-input" id="review-img-label">
+            +
+        </label>
+        <input id="review-img-input" type="file" accept="image/*"/>
+        <button id="btn-submit" th:onclick="requestReviewUpdate([[${review.reviewId}]])">등록</button>
+    </section>
+</div>
+</body>
+
+</html>

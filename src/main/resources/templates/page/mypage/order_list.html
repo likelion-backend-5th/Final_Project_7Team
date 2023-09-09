@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <ul class="order-state">
+        <li th:onclick="filterOrderStatus('ALL')">전체</li>
+        <li th:onclick="filterOrderStatus('RECEIVED')">주문접수 <span th:text="${orderStatusCount['RECEIVED']}"></span></li>
+        <li th:onclick="filterOrderStatus('PREPARING_FOR_SHIPMENT')">배송준비 <span th:text="${orderStatusCount['PREPARING_FOR_SHIPMENT']}"></span></li>
+        <li th:onclick="filterOrderStatus('SHIPPED')">배송중 <span th:text="${orderStatusCount['SHIPPED']}"></span></li>
+        <li th:onclick="filterOrderStatus('DELIVERED')">배송완료 <span th:text="${orderStatusCount['DELIVERED']}"></span>
+        </li>
+        <li th:onclick="filterOrderStatus('PURCHASE_CONFIRMED')">구매확정 <span th:text="${orderStatusCount['PURCHASE_CONFIRMED']}"></span></li>
+        <li th:onclick="filterOrderStatus('EXCHANGE_REQUESTED')">교환요청 <span th:text="${orderStatusCount['EXCHANGE_REQUESTED']}"></span></li>
+        <li th:onclick="filterOrderStatus('EXCHANGE_COMPLETED')">교환완료 <span th:text="${orderStatusCount['EXCHANGE_COMPLETED']}"></span></li>
+        <li th:onclick="filterOrderStatus('REFUND_REQUESTED')">환불요청 <span th:text="${orderStatusCount['REFUND_REQUESTED']}"></span></li>
+        <li th:onclick="filterOrderStatus('REFUND_COMPLETED')">환불완료 <span th:text="${orderStatusCount['REFUND_COMPLETED']}"></span></li>
+    </ul>
+    <table class="mypage-table order-list-table">
+        <tr>
+            <th width="13%">주문일자</th>
+            <th width="12%">주문번호</th>
+            <th width="40%">상품정보</th>
+            <th width="15%">주문금액(수량)</th>
+            <th width="20%">주문 상태</th>
+        </tr>
+        <tr th:each="order : ${orderList}">
+            <td th:text="${#temporals.format(order.orderAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td><a th:href="@{/mypage/order-detail/{orderId}(orderId=${order.id})}" th:text="${order.orderNumber}"></a>
+            </td>
+            <td>
+                <div class="product-info-box">
+                    <a class="img-box">
+                        <img th:src="${order.fileUrl}">
+                    </a>
+                    <div class="content-box">
+                        <div th:text="${order.name}"></div>
+                        <div th:text="'옵션 : '+${order.size}+' / '+${order.color}"></div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div th:text="${order.amount}"></div>
+                <span th:text="'('+${order.quantity}+'개)'">(1개)</span></td>
+            <td>
+                <div class="order-status-box">
+                    <div th:text="${order.orderStatus}"></div>
+                    <div>
+                        <th:block th:if="${order.orderStatus.equals('주문접수') || order.orderStatus.equals('배송준비')}">
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '주문취소')">주문 취소</button>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('배송중') || order.orderStatus.equals('배송완료')}">
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '구매확정')">구매 확정</button>
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '교환요청')">교환 요청</button>
+                            <button th:onclick="handleOrderAction([[${order.opId}]], '환불요청')">환불 요청</button>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('구매확정')}">
+                            <th:block th:if="${order.writeReview == false}">
+                                <button th:onclick="handleOrderAction([[${order.opId}]], '리뷰작성')">리뷰 작성</button>
+                            </th:block>
+                            <th:block th:if="${order.writeReview == true}">
+                                리뷰 작성 완료
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${order.orderStatus.equals('교환요청') || order.orderStatus.equals('교환완료') || order.orderStatus.equals('환불요청') || order.orderStatus.equals('환불완료')}">
+                            리뷰 작성 불가
+                        </th:block>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</div>
+</body>
+</html>

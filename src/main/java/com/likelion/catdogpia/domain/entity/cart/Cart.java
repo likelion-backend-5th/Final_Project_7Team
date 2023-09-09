@@ -35,4 +35,9 @@ public class Cart {
         this.member = member;
         this.productOption = productOption;
     }
+
+    // 수량 변경
+    public void updateCount(int count) {
+        this.productCnt += count;
+    }
 }

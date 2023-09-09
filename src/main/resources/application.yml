@@ -13,11 +13,4 @@ spring:
       ddl-auto: update
     properties:
       hibernate.format_sql: true
-    show-sql: false
-#    defer-datasource-initialization: true #임시추가
-#
-#  sql:
-#    init:
-#      mode: always #임시추가
-
-
+    show-sql: true

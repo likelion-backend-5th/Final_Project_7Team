@@ -1,27 +1,23 @@
 package com.likelion.catdogpia.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
-import com.likelion.catdogpia.domain.dto.admin.MemberDto;
-import com.likelion.catdogpia.domain.dto.admin.ProductDto;
+import com.likelion.catdogpia.domain.dto.admin.*;
+import com.likelion.catdogpia.domain.entity.product.OrderStatus;
+import com.likelion.catdogpia.domain.entity.product.QnAClassification;
 import com.likelion.catdogpia.service.AdminService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -198,4 +194,184 @@ public class AdminController {
         log.info("resultMap : " + resultMap.get("duplicated"));
         return resultMap;
     }
+
+    // 주문관리 목록
+    @GetMapping("/orders")
+    public String orderList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate,
+            @RequestParam(required = false) String orderStatus
+    ) {
+        log.info("filter : " + filter);
+        log.info("keyword : " + keyword);
+        log.info("toDate : " + toDate);
+        log.info("fromDate : " + fromDate);
+        log.info("orderStatus : " + orderStatus);
+        model.addAttribute("orderList", adminService.findOrderList(pageable, filter, keyword, toDate, fromDate, orderStatus));
+        model.addAttribute("filter",filter);
+        model.addAttribute("keyword",keyword);
+        model.addAttribute("toDate",toDate);
+        model.addAttribute("fromDate",fromDate);
+        model.addAttribute("orderStatus", orderStatus);
+        model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
+        return "/page/admin/orders";
+    }
+
+    // 주문 상태 변경
+    @PostMapping("/orders/change-status")
+    public String changeOrderStatus(@RequestBody List<OrderStatusUpdateDto> updateDtoList) {
+        log.info("hi");
+        // 백단에서 한번 더 list validation check 수행
+        if(updateDtoList.isEmpty()) {
+            throw new IllegalArgumentException("list is empty");
+        }
+        else {
+            adminService.changeOrderStatus(updateDtoList);
+        }
+
+        return "redirect:/admin/orders";
+    }
+
+    // 주문내역상세 조회 및 수정
+    @GetMapping("/orders/{orderId}/modify-form")
+    public String orderModifyForm(@PathVariable Long orderId, Model model) {
+        List<OrderDto> order = adminService.findOrder(orderId);
+
+        for (OrderDto orderProductDto : order) {
+            log.info(orderProductDto.toString());
+        }
+        // 해당 주문에 대한 정보가 없으면 오류 발생
+        if(order.isEmpty()) {
+            throw new IllegalArgumentException("list is empty");
+        }
+
+        model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
+        model.addAttribute("order", order);
+
+        return "/page/admin/order-modify";
+    }
+
+    // 커뮤니티 목록
+    @GetMapping("/communities")
+    public String communityList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword
+    ) {
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("communityList", adminService.findCommunityList(pageable, filter, keyword));
+
+        return "/page/admin/communities";
+    }
+
+    // 커뮤니티 삭제
+    @PostMapping("/communities/delete-list")
+    public String communitiesDelete(@RequestBody List<Map<String, Object>> requestList) {
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteCommunities(deleteList);
+        }
+
+        return "redirect:/admin/communities";
+    }
+
+    // 커뮤니티 상세 조회
+    @GetMapping("/communities/{communityId}")
+    public String communityDetails(
+            @PathVariable Long communityId,
+            Model model) {
+        model.addAttribute("community", adminService.findCommunity(communityId));
+        return "/page/admin/community-detail";
+    }
+
+    // 커뮤니티 댓글 조회
+    @GetMapping("/communities/{communityId}/comments")
+    @ResponseBody
+    public Page<CommentDto> commentList(@PathVariable Long communityId, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<CommentDto> list = adminService.findCommentList(communityId, pageable);
+        log.info("hi : " + list);
+        return list;
+    }
+
+    // 댓글 삭제
+    @PostMapping("/communities/{communityId}/comments/{commentId}")
+    public String commentDelete(@PathVariable Long communityId, @PathVariable Long commentId) {
+        adminService.deleteComment(communityId, commentId);
+        return "redirect:/admin/communities/" + communityId;
+    }
+
+    // 댓글 등록
+    @PostMapping("/communities/{communityId}/comments/create")
+    public String commentCreate(@PathVariable Long communityId, @RequestBody String content) {
+        adminService.createComment(communityId,content);
+        return "redirect:/admin/communities/" + communityId;
+    }
+
+    // QnA목록
+    @GetMapping("/qna")
+    public String qnaList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate
+    ) {
+        Page<QnaListDto> qnaList = adminService.findQnaList(pageable, filter, keyword, toDate, fromDate);
+        model.addAttribute("qnaList", qnaList);
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("fromDate", fromDate);
+        model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
+        return "/page/admin/qna";
+    }
+
+    // 커뮤니티 삭제
+    @PostMapping("/qna/delete-list")
+    public String qnaDelete(@RequestBody List<Map<String, Object>> requestList) {
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteQnaList(deleteList);
+        }
+
+        return "redirect:/admin/communities";
+    }
+
+    // QnA 상세
+    @GetMapping("/qna/{qnaId}")
+    public String qnaDetails(@PathVariable Long qnaId, Model model) {
+        model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
+        model.addAttribute("qna", adminService.findQna(qnaId));
+        return "/page/admin/qna-detail";
+    }
+
+    // QnA 답변 등록 / 업데이트
+    @PostMapping("/qna/{qnaId}/update-answer")
+    public String qnaUpdateAnswer(@PathVariable Long qnaId, @RequestParam("answer") String answer) {
+        adminService.modifyQnaAnswer(qnaId, answer);
+
+        return "redirect:/admin/qna";
+    }
+
 }

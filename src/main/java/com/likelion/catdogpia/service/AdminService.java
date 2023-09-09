@@ -4,15 +4,16 @@ import com.likelion.catdogpia.domain.dto.admin.*;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
-import com.likelion.catdogpia.domain.entity.product.Product;
-import com.likelion.catdogpia.domain.entity.product.ProductOption;
+import com.likelion.catdogpia.domain.entity.community.Article;
+import com.likelion.catdogpia.domain.entity.community.Comment;
+import com.likelion.catdogpia.domain.entity.order.Orders;
+import com.likelion.catdogpia.domain.entity.product.*;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,13 +31,22 @@ public class AdminService {
 
     // 회원관련
     private final MemberRepository memberRepository;
-    // 상품 관련
+    // 상품관련
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AttachRepository attachRepository;
     private final AttachDetailRepository attachDetailRepository;
     private final S3UploadService s3UploadService;
+    // 주문관련
+    private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
+    // 커뮤니티 관련
+    private final CommunityRepository communityRepository;
+    private final CommentRepository commentRepository;
+    // QnA 관련
+    private final QnaRepository qnaRepository;
+    private final QnAAnswerRepository qnAAnswerRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -318,6 +328,154 @@ public class AdminService {
             return productRepository.findByIdAndName(productId, name) != null;
         } else {
             return productRepository.findByName(name) != null;
+        }
+    }
+
+    // 주문 목록
+    public Page<OrderListDto> findOrderList(Pageable pageable, String filter, String keyword, String toDate, String fromDate, String orderStatus) {
+        return queryRepository.findByOrderList(pageable, filter, keyword, toDate, fromDate, orderStatus != null ? OrderStatus.valueOf(orderStatus) : null);
+    }
+
+    // 주문 상태 변경
+    @Transactional
+    public void changeOrderStatus(List<OrderStatusUpdateDto> updateDtoList) {
+
+        for (OrderStatusUpdateDto updateDto : updateDtoList) {
+            // id를 가지고 해당 주문 상품을 찾음
+            OrderProduct findOrderProduct = orderProductRepository.findById(updateDto.getId()).orElseThrow(IllegalArgumentException::new);
+            // 이미 같으면 update 하지 않고 스킵
+            if(findOrderProduct.getOrderStatus().name().equals(updateDto.getStatus())) continue;
+            else {
+                findOrderProduct.changeStatus(updateDto.getStatus());
+            }
+        }
+    }
+
+    // 주문내역 조회
+    public List<OrderDto> findOrder(Long orderId) {
+        // 해당 주문 내역이 있는지 확인 조회
+        Orders orders = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+
+        // 주문 목록 리턴
+        return queryRepository.findOrder(orderId);
+    }
+
+    // 커뮤니티 목록 조회
+    public Page<CommunityListDto> findCommunityList(Pageable pageable, String filter, String keyword) {
+        return queryRepository.findByCommunityList(pageable, filter, keyword);
+    }
+
+    // 커뮤니티 삭제
+    @Transactional
+    public void deleteCommunities(List<Long> deleteList) {
+
+        // 커뮤니티 id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(communityRepository.existsById(deleteId)) {
+                communityRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    // 커뮤니티 상세
+    public CommunityDto findCommunity(Long communityId) {
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+        // 커뮤니티 조회
+        CommunityDto community = CommunityDto.fromEntity(findArticle);
+        // 파일이 있으면 fileUrl 조회해서 넘김
+        if(findArticle.getAttach() != null) {
+            List<String> findList = attachDetailRepository.findFileUrls(findArticle.getAttach());
+            community.setFileUrlList(findList);
+        }
+        return community;
+    }
+
+    // 댓글 조회
+    public Page<CommentDto> findCommentList(Long communityId, Pageable pageable) {
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+         // 댓글이 있으면 페이지 네이션
+        if(!findArticle.getCommentList().isEmpty()) {
+            return commentRepository.findByArticle(findArticle, pageable)
+                            .map(c -> CommentDto.builder()
+                                    .id(c.getId())
+                                    .content(c.getContent())
+                                    .commentWriter(c.getMember().getName())
+                                    .createdAt(c.getCreatedAt())
+                                    .build());
+
+        } else return null;
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long communityId, Long commentId) {
+        if(commentRepository.existsById(commentId)) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 댓글 등록
+    @Transactional
+    public void createComment(Long communityId, String content) {
+
+        Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
+        // 권한에서 사용자에 대한 정보가져오기
+        // 현재는 권한이 구현되지 않아 일단 1번으로 하기로함
+        Member findMember = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+
+        commentRepository.save(Comment.builder()
+                .article(findArticle)
+                .content(content)
+                .member(findMember)
+                .build());
+    }
+
+    // QnA목록 조회
+    public Page<QnaListDto> findQnaList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        return queryRepository.findByQnaList(pageable, filter, keyword, toDate, fromDate);
+    }
+
+    // QnA삭제
+    @Transactional
+    public void deleteQnaList(List<Long> deleteList) {
+        // QnA id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(qnaRepository.existsById(deleteId)) {
+                qnaRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    // QnA 상세 조회
+    public QnADto findQna(Long qnaId) {
+        QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
+        return QnADto.fromEntity(findQna);
+    }
+
+    // QnA 답변 등록 / 업데이트
+    @Transactional
+    public void modifyQnaAnswer(Long qnaId, String answer) {
+        QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
+
+        // 사용자 권한 가져오도록 변경 필요
+        Member answerer = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+
+        // 답글이 존재하지 않으면 새로 등록
+        if(findQna.getQnAAnswer() == null) {
+            qnAAnswerRepository.save(QnAAnswer.builder()
+                            .answer(answer)
+                            .qna(findQna)
+                            .member(answerer)
+                            .build());
+        } else {
+            // 답글이 이미 등록되어 있지만 답변을 변경하고 싶으면 답변을 수정하도록 함
+            findQna.getQnAAnswer().changeAnswer(answer, answerer);
         }
     }
 }
