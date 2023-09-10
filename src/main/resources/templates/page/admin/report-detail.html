@@ -16,6 +16,7 @@
     <script src="../../../js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../../js/report-detail.js"></script>
+    <script src="../../../js/authentication.js"></script>
   </head>
   <body>
 
@@ -89,7 +90,7 @@
             </div>
           <!-- 버튼 영역 -->
           <div class="col text-center">
-            <button onclick="processReport()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            <button th:if="${report.processedAt} == null" onclick="processReport()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               확인
             </button>
             &nbsp;&nbsp;&nbsp;

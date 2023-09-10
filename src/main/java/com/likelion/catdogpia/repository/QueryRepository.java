@@ -301,7 +301,7 @@ public class QueryRepository {
                                 article.viewCnt,
                                 Expressions.as(
                                         JPAExpressions
-                                                .select(likeArticle.count())
+                                                .select(likeArticle.count().castToNum(Integer.class))
                                                 .from(likeArticle)
                                                 .where(likeArticle.article.eq(article)),
                                         "likeCnt"
