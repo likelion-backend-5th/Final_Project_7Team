@@ -4,12 +4,14 @@ import com.likelion.catdogpia.domain.dto.admin.AttachDetailDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.dto.notice.NoticeDto;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
 import com.likelion.catdogpia.domain.entity.community.QArticle;
 import com.likelion.catdogpia.domain.entity.community.QComment;
 import com.likelion.catdogpia.domain.entity.community.QLikeArticle;
+import com.likelion.catdogpia.domain.entity.notice.QNotice;
 import com.likelion.catdogpia.domain.entity.product.QProduct;
 import com.likelion.catdogpia.domain.entity.product.QProductOption;
 import com.likelion.catdogpia.domain.dto.admin.*;
@@ -47,6 +49,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static com.likelion.catdogpia.domain.entity.community.QArticle.article;
+import static com.likelion.catdogpia.domain.entity.notice.QNotice.*;
 import static com.likelion.catdogpia.domain.entity.user.QMember.*;
 import static com.likelion.catdogpia.domain.entity.product.QProduct.*;
 import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
@@ -676,5 +679,43 @@ public class QueryRepository {
             return null;
         }
         return null;
+    }
+
+    // 공지사항 목록
+    public Page<NoticeDto> findByNoticeList(Pageable pageable, String filter, String keyword) {
+
+        List<NoticeDto> list =
+                queryFactory.select(Projections.fields(NoticeDto.class,
+                        notice.id,
+                        notice.title,
+                        notice.content,
+                        notice.createdAt,
+                        notice.updatedAt,
+                        notice.viewCnt))
+                        .from(notice)
+                        .join(member).on(notice.member.eq(member))
+                        .where(noticeSearchFilter(filter, keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(notice.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(notice.count())
+                        .from(notice)
+                        .join(member).on(notice.member.eq(member))
+                        .where(noticeSearchFilter(filter, keyword))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // 공지사항 조건 추가
+    private BooleanExpression noticeSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return notice.title.contains(keyword);
+        } else {
+            return null;
+        }
     }
 }
