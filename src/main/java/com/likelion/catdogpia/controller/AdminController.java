@@ -452,4 +452,69 @@ public class AdminController {
         return ResponseEntity.ok(HttpStatus.OK.name());
     }
 
+    // 신고 관리 목록
+    @GetMapping("/reports")
+    public String reportList(
+            Model model,
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @RequestParam(required = false) String filter,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String toDate,
+            @RequestParam(required = false) String fromDate
+    ){
+        model.addAttribute("reportList", adminService.findReportList(pageable, filter, keyword, toDate, fromDate));
+        model.addAttribute("filter", filter);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("fromDate", fromDate);
+        return "/page/admin/reports";
+    }
+
+    // 신고 삭제
+    @PostMapping("/reports/delete-list")
+    public ResponseEntity<String> reportDelete(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody List<Map<String, Object>> requestList
+    ) {
+        // 토큰이 없으면 오류 발생
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 한번더 체크
+        if(requestList.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            List<Long> deleteList = new ArrayList<>();
+            // deleteList 생성
+            for (Map<String, Object> map : requestList) {
+                deleteList.add(Long.valueOf((String) map.get("id")));
+            }
+            adminService.deleteReportList(deleteList);
+        }
+
+        return ResponseEntity.ok(HttpStatus.OK.name());
+    }
+
+    // 신고 상세
+    @GetMapping("/reports/{reportId}")
+    public String reportDetails(@PathVariable Long reportId, Model model) {
+        model.addAttribute("report", adminService.findReport(reportId));
+        return "/page/admin/report-detail";
+    }
+
+    // 신고 처리
+    @PostMapping("/reports/{reportId}/processed")
+    public ResponseEntity<String> reportProcessed( @RequestHeader("Authorization") String accessToken, @PathVariable Long reportId){
+        // 토큰이 없으면 오류 발생
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        //
+        adminService.processedReport(loginId, reportId);
+
+        return ResponseEntity.ok(HttpStatus.OK.name());
+    }
 }

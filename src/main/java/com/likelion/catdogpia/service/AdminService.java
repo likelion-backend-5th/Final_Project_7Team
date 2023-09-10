@@ -10,6 +10,7 @@ import com.likelion.catdogpia.domain.entity.consultation.Consultation;
 import com.likelion.catdogpia.domain.entity.consultation.ConsultationAnswer;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.*;
+import com.likelion.catdogpia.domain.entity.report.Report;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,8 @@ public class AdminService {
     // 1:1 문의 관련
     private final ConsultationRepository consultationRepository;
     private final ConsultationAnswerRepository consultationAnswerRepository;
+    // 신고 관련
+    private final ReportRepository reportRepository;
     // 공통
     private final QueryRepository queryRepository;
 
@@ -526,6 +529,45 @@ public class AdminService {
         } else {
             // 답글이 이미 등록되어 있지만 답변을 변경하고 싶으면 답변을 수정하도록 함
             findConsultation.getConsultationAnswer().changeAnswer(answer, answerer);
+        }
+    }
+
+    // 신고관리 목록
+    public Page<ReportListDto> findReportList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+        return queryRepository.findByReportList(pageable, filter, keyword, toDate, fromDate);
+    }
+
+    // 신고 삭제
+    @Transactional
+    public void deleteReportList(List<Long> deleteList) {
+        // id가 있으면 삭제
+        for (Long deleteId : deleteList) {
+            if(reportRepository.existsById(deleteId)) {
+                reportRepository.deleteById(deleteId);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    // 신고 상세조회
+    public ReportDto findReport(Long reportId) {
+        Report findReport = reportRepository.findById(reportId).orElseThrow(IllegalArgumentException::new);
+        return ReportDto.fromEntity(findReport);
+    }
+
+    // 신고 처리
+    @Transactional
+    public void processedReport(String loginId, Long reportId) {
+        Report findReport = reportRepository.findById(reportId).orElseThrow(IllegalArgumentException::new);
+        // 관리자 정보 가져오기
+        Member manager = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 신고 처리
+        findReport.processed();
+        // 신고 횟수가 3회 이상인 사람은 블랙리스트로 변경
+        if(reportRepository.countByWriterAndProcessedAtIsNotNull(findReport.getWriter()) >= 3) {
+            findReport.getWriter().changeBlackListYn();
+            log.info("블랙리스트 처리");
         }
     }
 }
