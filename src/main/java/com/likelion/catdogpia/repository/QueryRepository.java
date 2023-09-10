@@ -519,7 +519,7 @@ public class QueryRepository {
                         ))
                         .from(article)
                         .join(member).on(article.member.eq(member))
-                        .where(articleSearchFilter(filter,keyword))
+                        .where(articleSearchFilter(filter, keyword))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .orderBy(article.id.desc())
@@ -566,7 +566,7 @@ public class QueryRepository {
                         ))
                         .from(article)
                         .join(member).on(article.member.eq(member))
-                        .where(article.category.id.eq(category), articleSearchFilter(filter,keyword))
+                        .where(article.category.id.eq(category), articleSearchFilter(filter, keyword))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .orderBy(article.id.desc())
@@ -590,32 +590,37 @@ public class QueryRepository {
                 case "내용" -> article.content.contains(keyword);
                 case "작성자" -> article.member.nickname.contains(keyword);
                 default -> null;
+            };
+        } else {
+            return null;
+        }
+    }
 
-           
-  
-   // 신고 목록
-    public Page<ReportListDto> findByReportList(Pageable pageable, String filter, String keyword, String toDate, String fromDate) {
+
+    // 신고 목록
+    public Page<ReportListDto> findByReportList(Pageable pageable, String filter, String keyword, String
+            toDate, String fromDate) {
         QReview review = new QReview("review");
         QComment comment = new QComment("comment");
         QReport subReport = new QReport("subReport");
 
         List<ReportListDto> list =
                 queryFactory.select(Projections.fields(ReportListDto.class,
-                        report.id,
-                        report.content,
-                        report.member.name.as("reporter"),
-                        report.reportedAt,
-                        report.processedAt,
-                        ExpressionUtils.as(
-                            JPAExpressions.select(
-                                        new CaseBuilder()
-                                                .when(report.article.isNotNull()).then("커뮤니티")
-                                                .when(report.comment.isNotNull()).then("댓글")
-                                                .otherwise("리뷰")
-                                    )
-                                    .from(subReport)
-                                    .where(subReport.id.eq(report.id)),
-                                "classification")
+                                report.id,
+                                report.content,
+                                report.member.name.as("reporter"),
+                                report.reportedAt,
+                                report.processedAt,
+                                ExpressionUtils.as(
+                                        JPAExpressions.select(
+                                                        new CaseBuilder()
+                                                                .when(report.article.isNotNull()).then("커뮤니티")
+                                                                .when(report.comment.isNotNull()).then("댓글")
+                                                                .otherwise("리뷰")
+                                                )
+                                                .from(subReport)
+                                                .where(subReport.id.eq(report.id)),
+                                        "classification")
                         ))
                         .from(report)
                         .leftJoin(article).on(report.article.eq(article))
@@ -646,7 +651,7 @@ public class QueryRepository {
             return switch (filter) {
                 case "content" -> report.content.contains(keyword);
                 default -> report.member.name.contains(keyword);
-                 };
+            };
         } else {
             return null;
         }
@@ -673,5 +678,3 @@ public class QueryRepository {
         return null;
     }
 }
-
-
