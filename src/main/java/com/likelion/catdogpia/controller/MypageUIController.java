@@ -54,13 +54,17 @@ public class MypageUIController {
     }
 
     // 주문 내역 페이지
+//    @GetMapping("/order-list")
+//    public String orderListPage(Model model, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+//        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
+//        model.addAttribute("orderList", orderList);
+//        // 주문 상태별 개수
+//        model.addAttribute("orderStatusCount", orderHistoryService.getOrderCountByStatus("testtest"));
+//        return "page/mypage/order_list.html";
+//    }
     @GetMapping("/order-list")
-    public String orderListPage(Model model, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
-        model.addAttribute("orderList", orderList);
-        // 주문 상태별 개수
-        model.addAttribute("orderStatusCount", orderHistoryService.getOrderCountByStatus("testtest"));
-        return "page/mypage/order_list.html";
+    public String orderListPage() {
+        return "page/mypage/order_list_v2.html";
     }
 
     // 주문 내역 > 리뷰 작성 페이지

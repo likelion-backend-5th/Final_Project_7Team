@@ -76,13 +76,27 @@ public class MypageController {
     }
 
     // 주문 내역 페이지
+//    @GetMapping("/order-list/data")
+//    public String orderListPage(@RequestHeader("Authorization") String accessToken, Model model, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+//        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
+//        model.addAttribute("orderList", orderList);
+//        // 주문 상태별 개수
+//        model.addAttribute("orderStatusCount", orderHistoryService.getOrderCountByStatus("testtest"));
+//        return "page/mypage/order_list.html";
+//    }
     @GetMapping("/order-list/data")
-    public String orderListPage(@RequestHeader("Authorization") String accessToken, Model model, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
-        model.addAttribute("orderList", orderList);
-        // 주문 상태별 개수
-        model.addAttribute("orderStatusCount", orderHistoryService.getOrderCountByStatus("testtest"));
-        return "page/mypage/order_list.html";
+    public Map<String, Object>  orderListPage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<OrderListDto> orderList = orderHistoryService.readAllOrder(loginId, orderStatus, page);
+
+        response.put("orderList", orderList);
+        response.put("orderStatusCount", orderHistoryService.getOrderCountByStatus(loginId));
+
+        return response;
     }
 
     // 주문 내역 > 구매 확정

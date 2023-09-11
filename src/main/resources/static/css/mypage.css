@@ -290,10 +290,6 @@ ul.order-state li {
     object-fit: cover;
 }
 
-.order-list-table .content-box {
-
-}
-
 .order-list-table .order-status-box {
     display: flex;
     align-items: center;

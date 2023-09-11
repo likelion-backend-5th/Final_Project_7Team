@@ -45,7 +45,7 @@ async function openProfilePopup() {
         alert("권한이 없습니다.")
         return
     }
-    window.open("/mypage/profile/update", "회원 정보 수정", "width=600, height=600")
+    window.open("/mypage/profile/update", "회원 정보 수정", "width=620, height=600")
 }
 
 // 펫 등록
@@ -327,7 +327,7 @@ function deleteAddress(addressId) {
 }
 
 function openEditAddressPopup(addressId) {
-    open("/mypage/address/update/" + addressId, "배송지 수정", "width=700, height=800, left=0, top=0")
+    open("/mypage/address/update/" + addressId, "배송지 수정", "width=600, height=600, left=0, top=0")
 }
 
 function updateAddress(addressId) {
