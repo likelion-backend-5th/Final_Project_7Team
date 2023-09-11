@@ -1,5 +1,6 @@
 package com.likelion.catdogpia.domain.entity.consultation;
 
+import com.likelion.catdogpia.domain.dto.notice.ConsulRequestDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.Product;
@@ -48,19 +49,24 @@ public class Consultation extends BaseEntity {
     @OneToOne(mappedBy = "consultation")
     private ConsultationAnswer consultationAnswer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Orders orders;
+    //== DTO -> Entity ==//
+    public static Consultation toEntity(ConsulRequestDto dto, Member member){
 
+        return Consultation.builder()
+                .subject(dto.getSubject())
+                .classification(ConsulClassification.valueOf(dto.getClassification()))
+                .content(dto.getContent())
+                .member(member)
+                .build();
+    }
 
     @Builder
-    public Consultation(Long id, String subject, String content, ConsulClassification classification, Member member, ConsultationAnswer consultationAnswer, Orders orders) {
+    public Consultation(Long id, String subject, String content, ConsulClassification classification, Member member, ConsultationAnswer consultationAnswer) {
         this.id = id;
         this.subject = subject;
         this.content = content;
         this.classification = classification;
         this.member = member;
         this.consultationAnswer = consultationAnswer;
-        this.orders = orders;
     }
 }

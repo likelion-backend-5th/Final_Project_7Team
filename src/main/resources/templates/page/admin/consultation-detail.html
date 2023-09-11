@@ -15,8 +15,8 @@
     ></script>
     <script src="../../../js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../js/authentication.js"></script>
-    <script src="../../../js/consultation-detail.js"></script>
+    <script src="/js/authentication.js"></script>
+    <script src="/js/consultation-detail.js"></script>
   </head>
   <body>
 
@@ -47,12 +47,6 @@
             <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
             >
               <input type="hidden" id="consulId" th:value="${consulId}">
-              <label class="text-sm">
-                <span class="text-gray-700 dark:text-gray-400">주문번호</span>
-                <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
-                  th:value="${consultation.orderNumber}" style="border: none; width: 80%" readonly
-                />
-              </label>
               <label class="text-sm">
                 <span class="text-gray-700 mt-6 dark:text-gray-400">제목</span>
                 <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700 focus:outline-none  dark:text-gray-300  form-input"
@@ -123,7 +117,7 @@
           </div>
           <!-- 버튼 영역 -->
           <div class="col text-center">
-            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submit-btn" type="submit">
+            <button th:if="${consultation.answer} == null" onclick="updateAnswer()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               확인
             </button>
             &nbsp;&nbsp;&nbsp;

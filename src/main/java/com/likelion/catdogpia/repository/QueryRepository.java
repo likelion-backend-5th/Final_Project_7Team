@@ -23,6 +23,7 @@ import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.*;
 import com.likelion.catdogpia.domain.entity.report.QReport;
 import com.likelion.catdogpia.domain.entity.review.QReview;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.domain.entity.user.QMember;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
@@ -428,7 +429,6 @@ public class QueryRepository {
                 queryFactory.select(Projections.fields(ConsultationListDto.class,
                                 consultation.id,
                                 consultation.classification,
-                                consultation.orders.orderNumber,
                                 consultation.subject,
                                 consultation.member.name.as("writer"),
                                 consultation.createdAt,
@@ -456,14 +456,13 @@ public class QueryRepository {
         return new PageImpl<>(list, pageable, count);
     }
 
-    // QnA 조건 추가
+    // 1:1문의 조건 추가
     private BooleanExpression consulSearchFilter(String filter, String keyword) {
         if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
             return switch (filter) {
                 case "title" -> consultation.subject.contains(keyword);
                 case "writer" -> consultation.member.name.contains(keyword);
-                case "classification" -> consultation.classification.eq(ConsulClassification.valueOf(keyword));
-                default -> consultation.orders.orderNumber.contains(keyword);
+                default -> consultation.classification.eq(ConsulClassification.valueOf(keyword));
             };
         } else {
             return null;
@@ -717,5 +716,32 @@ public class QueryRepository {
         } else {
             return null;
         }
+    }
+
+    public Page<ConsultationListDto> findByConsultationListWithMember(Pageable pageable, String filter, String keyword, Member findMember) {
+        List<ConsultationListDto> list =
+                queryFactory.select(Projections.fields(ConsultationListDto.class,
+                                consultation.id,
+                                consultation.classification,
+                                consultation.subject,
+                                consultation.member.name.as("writer"),
+                                consultation.createdAt,
+                                consultationAnswer.createdAt.as("answeredAt")))
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .where(consulSearchFilter(filter, keyword), consultation.member.eq(findMember))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(consultation.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(consultation.count())
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .where(consulSearchFilter(filter, keyword), consultation.member.eq(findMember))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
     }
 }
