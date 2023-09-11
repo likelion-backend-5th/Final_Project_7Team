@@ -1,8 +1,12 @@
 package com.likelion.catdogpia.service;
 
+import com.likelion.catdogpia.domain.dto.admin.ConsultationListDto;
+import com.likelion.catdogpia.domain.dto.notice.ConsulRequestDto;
 import com.likelion.catdogpia.domain.dto.notice.NoticeDto;
+import com.likelion.catdogpia.domain.entity.consultation.Consultation;
 import com.likelion.catdogpia.domain.entity.notice.Notice;
 import com.likelion.catdogpia.domain.entity.user.Member;
+import com.likelion.catdogpia.repository.ConsultationRepository;
 import com.likelion.catdogpia.repository.MemberRepository;
 import com.likelion.catdogpia.repository.NoticeRepository;
 import com.likelion.catdogpia.repository.QueryRepository;
@@ -13,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.module.Configuration;
 import java.util.List;
 
 
@@ -24,6 +29,7 @@ public class NoticeService {
 
     private final MemberRepository memberRepository;
     private final NoticeRepository noticeRepository;
+    private final ConsultationRepository consultationRepository;
     private final QueryRepository queryRepository;
 
     // 목록 조회
@@ -76,5 +82,19 @@ public class NoticeService {
                 throw new IllegalArgumentException();
             }
         }
+    }
+
+    // 사용자 1:1문의 목록
+    public Page<ConsultationListDto> findConsultationList(String loginId, Pageable pageable, String filter, String keyword) {
+        Member findMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+
+        return queryRepository.findByConsultationListWithMember(pageable, filter, keyword,findMember);
+    }
+
+    // 1:1문의 등록
+    @Transactional
+    public void createConsultation(String loginId, ConsulRequestDto requestDto) {
+        Member findMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        consultationRepository.save(Consultation.toEntity(requestDto, findMember));
     }
 }

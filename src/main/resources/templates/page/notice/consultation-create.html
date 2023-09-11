@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1문의 등록</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/notice.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/consultation.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="notice-container">
+    <div style="position: relative;" class="mt-4">
+        <div class="content">
+            <div>
+                <div class="titleArea">
+                    <h2><font color="#555555">1:1문의 등록</font></h2>
+                    <hr>
+                    <p></p>
+                </div>
+            </div>
+            <table class="notice-detail-table">
+                <tbody>
+                <tr>
+                    <th scope="row">제목</th>
+                    <td><input id="subject" style="width: 98%;"></td>
+                </tr>
+                <tr>
+                    <th scope="row">분류</th>
+                    <td>
+                        <label  th:each="classification : ${classificationList}"
+                                class="inline-flex items-center text-gray-600 dark:text-gray-400 mr-3"
+                        >
+                            <input type="radio" th:value="${classification}" name="classification"
+                                   class="classification text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                            />
+                            <span class="ml-2" th:text="${classification.getClassification()}"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" style="padding: 8px 0 8px 80px;">문의</th>
+                    <td colspan="2">
+                        <textarea id="content" rows="10" cols="150" class="answer text-sm dark:bg-gray-700" style="resize: none"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="position: relative; margin-top: 40px; text-align: center;">
+                <button id="createBtn" onclick="createConsultation()">등록</button>
+                &nbsp; &nbsp;
+                <button id="searchBtn" th:onclick="|location.href='@{/notices/consultations-form}'|">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

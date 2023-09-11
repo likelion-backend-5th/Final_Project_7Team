@@ -36,27 +36,34 @@ function deleteConsultation() {
     }
 }
 
-$("#submit-btn").click(function (){
+function updateAnswer() {
     let consulId = parseInt($('#consulId').val());
     let answer = encodeURIComponent($('.answer').val());
     const accessToken = localStorage.getItem("accessToken");
 
-    $.ajax({
-        url: `/admin/consultations/${consulId}/update-answer`,
-        type: "POST",
-        dataType: "text",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        },
-        data: "answer=" + answer, // 인코딩된 데이터를 전송
-        success: function (response) {
-            // 성공적으로 처리된 경우의 동작
-            alert("등록되었습니다.")
-            window.location.href = "/admin/consultations";
-        },
-        error: function (error) {
-            // 오류 처리 동작
-            //window.location.href = "/admin/error-page/500";
+
+    if(answer) {
+        if (confirm("등록하시겠습니까??")) {
+            $.ajax({
+                url: `/admin/consultations/${consulId}/update-answer`,
+                type: "POST",
+                dataType: "text",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                data: "answer=" + answer, // 인코딩된 데이터를 전송
+                success: function (response) {
+                    // 성공적으로 처리된 경우의 동작
+                    alert("등록되었습니다.")
+                    window.location.href = "/admin/consultations";
+                },
+                error: function (error) {
+                    // 오류 처리 동작
+                    window.location.href = "/admin/error-page/500";
+                }
+            })
         }
-    })
-})
+    } else {
+        alert("답변이 작성되지 않았습니다. 다시 작성해주세요.")
+    }
+}

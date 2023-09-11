@@ -401,7 +401,7 @@ public class AdminController {
         return "/page/admin/consultations";
     }
 
-    // 커뮤니티 삭제
+    // 1:1 문의 삭제
     @PostMapping("/consultations/delete-list")
     public ResponseEntity<String> consultationsDelete(
             @RequestHeader("Authorization") String accessToken,
