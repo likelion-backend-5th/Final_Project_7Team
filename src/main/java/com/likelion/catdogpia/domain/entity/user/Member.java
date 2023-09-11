@@ -22,6 +22,7 @@ import com.likelion.catdogpia.domain.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
@@ -173,7 +175,7 @@ public class Member extends BaseEntity {
         this.name = dto.getName();
         this.nickname = dto.getNickname();
         this.phone = dto.getPhone();
-        if(dto.getPassword() != null) {
+        if(dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             this.password = dto.getPassword();
         }
     }
