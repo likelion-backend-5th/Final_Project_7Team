@@ -103,25 +103,50 @@
 }
 
 .edit-profile-container form {
-    width: 90%;
-    margin: auto;
+    width: 100%;
+    margin-top: 10px;
+    margin-left: auto;
     text-align: center;
+    font-size: 14px;
 }
 
 .edit-profile-container form div {
+    height: 60px;
     text-align: start;
-    margin-bottom: 15px;
 }
 
 .edit-profile-container form label {
     display: inline-block;
-    width: 90px;
+    width: 130px;
 }
 
 .edit-profile-container form input {
-    width: 250px;
-    height: 30px;
+    width: 280px;
+    height: 25px;
+    padding: 10px;
     border: 1px solid lightgray;
+}
+
+.edit-profile-container .readonly-input {
+    border: none;
+}
+
+.edit-profile-container .btn-profile {
+    width: 80px;
+    height: 40px;
+    margin-left: 5px;
+    background-color: #eeecec;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}
+
+.edit-profile-container #btn-submit {
+    width: 100px;
+    height: 40px;
+    margin-top: 20px;
+    background-color: #D3E4CD;
+    border: 1px solid lightgray;
+    cursor: pointer;
 }
 
 

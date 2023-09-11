@@ -1,6 +1,9 @@
 package com.likelion.catdogpia.domain.entity.user;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberModifyFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberProfileDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.cart.Cart;
 import com.likelion.catdogpia.domain.entity.community.Article;
@@ -163,5 +166,15 @@ public class Member extends BaseEntity {
     @Builder
     public void setTempPassword(String password) {
         this.password = password;
+    }
+
+    // 회원 정보 수정
+    public void updateMember(MemberModifyFormDto dto) {
+        this.name = dto.getName();
+        this.nickname = dto.getNickname();
+        this.phone = dto.getPhone();
+        if(dto.getPassword() != null) {
+            this.password = dto.getPassword();
+        }
     }
 }

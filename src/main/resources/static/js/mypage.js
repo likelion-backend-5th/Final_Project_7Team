@@ -1,7 +1,51 @@
+async function authentication() {
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`
+    };
+
+    try {
+        const response = await fetch('/authorize', {
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (response.ok) {
+            return "ok"
+        } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+                method: 'POST',
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await authentication(); // 원래 요청을 다시 시도
+            } else {
+                alert('권한이 없습니다.');
+                window.location.href = "/login";
+            }
+        } else {
+            alert('권한이 없습니다.');
+            window.location.href = "/login";
+        }
+    } catch (error) {
+        console.error('오류:', error);
+        alert('권한이 없습니다.');
+        window.location.href = "/login";
+    }
+}
+
 // 프로필 (profile.html) =======================================================
 // 회원 정보 수정
-function openProfilePopup() {
-    window.open("/mypage/profile", "회원 정보 수정", "width=600, height=600")
+async function openProfilePopup() {
+    const result = await authentication()
+    if(result!="ok") {
+        alert("권한이 없습니다.")
+        return
+    }
+    window.open("/mypage/profile/update", "회원 정보 수정", "width=600, height=600")
 }
 
 // 펫 등록
@@ -283,7 +327,7 @@ function deleteAddress(addressId) {
 }
 
 function openEditAddressPopup(addressId) {
-    open("/mypage/address/update/" + addressId, "배송지 수정", "width=600, height=600, left=0, top=0")
+    open("/mypage/address/update/" + addressId, "배송지 수정", "width=700, height=800, left=0, top=0")
 }
 
 function updateAddress(addressId) {
