@@ -62,19 +62,55 @@
 
 /* ======================================================================= */
 /* 회원 정보 */
-.member-info-box {
-    margin-top: 50px;
+/*.member-info-box {*/
+/*    margin-top: 50px;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.member-info-box .nickname {*/
+/*    font-weight: bold;*/
+/*    font-size: 30px;*/
+/*}*/
+
+/*.member-info-box .name {*/
+/*    font-weight: bold;*/
+/*    font-size: 15px;*/
+/*}*/
+
+/*.mypage-box {*/
+/*    margin-top: 70px;*/
+/*}*/
+
+/*.mypage-box hr {*/
+/*    border: 2px solid #D3E4CD;*/
+/*    margin: 10px 0 15px 0;*/
+/*}*/
+
+.profile-table {
+    width: 50%;
+    margin: 50px auto;
+}
+
+.profile-table tr {
+    height: 60px;
+    border-bottom: 1px solid lightgray;
+}
+
+.profile-table th {
+    width: 40%;
+}
+
+.profile-table td {
+    width: 60%;
+}
+
+.profile-btn-box {
+    width: 100%;
     text-align: center;
 }
 
-.member-info-box .nickname {
-    font-weight: bold;
-    font-size: 30px;
-}
-
-.member-info-box .name {
-    font-weight: bold;
-    font-size: 15px;
+.btn-profile-update {
+    margin: auto;
 }
 
 .mypage-button {
@@ -83,16 +119,7 @@
     color: #545353;
     background-color: #D3E4CD;
     border: none;
-    border-radius: 10px;
-}
-
-.mypage-box {
-    margin-top: 70px;
-}
-
-.mypage-box hr {
-    border: 2px solid #D3E4CD;
-    margin: 10px 0 15px 0;
+    /*border-radius: 10px;*/
 }
 
 /* 프로필 수정 */
@@ -498,3 +525,35 @@ ul.order-state li {
 
 /* ======================================================================= */
 /* 게시글 관리 */
+
+
+/* 페이지네이션 */
+
+.mypage-pagination a {
+    color: black;
+}
+
+.mypage-pagination a:hover {
+    text-decoration: none;
+    color: #D3E4CD;
+}
+
+.mypage-pagination {
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.mypage-pagination span {
+    margin-right: 10px;
+}
+
+.mypage-pagination span:hover {
+    color: #ADC2A9;
+}
+
+.mypage-pagination span.current-page {
+    color: #99A799;
+    text-decoration: underline;
+}

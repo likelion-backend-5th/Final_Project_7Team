@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
     <script src="/js/mypage.js"></script>
+    <script src="/js/authentication2.js"></script>
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
@@ -29,6 +30,33 @@
                 </div>
             </th:block>
         </div>
+    </div>
+    <div class="mypage-pagination" th:if="${reviewList.totalElements > 0}">
+        <span th:if="${reviewList.hasPrevious()}">
+            <a th:href="@{${'/mypage/review'}(page=0)}">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+        </span>
+        <span th:if="${reviewList.hasPrevious()}">
+            <a th:href="@{${'/mypage/review'}(page=${reviewList.number - 1})}">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        </span>
+        <span th:each="i : ${#numbers.sequence(0, reviewList.totalPages - 1)}">
+            <span th:if="${reviewList.number == i}" th:classappend="${'current-page'}" th:text="${i + 1}"></span>
+            <a th:if="${reviewList.number != i}" th:href="@{${'/mypage/review'}(page=${i})}"
+               th:text="${i + 1}"></a>
+        </span>
+        <span th:if="${reviewList.hasNext()}">
+            <a th:href="@{${'/mypage/review'}(page=${reviewList.number + 1})}">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </span>
+        <span th:if="${reviewList.hasNext()}">
+            <a th:href="@{${'/mypage/review'}(page=${reviewList.totalPages - 1})}">
+                <i class="fa fa-angle-double-right"></i>
+            </a>
+        </span>
     </div>
 </div>
 </body>
