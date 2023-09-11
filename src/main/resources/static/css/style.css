@@ -742,6 +742,7 @@ ol {
 }
 
 .hero__item {
+    width: 800px;
     height: 431px;
     margin: auto;
     display: flex;

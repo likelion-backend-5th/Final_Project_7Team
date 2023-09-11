@@ -148,7 +148,7 @@
                     <th:block th:each="hotProduct : ${hotProductList}">
                         <div class="col-lg-3">
                             <div class="categories__item set-bg" th:data-setbg="${hotProduct.FileUrl}">
-                                <h5><a href="#" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
+                                <h5><a th:href="@{/products/{id}(id=${hotProduct.id})}" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
                             </div>
                         </div>
                     </th:block>
@@ -186,13 +186,13 @@
                     <div class="section-title">
                         <h2>NEW</h2>
                     </div>
-                    <div class="featured__controls">
-                        <ul>
-                            <li class="active" data-filter="*">All</li>
-                            <li data-filter=".oranges">의류</li>
-                            <li data-filter=".fresh-meat">잡화</li>
-                        </ul>
-                    </div>
+<!--                    <div class="featured__controls">-->
+<!--                        <ul>-->
+<!--                            <li class="active" data-filter="*">All</li>-->
+<!--                            <li data-filter=".oranges">의류</li>-->
+<!--                            <li data-filter=".fresh-meat">잡화</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
                 </div>
             </div>
             <div class="row featured__filter">
@@ -209,7 +209,7 @@
                                 </ul>
                             </div>
                             <div class="featured__item__text">
-                                <h6><a href="#" th:text="${newProduct.getName}"></a></h6>
+                                <h6><a th:href="@{/products/{id}(id=${newProduct.id})}" th:text="${newProduct.getName}"></a></h6>
                                 <hr>
                                 <div class="main-product-summary">
                                     <h6 th:text="${#numbers.formatInteger(newProduct.price, 0, 'COMMA')+'원'}"></h6>
@@ -411,7 +411,8 @@
                     <div class="col-lg-4 col-md-4 col-sm-6">
                         <div class="blog__item">
                             <div class="blog__item__pic">
-                                <img src="/img/sample/blog-1.jpg" alt="">
+                                <img th:if="${hotArticle.attach.attachDetailList.size() != 0}" th:src="${hotArticle.attach.attachDetailList.get(0).fileUrl}">
+                                <img th:if="${hotArticle.attach.attachDetailList.size() == 0}" th:src="@{/img/logo.png}" width="200" height="150">
                             </div>
                             <div class="blog__item__text">
                                 <ul>
@@ -421,7 +422,7 @@
                                     <li><img th:text="${hotArticle.likeCnt}" class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt="">
                                     </li>
                                 </ul>
-                                <h5><a href="#" th:text="${hotArticle.title}"></a></h5>
+                                <h5><a th:href="@{/community/{id}(id=${hotArticle.id})}" th:text="${hotArticle.title}"></a></h5>
                             </div>
                         </div>
                     </div>
