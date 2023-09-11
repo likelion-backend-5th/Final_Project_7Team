@@ -6,6 +6,7 @@
   <title>CatDogPia</title>
   <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
   <script src="/js/mypage.js"></script>
+  <script src="/js/authentication-mypage.js"></script>
   <!-- 카카오 주소 API -->
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
@@ -42,9 +43,8 @@
       <td><input class="address-input" name="request" placeholder="배송 요청사항을 입력해주세요"></td>
     </tr>
   </table>
-    <button type="button" onclick="submitAddress()">등록</button>
+    <button class="btn-mypage-submit" type="button" onclick="submitAddress()">등록</button>
   </form>
-
 
 </div>
 </div>

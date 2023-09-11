@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
     <script src="/js/mypage.js"></script>
-    <script src="/js/authentication2.js"></script>
+    <script src="/js/authentication-mypage.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 <body>
@@ -38,12 +38,14 @@
                 <div th:text="${address.phone}"></div>
             </td>
             <td>
-                <button th:onclick="openEditAddressPopup([[${address.id}]])">수정</button>
-                <button type="button" th:onclick="deleteAddress([[${address.id}]])">삭제</button>
+                <button class="btn-address-update" th:onclick="openEditAddressPopup([[${address.id}]])">수정</button>
+                <button class="btn-address-delete" type="button" th:onclick="deleteAddress([[${address.id}]])">삭제</button>
             </td>
         </tr>
     </table>
-    <button type="button" onclick="openAddressPopup()">배송지 등록</button>
+    <div class="address-submit-btn-box">
+        <button type="button" id="btn-address-submit" class="btn-mypage-submit" onclick="openAddressPopup()">배송지 등록</button>
+    </div>
     <!-- 페이지네이션 -->
     <div class="mypage-pagination" th:if="${addressList.totalElements > 0}">
         <span th:if="${addressList.hasPrevious()}">

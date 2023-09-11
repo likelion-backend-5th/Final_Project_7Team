@@ -4,21 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/authentication-mypage.js"></script>
     <script src="/js/mypage.js"></script>
+    <script src="/js/profile-modify.js"></script>
+    <script src="/js/signup.js"></script>
 </head>
 <body>
 <div class="edit-profile-container">
-    <form method="post">
-        <div><label>아이디</label><input placeholder="영문, 숫자 조합 8~15자리로 입력해주세요"><br></div>
-        <div><label>이름</label><input placeholder="이름을 입력해주세요"></div>
-        <div><label>휴대폰 번호</label><input placeholder="-없이 번호만 입력해주세요"></div>
-        <div><label>이메일</label><input placeholder="사용하시는 이메일 주소를 입력해주세요">
-            <button>인증번호 전송</button>
+    <form id="profileForm" method="put">
+        <div class="textForm">
+            <label>아이디</label>
+<!--            <span class="id-value-span" th:text="${profile.loginId}"></span>-->
+            <input class="readonly-input" th:value="${profile.loginId}" readonly>
         </div>
-        <div><label>닉네임</label><input placeholder="사용하실 닉네임을 입력해주세요"></div>
-        <button>수정</button>
+        <div class="textForm">
+            <label for="password">새 비밀번호</label>
+            <input type="password" class="password" id="password" name="password" oninput="passwordVal()" maxlength="20" placeholder="영문, 숫자, 특수문자 조합 8~20자리로 입력해주세요">
+            <span id="pw-validation-message"></span>
+        </div>
+        <div class="textForm">
+            <label for="checkPassword">새 비밀번호 확인</label>
+            <input type="password" class="password" id="checkPassword" name="checkPassword" oninput="passwordCheckVal()" maxlength="20" placeholder="입력하신 비밀번호를 한 번 더 입력해주세요">
+            <span id="cpw-validation-message"></span>
+        </div>
+        <div class="textForm">
+            <label for="name">이름</label>
+            <input type="text" th:value="${profile.name}" class="name" id="name" name="name" required placeholder="성함을 적어주세요">
+        </div>
+        <div class="textForm">
+            <label for="phone">휴대폰 번호</label>
+            <input type="tel" th:value="${profile.phone}" class="phone" id="phone" name="phone" required oninput="phoneVal()" maxlength="11" placeholder="사용하시는 휴대폰 번호를 입력해주세요">
+            <span id="phone-validation-message"></span>
+        </div>
+        <div class="textForm">
+            <label>이메일</label>
+<!--            <span class="email-value-span" th:text="${profile.email}"></span>-->
+            <input class="readonly-input" th:value="${profile.email}" readonly>
+        </div>
+        <div class="textForm">
+            <label for="nickname">닉네임</label>
+            <input type="text" th:value="${profile.nickname}" class="nickname" id="nickname" name="nickname" required maxlength="10" placeholder="사용하실 닉네임을 입력해주세요">
+            <button type="button" class="btn-profile" th:onclick="checkDuplicateNicknameModify([[${profile.nickname}]])">중복확인</button>
+            <br>
+            <span id="nickname-duplicate-message"></span>
+        </div>
+        <button type="button" id="btn-submit" th:onclick="updateProfile([[${profile.nickname}]])">수정</button>
     </form>
-</div>
 </div>
 </body>
 </html>

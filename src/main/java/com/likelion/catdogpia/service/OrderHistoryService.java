@@ -25,7 +25,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderHistoryService {
 
-    private final OrderRespository orderRespository;
+    private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
@@ -37,7 +37,9 @@ public class OrderHistoryService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
-        Page<OrderListDto> orderListPage = orderRespository.findAllByMemberId(pageable, member.getId(), orderStatus);
+        Page<OrderListDto> orderListPage = orderRepository.findAllByMemberId(pageable, member.getId(), orderStatus);
+
+        log.info("주문 내역 개수 확인 : " + orderListPage.getTotalElements());
 
         return orderListPage;
     }
@@ -47,7 +49,7 @@ public class OrderHistoryService {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
-        Page<OrderListDto> orderListPage = orderRespository.findAllByOrderId(pageable, orderId);
+        Page<OrderListDto> orderListPage = orderRepository.findAllByOrderId(pageable, orderId);
 
         return orderListPage;
     }
@@ -58,11 +60,11 @@ public class OrderHistoryService {
         if (optionalMember.isEmpty()) {
             new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        Optional<Orders> optionalOrders = orderRespository.findById(orderId);
+        Optional<Orders> optionalOrders = orderRepository.findById(orderId);
         if (optionalOrders.isEmpty()) {
             new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return orderRespository.findDetailByOrderId(orderId);
+        return orderRepository.findDetailByOrderId(orderId);
     }
 
     // 주문 상태별 개수
@@ -122,7 +124,7 @@ public class OrderHistoryService {
         OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
-        Orders order = orderRespository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (order.getMember().getLoginId() != loginId) {
             new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -144,7 +146,7 @@ public class OrderHistoryService {
         OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
-        Orders order = orderRespository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (order.getMember().getLoginId() != loginId) {
             new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
