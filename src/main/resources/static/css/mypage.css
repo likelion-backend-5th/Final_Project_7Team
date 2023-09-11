@@ -1,10 +1,16 @@
-.mypage-container {
-    font-size: 14px;
-}
-
+/* 공통 사용 */
 .mypage-container {
     width: 60%;
     margin: auto;
+    font-size: 14px;
+}
+
+.btn-mypage-submit {
+    font-size: 15px;
+    color: white;
+    padding: 10px 15px;
+    background-color: #ADC2A9;
+    border: none;
 }
 
 /* 카테고리 */
@@ -26,10 +32,9 @@
     text-decoration: underline #D3E4CD solid 5px;
 }
 
-/* 공통 사용 */
 .mypage-table {
     width: 100%;
-    margin: 0 auto 50px auto;
+    margin: 0 auto 30px auto;
     text-align: center;
 }
 
@@ -38,7 +43,7 @@
 }
 
 .mypage-table th {
-    border-bottom: 3px solid #D3E4CD;
+    border-bottom: 2px solid lightgray;
 }
 
 .mypage-table td {
@@ -152,6 +157,10 @@
     height: 25px;
     padding: 10px;
     border: 1px solid lightgray;
+}
+
+.edit-profile-container form input:focus {
+    outline: 1px solid #D3E4CD;
 }
 
 .edit-profile-container .readonly-input {
@@ -415,6 +424,23 @@ ul.order-state li {
     border: 1px solid #99A799;
 }
 
+.address-submit-btn-box {
+    width: 100%;
+    text-align: end;
+    padding-right: 20px;
+}
+
+.btn-address-update, .btn-address-delete {
+    width: 45px;
+    height: 26px;
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+}
+
+#btn-address-submit {
+    margin-left: auto;
+}
+
 
 /* 배송지 등록 */
 .add-address-container {
@@ -525,6 +551,24 @@ ul.order-state li {
 
 /* ======================================================================= */
 /* 게시글 관리 */
+
+.btn-article-delete {
+    width: 120px;
+    height: 35px;
+    margin-bottom: 10px;
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+}
+
+.mypage-article-table td {
+    height: 50px;
+}
+
+.mypage-article-table .td-title {
+    display: flex;
+    align-items: center;
+    text-align: start;
+}
 
 
 /* 페이지네이션 */

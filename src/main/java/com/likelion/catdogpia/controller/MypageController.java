@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -30,6 +31,7 @@ public class MypageController {
     private final ReviewService reviewService;
     private final PetService petService;
     private final ProfileService profileService;
+    private final MemberArticleService memberArticleService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -61,8 +63,6 @@ public class MypageController {
     // 회원 정보 수정 요청
     @PutMapping("/profile/update")
     public ResponseDto profilePost(@ModelAttribute MemberModifyFormDto dto) {
-
-        log.info("회원정보수정요청 진입 => " + dto.getNickname());
         profileService.updateProfile("testtest", dto);
 
         return new ResponseDto("success");
@@ -221,7 +221,14 @@ public class MypageController {
     // 게시글 관리 페이지
     @GetMapping("/article/data")
     public String mypagePage(Model model) {
-        return "page/mypage/article.html";
+        return "page/mypage/article_list.html";
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/article")
+    public ResponseDto deleteArticle(@RequestParam("articleIds[]") List<Long> articleIds) {
+        memberArticleService.deleteArticle("testtest", articleIds);
+        return new ResponseDto("success");
     }
 
 }
