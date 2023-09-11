@@ -30,6 +30,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -743,5 +744,35 @@ public class QueryRepository {
                         .fetchOne();
 
         return new PageImpl<>(list, pageable, count);
+    }
+
+    // 관리자 메인화면 카운트
+    public CountDto findTotalCounts() {
+        return queryFactory.select(Projections.fields(CountDto.class,
+                ExpressionUtils.as(
+                        JPAExpressions.select(member.count())
+                                .from(member), "totalMemberCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(product.count())
+                                .from(product), "totalProductCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(orders.totalAmount.sum().coalesce(0).castToNum(Long.class))
+                                .from(orders)
+                                .where(orders.cancelAt.isNull()), "totalAmount"
+                ),
+                ExpressionUtils.as(
+                JPAExpressions.select(report.count())
+                        .from(report)
+                        .where(report.processedAt.isNull()), "totalReportCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(consultation.count())
+                                .from(consultation)
+                                .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                                .where(consultation.deletedAt.isNull()), "totalConsulCnt"
+                )
+        )).from(member).limit(1).fetchOne();
     }
 }

@@ -37,7 +37,9 @@ public class AdminController {
 
     // 관리자 메인 페이지
     @GetMapping("/main")
-    public String mainPage() {
+    public String mainPage(Model model, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        model.addAttribute("counts", adminService.findTotalCounts());
+        model.addAttribute("memberList", adminService.findMemberList(pageable, null, null));
         return "/page/admin/index";
     }
 
@@ -323,9 +325,9 @@ public class AdminController {
 
     // 댓글 등록
     @PostMapping("/communities/{communityId}/comments/create")
-    public String commentCreate(@PathVariable Long communityId, @RequestBody String content) {
+    public ResponseEntity<String> commentCreate(@PathVariable Long communityId, @RequestBody String content) {
         adminService.createComment(communityId,content);
-        return "redirect:/admin/communities/" + communityId;
+        return ResponseEntity.ok("ok");
     }
 
     // QnA목록
