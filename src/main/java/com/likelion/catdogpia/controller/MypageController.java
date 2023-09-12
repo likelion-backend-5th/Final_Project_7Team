@@ -52,16 +52,27 @@ public class MypageController {
 
     // 회원 정보 수정 페이지
     @GetMapping("/profile/update/data")
-    public String updateProfilePage(@RequestHeader("Authorization") String accessToken) {
+    public Map<String, Object> updateProfilePage(@RequestHeader("Authorization") String accessToken) {
 
-//        model.addAttribute("profile", profileService.getMemberProfile("testtest"));
-        return "page/mypage/profile_modify.html";
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        MemberProfileDto memberProfileDto = profileService.getMemberProfile(loginId);
+
+        // 회원 정보
+        response.put("profile", memberProfileDto);
+
+        return response;
+
     }
 
     // 회원 정보 수정 요청
-    @PutMapping("/profile/update")
-    public ResponseDto profilePost(@ModelAttribute MemberModifyFormDto dto) {
-        profileService.updateProfile("testtest", dto);
+    @PutMapping("/profile/update/{loginId}")
+    public ResponseDto profilePost(@PathVariable String loginId, @ModelAttribute MemberModifyFormDto dto) {
+
+        profileService.updateProfile(loginId, dto);
 
         return new ResponseDto("success");
     }
@@ -92,14 +103,13 @@ public class MypageController {
     // 주문 내역 > 구매 확정
     @PutMapping("/order-list/purchase-confirm/{opId}")
     public ResponseDto purchaseConfirm(@PathVariable Long opId) {
-        orderHistoryService.purchaseConfirm("testtest", opId);
+        orderHistoryService.purchaseConfirm(opId);
         return new ResponseDto("구매 확정 되었습니다.");
     }
 
     // 주문 내역 > 리뷰 작성 페이지
     @GetMapping("/order-list/review/{opId}/data")
     public Map<String, Object> reviewPage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
-//        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
 
         Map<String, Object> response = new HashMap<>();
 
@@ -120,36 +130,53 @@ public class MypageController {
 //        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 //        log.info("로그인id => " + loginId);
 
-        reviewService.saveReview("testtest", opId, reviewImg, reviewFormDto);
+        reviewService.saveReview(opId, reviewImg, reviewFormDto);
         return new ResponseDto("success");
     }
 
     // 교환 요청 페이지
-    @GetMapping("/order-list/exchange/{opId}/data")
-    public String exchangePage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
-//        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
-//        model.addAttribute("option", orderHistoryService.getProductOption(opId));
-        return "page/mypage/exchange.html";
-    }
+//    @GetMapping("/order-list/exchange/{opId}/data")
+//    public Map<String, Object> exchangePage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
+//
+//        Map<String, Object> response = new HashMap<>();
+//
+//        String token = accessToken.split(" ")[1];
+//        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+//
+//        ExchangeRefundDto exchangeRefundDto = orderHistoryService.getOrderInfo(loginId, opId);
+//        Map<String, List<String>> map = orderHistoryService.getProductOption(opId);
+//
+//        response.put("order", exchangeRefundDto);
+//        response.put("map", map);
+//
+//        return response;
+//    }
 
     // 교환 요청 처리
     @PostMapping("/order-list/exchange")
     public ResponseDto exchangePost(@RequestBody ExchangeRequestDto dto) {
-        orderHistoryService.exchange("testtest", dto);
+        orderHistoryService.exchange(dto);
         return new ResponseDto("success");
     }
 
-    // 환불 요청 페이지
-    @GetMapping("/order-list/refund/{opId}/data")
-    public String refundPage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
-//        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
-        return "page/mypage/refund.html";
-    }
+//    // 환불 요청 페이지
+//    @GetMapping("/order-list/refund/{opId}/data")
+//    public Map<String, Object> refundPage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
+////        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
+//        Map<String, Object> response = new HashMap<>();
+//
+//        String token = accessToken.split(" ")[1];
+//        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+//
+////        response.put();
+//
+//        return response;
+//    }
 
     // 환불 요청 처리
     @PostMapping("/order-list/refund")
     public ResponseDto refundPost(@RequestBody RefundRequestDto dto) {
-        orderHistoryService.refund("testtest", dto);
+        orderHistoryService.refund(dto);
         return new ResponseDto("success");
     }
 
@@ -205,17 +232,26 @@ public class MypageController {
 
     // 배송지 등록 요청
     @PostMapping("/add-address")
-    public String postAddAddress(AddressFormDto dto) {
-        addressService.saveAddress("testtest", dto);
+    public String postAddAddress(@RequestHeader("Authorization") String accessToken, AddressFormDto dto) {
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        addressService.saveAddress(loginId, dto);
         return "redirect:/mypage/address";
     }
 
     // 배송지 수정 팝업 페이지
-    @GetMapping("/address/update/{addressId}/data")
-    public String updateAddressPage(@PathVariable Long addressId, @RequestHeader("Authorization") String accessToken) {
-//        model.addAttribute("address", addressService.readAddress(addressId));
-        return "page/mypage/address_modify.html";
-    }
+//    @GetMapping("/address/update/{addressId}/data")
+//    public Map<String, Object> updateAddressPage(@PathVariable Long addressId) {
+////        model.addAttribute("address", addressService.readAddress(addressId));
+//        Map<String, Object> response = new HashMap<>();
+//
+//        String token = accessToken.split(" ")[1];
+//        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+//
+////        response.put();
+//
+//        return response;
+//    }
 
     // 배송지 수정 요청
     @PostMapping("/address/update/{addressId}")
@@ -227,7 +263,7 @@ public class MypageController {
     // 배송지 삭제 요청
     @PostMapping("/address/delete/{addressId}")
     public String deleteAddress(@PathVariable Long addressId) {
-        addressService.deleteAddress("testtest", addressId);
+        addressService.deleteAddress(addressId);
         return "redirect:/mypage/address";
     }
 
@@ -248,23 +284,30 @@ public class MypageController {
     }
 
     // 리뷰 수정 페이지
-    @GetMapping("/review/{reviewId}/data")
-    public String reviewModifyPage(@PathVariable Long reviewId, @RequestHeader("Authorization") String accessToken) {
-//        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
-        return "page/mypage/review_modify.html";
-    }
+//    @GetMapping("/review/{reviewId}/data")
+//    public Map<String, Object> reviewModifyPage(@PathVariable Long reviewId, @RequestHeader("Authorization") String accessToken) {
+////        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
+//        Map<String, Object> response = new HashMap<>();
+//
+//        String token = accessToken.split(" ")[1];
+//        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+//
+////        response.put();
+//
+//        return response;
+//    }
 
     // 리뷰 수정 요청
     @PutMapping("/review/{reviewId}")
     public ResponseDto modifyReview(@PathVariable Long reviewId,  @RequestPart(name = "reviewImg", required = false) MultipartFile reviewImg, @Valid @RequestPart("reviewFormDto") ReviewFormDto reviewFormDto) throws IOException {
-        reviewService.updateReview("testtest", reviewId, reviewImg, reviewFormDto);
+        reviewService.updateReview(reviewId, reviewImg, reviewFormDto);
         return new ResponseDto("success");
     }
 
     // 리뷰 삭제 요청
     @DeleteMapping("/review/{reviewId}")
     public ResponseDto deleteReview(@PathVariable Long reviewId){
-        reviewService.deleteReview("testtest", reviewId);
+        reviewService.deleteReview(reviewId);
         return new ResponseDto("success");
     }
 
@@ -287,7 +330,7 @@ public class MypageController {
     // 게시글 삭제
     @DeleteMapping("/article")
     public ResponseDto deleteArticle(@RequestParam("articleIds[]") List<Long> articleIds) {
-        memberArticleService.deleteArticle("testtest", articleIds);
+        memberArticleService.deleteArticle(articleIds);
         return new ResponseDto("success");
     }
 

@@ -51,7 +51,7 @@ public class CartService {
 
     // 장바구니 상품 수량 변경
     @Transactional
-    public int updateCount(String loginId, Long cartId, String mp) {
+    public int updateCount(Long cartId, String mp) {
         // (현재 로그인한 회원과 해당 장바구니 상품 저장한 회원 일치 여부 확인)
 
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -71,7 +71,7 @@ public class CartService {
     }
 
     // 장바구니 상품 삭제
-    public void deleteCart(String loginId, List<Long> cartIds) {
+    public void deleteCart(List<Long> cartIds) {
         // (현재 로그인한 회원과 해당 장바구니 상품 저장한 회원 일치 여부 확인)
 
         for(Long cartId : cartIds) {

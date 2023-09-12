@@ -86,11 +86,11 @@ public class AddressService {
     }
 
     // 배송지 삭제
-    public void deleteAddress(String loginId, Long addressId) {
+    public void deleteAddress(Long addressId) {
         Member member = addressRepository.findById(addressId).get().getMember();
-        if(!member.getLoginId().equals(loginId)) {
-            new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+//        if(!member.getLoginId().equals(loginId)) {
+//            new ResponseStatusException(HttpStatus.FORBIDDEN);
+//        }
         addressRepository.deleteById(addressId);
     }
 }
