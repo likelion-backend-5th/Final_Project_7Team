@@ -201,44 +201,4 @@
       </header>
   </div>
 </body>
-<script>
-  async function logout() {
-    const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      'Authorization': `Bearer ${accessToken}`
-    };
-
-    try {
-      const response = await fetch('/signout', {
-        method: 'GET',
-        headers: headers,
-      });
-
-      if (response.ok) {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/';
-      } else if (response.status === 401 || response.status === 403) {
-        const reissueResponse = await fetch('/reissue', {
-          method: 'POST',
-          credentials: 'same-origin' // 쿠키를 보내기 위해 필수
-        });
-        if (reissueResponse.ok) {
-          const reissuedData = await reissueResponse.json();
-          localStorage.setItem('accessToken', reissuedData.accessToken);
-          await logout(); // 원래 요청을 다시 시도
-        } else {
-          localStorage.removeItem('accessToken');
-          window.location.href = '/';
-        }
-      } else {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/';
-      }
-    } catch (error) {
-      console.error('오류:', error);
-      localStorage.removeItem('accessToken');
-      window.location.href = '/';
-    }
-  }
-</script>
 </html>
