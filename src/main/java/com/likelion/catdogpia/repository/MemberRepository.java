@@ -2,9 +2,11 @@ package com.likelion.catdogpia.repository;
 
 
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberProfileDto;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.List;
@@ -42,4 +44,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "where m.id != :memberId " +
             "and(m.email = :email or m.nickname = :nickname)")
     List<Member> findByEmailOrNicknameAndIdNot(String email, String nickname, Long memberId);
+
+    // 회원 정보 수정시 보여줄 데이터
+    @Query("select new com.likelion.catdogpia.domain.dto.mypage.MemberProfileDto(m.loginId, m.name, m.phone, m.email, m.nickname)" +
+            "FROM Member m " +
+            "WHERE m.loginId = :loginId")
+    MemberProfileDto findProfileDtoByLoginId(@Param("loginId") String loginId);
 }

@@ -1,5 +1,7 @@
 package com.likelion.catdogpia.service;
 
+import com.likelion.catdogpia.domain.dto.mainpage.HotProductListDto;
+import com.likelion.catdogpia.domain.dto.mainpage.NewProductListDto;
 import com.likelion.catdogpia.domain.dto.product.ProductListResponseDto;
 import com.likelion.catdogpia.domain.dto.product.ProductResponseDto;
 import com.likelion.catdogpia.domain.entity.product.Product;
@@ -11,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,5 +51,18 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ProductResponseDto.fromEntity(product);
+    }
+
+    // 메인페이지 - HOT 상품
+    @Transactional(readOnly = true)
+    public List<HotProductListDto> getHotProductList() {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
+        return productRepository.findTop5BySalesCount(oneWeekAgo);
+    }
+
+    // 메인페이지 - NEW 상품
+    @Transactional(readOnly = true)
+    public List<NewProductListDto> getNewProductList() {
+        return productRepository.findOrderByCreatedAtDesc();
     }
 }

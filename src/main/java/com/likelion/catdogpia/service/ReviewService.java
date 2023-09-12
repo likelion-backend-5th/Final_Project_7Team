@@ -35,13 +35,13 @@ public class ReviewService {
     private final AttachRepository attachRepository;
     private final AttachDetailRepository attachDetailRepository;
     private final OrderProductRepository orderProductRepository;
-    private final OrderRespository orderRespository;
+    private final OrderRepository orderRepository;
 
     private final S3UploadService s3UploadService;
 
     // 리뷰 내역 조회
     @Transactional(readOnly = true)
-    public Page<ReviewListDto> findAllReview(String loginId, Integer page) {
+    public Page<ReviewListDto> getReviewList(String loginId, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
@@ -62,7 +62,7 @@ public class ReviewService {
         // 상품 구매자와 일치하는지 확인
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         OrderProduct orderProduct = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Long orderMemberId = orderRespository.findMemberIdByOrderProductId(opId);
+        Long orderMemberId = orderRepository.findMemberIdByOrderProductId(opId);
         if (orderMemberId != member.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "member 불일치");
         }
