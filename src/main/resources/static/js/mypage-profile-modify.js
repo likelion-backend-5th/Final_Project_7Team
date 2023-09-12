@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', async function loadProfileUpdatePa
 
     dataOnPage(data);
 
+    const nicknameBtn = document.querySelector('.btn-profile')
+    nicknameBtn.addEventListener('click', function () {
+        checkDuplicateNicknameModify(data.profile.nickname)
+    })
+
     const updateProfileBtn = document.getElementById('btn-submit');
     updateProfileBtn.addEventListener('click', async function () {
         let password = document.getElementById("password").value;
