@@ -373,8 +373,9 @@ public class AdminService {
 
     // 커뮤니티 삭제
     @Transactional
-    public void deleteCommunities(List<Long> deleteList) {
-
+    public void deleteCommunities(List<Long> deleteList, String loginId) {
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 커뮤니티 id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(communityRepository.existsById(deleteId)) {
@@ -416,7 +417,10 @@ public class AdminService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long communityId, Long commentId) {
+    public void deleteComment(Long communityId, Long commentId, String loginId) {
+        // 관리자 권한 체크
+        isAdmin(loginId);
+
         if(commentRepository.existsById(commentId)) {
             commentRepository.deleteById(commentId);
         } else {
@@ -426,12 +430,15 @@ public class AdminService {
 
     // 댓글 등록
     @Transactional
-    public void createComment(Long communityId, String content) {
+    public void createComment(Long communityId, String content, String loginId) {
 
         Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
         // 권한에서 사용자에 대한 정보가져오기
-        // 현재는 권한이 구현되지 않아 일단 1번으로 하기로함
-        Member findMember = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+        Member findMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!findMember.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
 
         commentRepository.save(Comment.builder()
                 .article(findArticle)
@@ -469,9 +476,12 @@ public class AdminService {
     public void modifyQnaAnswer(Long qnaId, String answer) {
         QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
 
-        // 사용자 권한 가져오도록 변경 필요
+        //
         Member answerer = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
-
+        // 관리자인지 확인
+        if(!answerer.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 답글이 존재하지 않으면 새로 등록
         if(findQna.getQnAAnswer() == null) {
             qnAAnswerRepository.save(QnAAnswer.builder()

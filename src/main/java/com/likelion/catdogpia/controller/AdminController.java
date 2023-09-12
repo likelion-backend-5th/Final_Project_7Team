@@ -328,7 +328,14 @@ public class AdminController {
 
     // 커뮤니티 삭제
     @PostMapping("/communities/delete-list")
-    public String communitiesDelete(@RequestBody List<Map<String, Object>> requestList) {
+    @ResponseBody
+    public ResponseEntity<String> communitiesDelete(@RequestHeader("Authorization") String accessToken, @RequestBody List<Map<String, Object>> requestList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -338,10 +345,10 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteCommunities(deleteList);
+            adminService.deleteCommunities(deleteList, loginId);
         }
 
-        return "redirect:/admin/communities";
+        return ResponseEntity.ok("ok");
     }
 
     // 커뮤니티 상세 조회
@@ -364,15 +371,28 @@ public class AdminController {
 
     // 댓글 삭제
     @PostMapping("/communities/{communityId}/comments/{commentId}")
-    public String commentDelete(@PathVariable Long communityId, @PathVariable Long commentId) {
-        adminService.deleteComment(communityId, commentId);
-        return "redirect:/admin/communities/" + communityId;
+    @ResponseBody
+    public ResponseEntity<String> commentDelete(@RequestHeader("Authorization") String accessToken,  @PathVariable Long communityId, @PathVariable Long commentId) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.deleteComment(communityId, commentId, loginId);
+        return  ResponseEntity.ok("ok");
     }
 
     // 댓글 등록
     @PostMapping("/communities/{communityId}/comments/create")
-    public ResponseEntity<String> commentCreate(@PathVariable Long communityId, @RequestBody String content) {
-        adminService.createComment(communityId,content);
+    public ResponseEntity<String> commentCreate(@RequestHeader("Authorization") String accessToken,  @PathVariable Long communityId, @RequestBody String content) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.createComment(communityId, content, loginId);
         return ResponseEntity.ok("ok");
     }
 
@@ -396,7 +416,7 @@ public class AdminController {
         return "/page/admin/qna";
     }
 
-    // 커뮤니티 삭제
+    // QnA 삭제
     @PostMapping("/qna/delete-list")
     public String qnaDelete(@RequestBody List<Map<String, Object>> requestList) {
         // 한번더 체크
