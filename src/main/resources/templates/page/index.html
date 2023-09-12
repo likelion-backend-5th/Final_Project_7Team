@@ -408,7 +408,7 @@
             </div>
             <div class="row">
                 <th:block th:each="hotArticle : ${hotArticleList}">
-                    <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="col-lg-4 col-md-4 col-sm-6 hot-article-img-box">
                         <div class="blog__item">
                             <div class="blog__item__pic">
                                 <img th:if="${hotArticle.attach.attachDetailList.size() != 0}" th:src="${hotArticle.attach.attachDetailList.get(0).fileUrl}">
