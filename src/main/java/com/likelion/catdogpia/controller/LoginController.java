@@ -52,7 +52,6 @@ public class LoginController {
         //RefreshToken Cookie
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setMaxAge(24*60*60);
         refreshTokenCookie.setPath("/");
         httpResponse.addCookie(refreshTokenCookie);
 

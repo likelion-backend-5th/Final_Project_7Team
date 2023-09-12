@@ -15,6 +15,44 @@
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script>
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const body = document.getElementsByTagName("body");
+
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    alert('이미 로그인중인 상태입니다.');
+                    window.history.back();
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    }
+                } else {
+                    window.history.back();
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                window.history.back();
+            }
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content" class="login-form">

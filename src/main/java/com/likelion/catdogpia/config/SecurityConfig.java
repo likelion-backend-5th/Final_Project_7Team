@@ -36,7 +36,6 @@ public class SecurityConfig {
                                 .requestMatchers("/authorize").authenticated()
                                 .requestMatchers("/signout").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/community/**").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/community/").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/profile/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/profile/update/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/order-list/data").authenticated()
@@ -50,7 +49,6 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/mypage/review/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/review/{reviewId}/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/article/data").authenticated()
-                                //.requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login

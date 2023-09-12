@@ -42,7 +42,8 @@
                         </a>
                         </li>
                         <li><a href="/mypage"><img class="header-mypage-icon" src="/img/header/mypage-icon.png" alt=""></a></li>
-
+                        <li><a href="/login" id="loginText">Login</a></li>
+                        <li><a href="#" onclick="logout();" id="logoutText" style="display: none">Logout</a> </li>
                     </ul>
                 </div>
             </div>
@@ -51,6 +52,87 @@
         <!--            <i class="fa fa-bars"></i>-->
         <!--        </div>-->
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    document.getElementById("loginText").style.display = "none";
+                    document.getElementById("logoutText").style.display = "block";
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    }
+                }
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        });
+
+        async function logout() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/signout', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('accessToken');
+                    document.getElementById("loginText").style.display = "block";
+                    document.getElementById("logoutText").style.display = "none";
+                    window.location.href = '/';
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await logout(); // 원래 요청을 다시 시도
+                    } else {
+                        localStorage.removeItem('accessToken');
+                        document.getElementById("loginText").style.display = "block";
+                        document.getElementById("logoutText").style.display = "none";
+                        window.location.href = '/';
+                    }
+                } else {
+                    localStorage.removeItem('accessToken');
+                    document.getElementById("loginText").style.display = "block";
+                    document.getElementById("logoutText").style.display = "none";
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                localStorage.removeItem('accessToken');
+                document.getElementById("loginText").style.display = "block";
+                document.getElementById("logoutText").style.display = "none";
+                window.location.href = '/';
+            }
+        }
+    </script>
 </header>
 <!-- Header Section End -->
 
