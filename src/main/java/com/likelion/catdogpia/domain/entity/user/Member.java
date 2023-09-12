@@ -1,6 +1,9 @@
 package com.likelion.catdogpia.domain.entity.user;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberModifyFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberProfileDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.cart.Cart;
 import com.likelion.catdogpia.domain.entity.community.Article;
@@ -11,7 +14,7 @@ import com.likelion.catdogpia.domain.entity.mypage.Address;
 import com.likelion.catdogpia.domain.entity.mypage.Pet;
 import com.likelion.catdogpia.domain.entity.mypage.Point;
 import com.likelion.catdogpia.domain.entity.mypage.WishList;
-import com.likelion.catdogpia.domain.entity.notion.Notion;
+import com.likelion.catdogpia.domain.entity.notice.Notice;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.QnA;
 import com.likelion.catdogpia.domain.entity.report.Report;
@@ -19,6 +22,7 @@ import com.likelion.catdogpia.domain.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
@@ -80,11 +85,14 @@ public class Member extends BaseEntity {
 
     //공지사항 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Notion> notionList = new ArrayList<>();
+    private List<Notice> noticeList = new ArrayList<>();
 
     //신고 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Report> reportList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
+    private List<Report> writerList = new ArrayList<>();
 
     //댓글 연관관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -131,8 +139,13 @@ public class Member extends BaseEntity {
         this.blackListYn = member.getBlackListYn();
     }
 
+    //== 블랙 리스트 변경 ==/
+    public void changeBlackListYn() {
+        this.blackListYn = 'Y';
+    }
+
     @Builder
-    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notion> notionList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> orderList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList, List<LikeArticle> likeArticles) {
+    public Member(Long id, String loginId, String password, String name, String email, String nickname, String phone, Role role, Character socialLogin, Character blackListYn, List<Address> addressList, List<Pet> petList, List<Consultation> consultationList, List<Notice> noticeList, List<Report> reportList, List<Comment> commentList, List<Article> articleList, List<Review> reviewList, List<Orders> orderList, List<Point> pointList, List<Cart> cartList, List<WishList> wishLists, List<QnA> qnAList, List<LikeArticle> likeArticles) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
@@ -146,7 +159,7 @@ public class Member extends BaseEntity {
         this.addressList = addressList;
         this.petList = petList;
         this.consultationList = consultationList;
-        this.notionList = notionList;
+        this.noticeList = noticeList;
         this.reportList = reportList;
         this.commentList = commentList;
         this.articleList = articleList;
@@ -163,5 +176,15 @@ public class Member extends BaseEntity {
     @Builder
     public void setTempPassword(String password) {
         this.password = password;
+    }
+
+    // 회원 정보 수정
+    public void updateMember(MemberModifyFormDto dto) {
+        this.name = dto.getName();
+        this.nickname = dto.getNickname();
+        this.phone = dto.getPhone();
+        if(dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            this.password = dto.getPassword();
+        }
     }
 }

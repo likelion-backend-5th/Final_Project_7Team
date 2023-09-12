@@ -89,7 +89,6 @@
                 <select id="filter" class="form-select text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple" aria-label="Default select example">
                   <option th:selected="${filter == 'title'}" value="title">제목</option>
                   <option th:selected="${filter == 'writer'}" value="writer">작성자</option>
-                  <option th:selected="${filter == 'orderNumber'}" value="orderNumber">주문번호</option>
                   <option th:selected="${filter == 'classification'}" value="classification">분류</option>
                 </select>
               </div>
@@ -146,13 +145,12 @@
                     >
                       <th class="px-5 py-3 text-sm" style="width: 5%"><input type="checkbox" id="selectAll"></th>
                       <th class="px-4 py-3 text-center" style="width: 5%">번호</th>
-                      <th class="px-4 py-3 text-center" style="width: 10%">분류</th>
-                      <th class="px-4 py-3 text-center" style="width: 15%">주문번호</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">분류</th>
                       <th class="px-4 py-3 text-center" style="width: 20%">제목</th>
-                      <th class="px-4 py-3 text-center" style="width: 10%">이름</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">이름</th>
                       <th class="px-4 py-3 text-center" style="width: 15%">등록일시</th>
                       <th class="px-4 py-3 text-center" style="width: 15%">답변일시</th>
-                      <th class="px-4 py-3 text-center" style="width: 10%">답변자</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">답변자</th>
                     </tr>
                   </thead>
                   <!-- 반복되는 테이블 -->
@@ -166,8 +164,7 @@
                         </div>
                       </td>
                       <td class="px-5 py-3 text-sm" style="width: 5%" th:text="${consultation.id}"></td>
-                      <td class="px-5 py-3 text-center text-sm" style="width: 10%" th:text="${consultation.classification.getClassification()}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${consultation.orderNumber}"></td>
+                      <td class="px-5 py-3 text-center text-sm" style="width: 15%" th:text="${consultation.classification.getClassification()}"></td>
                       <td class="px-4 py-3" style="width: 20%">
                         <div class="text-center">
                           <a class="inline-block text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -176,12 +173,12 @@
                           </a>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:text="${consultation.writer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${consultation.writer}"></td>
                       <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${#temporals.format(consultation.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                       <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:if="${consultation.answeredAt} != null" th:text="${#temporals.format(consultation.answeredAt, 'yyyy-MM-dd HH:mm')}"></td>
                       <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:unless="${consultation.answeredAt} != null">-</td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:if="${consultation.answerer} != null" th:text="${consultation.answerer}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:unless="${consultation.answerer} != null">-</td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:if="${consultation.answerer} != null" th:text="${consultation.answerer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:unless="${consultation.answerer} != null">-</td>
                     </tr>
                   </tbody>
                 </table>

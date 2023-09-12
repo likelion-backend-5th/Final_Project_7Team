@@ -4,6 +4,7 @@ import com.likelion.catdogpia.domain.entity.community.Article;
 import com.likelion.catdogpia.domain.entity.community.Comment;
 import com.likelion.catdogpia.domain.entity.review.Review;
 import com.likelion.catdogpia.domain.entity.user.Member;
+import com.likelion.catdogpia.domain.entity.user.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -57,6 +58,11 @@ public class Report {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    //== 신고 처리 ==//
+    public void processed() {
+        this.processedAt = LocalDateTime.now();
+    }
 
     @Builder
     public Report(Long id, String content, LocalDateTime reportedAt, LocalDateTime processedAt, Member member, Member writer, Review review, Comment comment, Article article) {

@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="add-address-container">
-    <p>배송지 입력</p>
+    <div class="title-box"><p>배송지 입력</p></div>
     <form id="addressForm">
         <table>
             <tr>
@@ -32,8 +32,11 @@
             <tr>
                 <th>주소</th>
                 <td>
-                    <input id="zipCode" th:value="${address.zipCode}" name="zipCode" class="address-zipcode-input" placeholder="우편번호"><input type="button" onclick="execDaumPostcode()" class="btn-zipcode" value="우편번호 찾기"><br>
-                    <input id="address" th:value="${address.address}" name="address" class="address-input" placeholder="도로명주소"><br>
+                    <input id="zipCode" th:value="${address.zipCode}" name="zipCode" class="address-zipcode-input"
+                           placeholder="우편번호"><input type="button" onclick="execDaumPostcode()" class="btn-zipcode"
+                                                     value="우편번호 찾기"><br>
+                    <input id="address" th:value="${address.address}" name="address" class="address-input"
+                           placeholder="도로명주소"><br>
                     <input id="detailAddress" name="detailAddress" class="address-input"
                            th:value="${address.detailAddress}" placeholder="상세 주소를 입력해주세요">
                     <div>
@@ -49,10 +52,13 @@
             </tr>
             <tr>
                 <th>배송 요청사항 (선택)</th>
-                <td><input class="address-input" name="request" th:value="${address.request}" placeholder="배송 요청사항을 입력해주세요"></td>
+                <td><input class="address-input" name="request" th:value="${address.request}"
+                           placeholder="배송 요청사항을 입력해주세요"></td>
             </tr>
         </table>
-        <button type="button" th:onclick="updateAddress([[${address.id}]])">수정</button>
+        <div class="btn-box">
+            <button class="btn-mypage-submit" type="button" th:onclick="updateAddress([[${address.id}]])">수정</button>
+        </div>
     </form>
 </div>
 </body>

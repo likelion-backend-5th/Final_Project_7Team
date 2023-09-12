@@ -7,7 +7,9 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
     <script src="/js/mypage.js"></script>
+    <script src="/js/authentication-mypage.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
@@ -79,7 +81,33 @@
             </td>
         </tr>
     </table>
-</div>
+    <!-- 페이지네이션 -->
+    <div class="mypage-pagination" th:if="${orderList.totalElements > 0}">
+    <span th:if="${orderList.hasPrevious()}">
+        <a th:href="@{${'/mypage/order-list'}(page=0)}">
+            <i class="fa fa-angle-double-left"></i>
+        </a>
+    </span>
+        <span th:if="${orderList.hasPrevious()}">
+        <a th:href="@{${'/mypage/order-list'}(page=${orderList.number - 1})}">
+            <i class="fa fa-angle-left"></i>
+        </a>
+    </span>
+        <span th:each="i : ${#numbers.sequence(0, orderList.totalPages - 1)}">
+        <span th:if="${orderList.number == i}" th:classappend="${'current-page'}" th:text="${i + 1}"></span>
+        <a th:if="${orderList.number != i}" th:href="@{${'/mypage/order-list'}(page=${i})}" th:text="${i + 1}"></a>
+    </span>
+        <span th:if="${orderList.hasNext()}">
+        <a th:href="@{${'/mypage/order-list'}(page=${orderList.number + 1}}">
+            <i class="fa fa-angle-right"></i>
+        </a>
+    </span>
+        <span th:if="${orderList.hasNext()}">
+        <a th:href="@{${'/mypage/order-list'}(page=${orderList.totalPages - 1}}">
+            <i class="fa fa-angle-double-right"></i>
+        </a>
+    </span>
+    </div>
 </div>
 </body>
 </html>

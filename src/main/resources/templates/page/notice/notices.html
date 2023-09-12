@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../../css/notice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../../../js/user-notice.js"></script>
+</head>
+<body>
+  <div layout:fragment="content" class="notice-container">
+      <!-- 카테고리 -->
+    <th:block th:replace="~{common/fragments/notice-category :: notice-category}"></th:block>
+      <!-- 검색 -->
+    <div class="search-part mb-4">
+      <input id="keyword" type="text" name="keyword" placeholder="검색어를 입력해주세요">
+      <button id="searchBtn">검색</button>
+    </div>
+      <!-- 목록 리스트 -->
+    <table class="notice-table">
+      <tr style="width: 100%">
+        <th style="width: 10%">번호</th>
+        <th style="width: 70%">제목</th>
+        <th style="width: 10%">작성일</th>
+      </tr>
+      <tr th:each="notice : ${noticeList}">
+        <td style="width: 10%" th:text="${notice.id}"></td>
+        <td style="width: 70%">
+            <a th:href="@{/notices/{noticeId}(noticeId=${notice.id})}">
+                <span id="titleText" th:text="${notice.title}"></span>
+            </a>
+        </td>
+        <td style="width: 20%" th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+      </tr>
+    </table>
+      <!-- 페이지네이션 -->
+      <div class="notice-pagination">
+        <span th:if="${noticeList.hasPrevious()}">
+            <a th:href="@{${'notices'}(page=0, filter=${filter}, keyword=${keyword})}">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+        </span>
+        <span th:if="${noticeList.hasPrevious()}">
+            <a th:href="@{${'notices'}(page=${noticeList.number - 1}, filter=${filter}, keyword=${keyword})}">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        </span>
+        <span th:each="i : ${#numbers.sequence(0, noticeList.totalPages - 1)}">
+            <span th:if="${noticeList.number == i}" th:classappend="${'current-page'}" th:text="${i + 1}"></span>
+            <a th:if="${noticeList.number != i}" th:href="@{${'notices'}(page=${i}, filter=${filter}, keyword=${keyword})}" th:text="${i + 1}"></a>
+        </span>
+        <span th:if="${noticeList.hasNext()}">
+            <a th:href="@{${'notices'}(page=${noticeList.number + 1}, filter=${filter}, keyword=${keyword})}">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </span>
+        <span th:if="${noticeList.hasNext()}">
+            <a th:href="@{${'notices'}(page=${noticeList.totalPages - 1}, filter=${filter}, keyword=${keyword})}">
+                <i class="fa fa-angle-double-right"></i>
+            </a>
+        </span>
+      </div>
+  </div>
+</body>
+</html>

@@ -28,6 +28,9 @@ public class OrderListDto {
     // 주문 상태 (OrderProduct)
     private String orderStatus;
 
+    // 상품 id (Product)
+    private Long productId;
+
     // 상품 옵션 - size (ProductOption)
     private String size;
 
@@ -50,13 +53,14 @@ public class OrderListDto {
     private Boolean writeReview;
 
     @Builder
-    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount, String fileUrl) {
+    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, Long productId, String size, String color, String name, int price, int amount, String fileUrl) {
         this.id = id;
         this.opId = opId;
         this.orderNumber = orderNumber;
         this.orderAt = orderAt;
         this.quantity = quantity;
         this.orderStatus = orderStatus.getStatus();
+        this.productId = productId;
         this.size = size;
         this.color = color;
         this.name = name;
@@ -66,13 +70,14 @@ public class OrderListDto {
     }
 
     @Builder
-    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, String size, String color, String name, int price, int amount, String fileUrl, boolean writeReview) {
+    public OrderListDto(Long id, Long opId, String orderNumber, LocalDateTime orderAt, int quantity, OrderStatus orderStatus, Long productId, String size, String color, String name, int price, int amount, String fileUrl, boolean writeReview) {
         this.id = id;
         this.opId = opId;
         this.orderNumber = orderNumber;
         this.orderAt = orderAt;
         this.quantity = quantity;
         this.orderStatus = orderStatus.getStatus();
+        this.productId = productId;
         this.size = size;
         this.color = color;
         this.name = name;
