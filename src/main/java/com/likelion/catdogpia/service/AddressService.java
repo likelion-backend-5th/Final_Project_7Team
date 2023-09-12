@@ -1,7 +1,7 @@
 package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
-import com.likelion.catdogpia.domain.dto.mypage.AddressResponseDto;
+import com.likelion.catdogpia.domain.dto.mypage.AddressListDto;
 import com.likelion.catdogpia.domain.entity.mypage.Address;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.repository.AddressRepository;
@@ -26,21 +26,21 @@ public class AddressService {
     private final MemberRepository memberRepository;
 
     // 배송지 목록 조회
-    public Page<AddressResponseDto> readAllAddress(String loginId, Integer page, Integer limit) {
+    public Page<AddressListDto> readAllAddress(String loginId, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<Address> addressPage = addressRepository.findAllByMemberId(pageable, member.getId());
-        Page<AddressResponseDto> response = addressPage.map(AddressResponseDto::fromEntity);
+        Page<AddressListDto> response = addressPage.map(AddressListDto::fromEntity);
 
         return response;
     }
 
     // 배송지 1개 조회 (수정 페이지)
-    public AddressResponseDto readAddress(Long addressId) {
+    public AddressListDto readAddress(Long addressId) {
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         // (작성자 본인 맞는지 확인)
-        return AddressResponseDto.fromEntity(address);
+        return AddressListDto.fromEntity(address);
     }
 
     // 배송지 등록

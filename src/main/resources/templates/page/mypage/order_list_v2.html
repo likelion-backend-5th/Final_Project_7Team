@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="/js/mypage-order-list-v2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <ul id="orderStatusList" class="order-state">
+        <li onclick="filterOrderStatus('ALL')">전체</li>
+        <li id="RECEIVED" onclick="filterOrderStatus('RECEIVED')">주문접수 <span></span></li>
+        <li id="PREPARING_FOR_SHIPMENT" onclick="filterOrderStatus('PREPARING_FOR_SHIPMENT')">배송준비 <span></span></li>
+        <li id="SHIPPED" onclick="filterOrderStatus('SHIPPED')">배송중 <span></span></li>
+        <li id="DELIVERED" onclick="filterOrderStatus('DELIVERED')">배송완료 <span></span>
+        </li>
+        <li id="PURCHASE_CONFIRMED" onclick="filterOrderStatus('PURCHASE_CONFIRMED')">구매확정 <span></span></li>
+        <li id="EXCHANGE_REQUESTED" onclick="filterOrderStatus('EXCHANGE_REQUESTED')">교환요청 <span></span></li>
+        <li id="EXCHANGE_COMPLETED" onclick="filterOrderStatus('EXCHANGE_COMPLETED')">교환완료 <span></span></li>
+        <li id="REFUND_REQUESTED" onclick="filterOrderStatus('REFUND_REQUESTED')">환불요청 <span></span></li>
+        <li id="REFUND_COMPLETED" onclick="filterOrderStatus('REFUND_COMPLETED')">환불완료 <span></span></li>
+    </ul>
+    <table class="mypage-table order-list-table">
+        <thead>
+        <tr>
+            <th width="13%">주문일자</th>
+            <th width="12%">주문번호</th>
+            <th width="40%">상품정보</th>
+            <th width="15%">주문금액(수량)</th>
+            <th width="20%">주문 상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <!--    <div class="mypage-pagination" >-->
+    <!--        <span>-->
+    <!--            <a>-->
+    <!--                <i class="fa fa-angle-double-left"></i>-->
+    <!--            </a>-->
+    <!--        </span>-->
+    <!--        <span>-->
+    <!--            <a>-->
+    <!--                <i class="fa fa-angle-left"></i>-->
+    <!--            </a>-->
+    <!--        </span>-->
+    <!--        <span >-->
+    <!--            <span></span>-->
+    <!--            <a></a>-->
+    <!--        </span>-->
+    <!--        <span>-->
+    <!--            <a>-->
+    <!--                <i class="fa fa-angle-right"></i>-->
+    <!--            </a>-->
+    <!--        </span>-->
+    <!--        <span>-->
+    <!--            <a>-->
+    <!--                <i class="fa fa-angle-double-right"></i>-->
+    <!--            </a>-->
+    <!--        </span>-->
+    <!--    </div>-->
+</div>
+</body>
+</html>
