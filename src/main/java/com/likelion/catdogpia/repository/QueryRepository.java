@@ -102,12 +102,12 @@ public class QueryRepository {
 
     // 검색 조건 추가
     private BooleanExpression searchFilter(String filter, String keyword) {
-        if (StringUtils.hasText(filter)) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
             return switch (filter) {
                 case "loginId" -> member.loginId.contains(keyword);
                 case "name" -> member.name.contains(keyword);
-                case "nickname" -> member.nickname.contains(keyword);
-                default -> member.blackListYn.eq(keyword.charAt(0));
+                case  "status" -> member.blackListYn.eq(keyword.charAt(0));
+                default ->  member.nickname.contains(keyword);
             };
         } else {
             return null;

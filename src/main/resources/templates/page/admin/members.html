@@ -57,7 +57,7 @@
                 </select>
               </div>
               <div class="relative w-56 max mr-1 focus-within:text-purple-500"
-              style="margin-left: auto; margin-bottom: 10px;"
+              style="margin-left: auto; margin-bottom: 10px;" id="searchDiv"
               >
                 <div class="absolute inset-y-0 flex items-center pl-2">
                   <svg
@@ -82,6 +82,26 @@
                 />
               </div>
                 <input type="hidden" id="hidden" name="hidden" th:value="${keyword}">
+            </div>
+            <div class="relative w-56 max mr-1 focus-within:text-purple-500"
+                 style="margin-bottom: 10px; display: none;" id="selectDiv">
+              <select
+                      class="w-full text-center font-medium text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                      type="text"
+                      style="padding-right: 24px;"
+                      aria-label="Search"
+                      id="statusKeyword"
+                      onchange="searchByStatus(this.value)"
+                      >
+                <option th:selected="${keyword == 'N'}" value="N">회원</option>
+                <option th:selected="${keyword == 'Y'}" value="Y">블랙리스트</option>
+              </select>
+            </div>
+            <div class="relative">
+              <button style="height: 37px;" class="px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                      id="search-bnt"
+              > 검색
+              </button>
             </div>
           </div>
             <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">

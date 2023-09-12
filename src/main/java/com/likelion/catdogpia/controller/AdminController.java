@@ -115,7 +115,6 @@ public class AdminController {
     @PostMapping("/members/{memberId}/delete")
     @ResponseBody
     public ResponseEntity<String> memberRemove(@RequestHeader("Authorization") String accessToken, @PathVariable Long memberId) {
-        log.info("delete");
         if(accessToken == null){
             throw new RuntimeException();
         }
@@ -152,11 +151,20 @@ public class AdminController {
 
     // 상품 등록
     @PostMapping(value = "/products/create")
-    public String productCreate(
+    @ResponseBody
+    public ResponseEntity<String> productCreate(
+            @RequestHeader("Authorization") String accessToken,
             @RequestParam("mainImg") MultipartFile mainImg,
             @RequestParam("detailImg") MultipartFile detailImg,
             @RequestParam("productDto") String productDto
     ) throws IOException {
+
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 
         log.info("product : " + productDto);
         log.info("mainImg :" + mainImg.getOriginalFilename());
@@ -166,9 +174,9 @@ public class AdminController {
         ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
         log.info("product toString : " + product.toString());
 
-        adminService.createProduct(product, mainImg, detailImg);
+        adminService.createProduct(product, mainImg, detailImg, loginId);
 
-        return "redirect:/admin/products";
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 수정 페이지
@@ -183,12 +191,20 @@ public class AdminController {
 
     // 상품 수정
     @PostMapping("/products/{productId}/modify")
-    public String productModify(
+    public ResponseEntity<String> productModify(
+            @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId,
             @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
             @RequestParam(value = "detailImg", required = false) MultipartFile detailImg,
             @RequestParam("productDto") String productDto
     ) throws IOException {
+
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 
         log.info("productDto : " + productDto);
         // json -> productDto
@@ -196,16 +212,24 @@ public class AdminController {
         ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
         log.info("product toString : " + product.toString());
 
-        adminService.modifyProduct(productId, product, mainImg, detailImg);
+        adminService.modifyProduct(productId, product, mainImg, detailImg, loginId);
 
-        return "redirect:/admin/products";
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 삭제
     @PostMapping("/products/{productId}/delete")
-    public String productRemove(@PathVariable Long productId){
-        adminService.removeProduct(productId);
-        return "redirect:/admin/products";
+    @ResponseBody
+    public ResponseEntity<String> productRemove(@RequestHeader("Authorization") String accessToken, @PathVariable Long productId){
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        adminService.removeProduct(productId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 상품명 중복 확인

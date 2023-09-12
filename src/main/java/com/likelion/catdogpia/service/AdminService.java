@@ -60,16 +60,12 @@ public class AdminService {
 
     // 회원관리 목록
     public Page<MemberListDto> findMemberList(Pageable pageable, String filter, String keyword) {
-        // 사용자가 관리자인지 확인하는 로직 필요
-
         // 목록 리턴
         return queryRepository.findByFilterAndKeyword(pageable, filter, keyword);
     }
 
     // 사용자 상세 조회
     public MemberDto findMember(Long memberId) {
-        // 관리자인지 확인하는 로직 필요
-
         return memberRepository.findByMember(memberId);
     }
 
@@ -91,7 +87,7 @@ public class AdminService {
     // 회원 삭제
     @Transactional
     public void removeMember(Long memberId, String loginId) {
-        // 관리자인지 확인
+        // 관리자인지 확인용
         isAdmin(loginId);
         // 회원 삭제
         Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
@@ -129,9 +125,10 @@ public class AdminService {
 
     // 상품 등록
     @Transactional
-    public void createProduct(ProductDto productDto, MultipartFile mainImg, MultipartFile detailImg) throws IOException {
+    public void createProduct(ProductDto productDto, MultipartFile mainImg, MultipartFile detailImg, String loginId) throws IOException {
 
-        // 관리자인지 확인하는 로직 필요
+        // 관리자인지 확인
+        isAdmin(loginId);
 
         // 상품 등록 로직
         // 1. 등록할 카테고리를 찾아옴
@@ -189,10 +186,10 @@ public class AdminService {
 
     // 상품 수정
     @Transactional
-    public void modifyProduct(Long productId, ProductDto product, MultipartFile mainImg, MultipartFile detailImg) throws IOException {
-
+    public void modifyProduct(Long productId, ProductDto product, MultipartFile mainImg, MultipartFile detailImg, String loginId) throws IOException {
         // 상품 수정 로직
-
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 1. 상품 id를 가지고 상품 조회
         Product findProduct = productRepository.findById(productId).orElseThrow(RuntimeException::new);
 
@@ -318,9 +315,9 @@ public class AdminService {
 
     // 상품 삭제
     @Transactional
-    public void removeProduct(Long productId) {
-        // 권한 체크 필요
-
+    public void removeProduct(Long productId, String loginId) {
+        // 권한 체크
+        isAdmin(loginId);
         // 상품 조회
         Product findProduct = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
         // 상품 옵션 삭제
