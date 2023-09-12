@@ -41,7 +41,7 @@ public class ReviewService {
 
     // 리뷰 내역 조회
     @Transactional(readOnly = true)
-    public Page<ReviewListDto> findAllReview(String loginId, Integer page) {
+    public Page<ReviewListDto> getReviewList(String loginId, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());

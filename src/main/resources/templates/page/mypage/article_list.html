@@ -6,8 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
-    <script src="/js/authentication-mypage.js"></script>
     <script src="/js/mypage-article.js"></script>
+    <script src="/js/mypage-article-list.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -28,36 +28,19 @@
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
     <button class="btn-article-delete" onclick="deleteArticle()">선택한 글 삭제</button>
     <table class="mypage-table mypage-article-table">
+        <thead>
         <tr>
             <th><input type="checkbox" class="allCheck"></th>
             <th width="15%">글번호</th>
-            <th width="50%">제목</th>
-            <th width="15%">조회수</th>
-            <th width="15%">좋아요수</th>
-            <th>작성일시</th>
+            <th width="45%">제목</th>
+            <th width="10%">조회수</th>
+            <th width="10%">좋아요수</th>
+            <th width="20%">작성일시</th>
         </tr>
-        <tr th:each="article : ${articleList}">
-            <td><input type="checkbox" class="rowCheck" th:value="${article.articleId}"></td>
-            <td>
-                <div th:text="${article.articleId}"></div>
-            </td>
-            <td class="td-title">
-                <span th:text="${article.categoryName}"></span>
-                <div th:text="${article.title}"></div>
-                <span th:text="${article.commentCnt}"></span>
-            </td>
-            <td>
-                <div th:text="${article.viewCnt}"></div>
-            </td>
-            <td>
-                <div th:text="${article.likeCnt}"></div>
-            </td>
-            <td>
-                <div th:text="${article.createdAt}"></div>
-            </td>
-        </tr>
+        </thead>
+        <tbody>
+        </tbody>
     </table>
-</div>
 </div>
 </body>
 </html>

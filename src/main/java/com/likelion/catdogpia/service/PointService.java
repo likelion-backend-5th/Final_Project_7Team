@@ -23,7 +23,7 @@ public class PointService {
 
     // 적립금 내역 조회
     @Transactional(readOnly = true)
-    public Page<PointDto> findAllPoint(String loginId, Integer page) {
+    public Page<PointDto> getPointList(String loginId, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());

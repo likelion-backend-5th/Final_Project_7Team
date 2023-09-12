@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
     <script src="/js/mypage.js"></script>
-    <script src="/js/authentication-mypage.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -55,12 +54,12 @@
             <input type="radio" name="rate" id="star1" class="star" value="1" th:checked="${review.rating == 1}"><label for="star1">★</label>
         </div>
         <textarea id="text-review" placeholder="20자 이상 작성해주세요" th:text="${review.description}"></textarea>
-        <img id="review-upload-img" th:src="${review.attachDetailList != null ? review.attachDetailList[0].fileUrl : '/img/default-img.jpeg'}" src="../../../img/default-img.jpeg" class="" alt="...">
+        <img id="review-upload-img" th:src="${review.attachDetailList != null ? review.attachDetailList[0].fileUrl : '/img/default-img.jpeg'}" class="" alt="...">
         <button id="btn-remove-image">X</button>
         <label for="review-img-input" id="review-img-label">
             +
         </label>
-        <input id="review-img-input" type="file" accept="image/*"/>
+        <input th:value="${review.attachDetailList[0].fileUrl}" id="review-img-input" type="file" accept="image/*"/>
         <button id="btn-submit" th:onclick="requestReviewUpdate([[${review.reviewId}]])">등록</button>
     </section>
 </div>

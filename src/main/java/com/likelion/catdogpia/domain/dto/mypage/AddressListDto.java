@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AddressResponseDto {
+public class AddressListDto {
 
     // 배송지 id
     private Long id;
@@ -35,8 +35,8 @@ public class AddressResponseDto {
     // 배송 요청사항
     private String request;
 
-    public static AddressResponseDto fromEntity(Address entity) {
-        return AddressResponseDto.builder()
+    public static AddressListDto fromEntity(Address entity) {
+        return AddressListDto.builder()
                 .id(entity.getId())
                 .zipCode(entity.getZipCode())
                 .address(entity.getAddress())

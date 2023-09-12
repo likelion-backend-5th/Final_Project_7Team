@@ -69,8 +69,8 @@ public class MypageUIController {
 
     // 주문 내역 > 리뷰 작성 페이지
     @GetMapping("/order-list/review/{opId}")
-    public String reviewPage(@PathVariable Long opId, Model model) {
-        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
+    public String reviewPage(@PathVariable Long opId) {
+//        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
         return "page/mypage/review_write.html";
     }
 
@@ -92,23 +92,23 @@ public class MypageUIController {
     // 주문 상세 페이지
     @GetMapping("/order-detail/{orderId}")
     public String orderDetailPage(Model model, @PathVariable Long orderId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("productList", orderHistoryService.readOrder("testtest", orderId, page, limit));
-        model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", orderId));
+        model.addAttribute("productList", orderHistoryService.getOrder("testtest", orderId, page));
+        model.addAttribute("productDetail", orderHistoryService.getDetail("testtest", orderId));
         return "page/mypage/order_detail.html";
     }
 
     // 적립금 페이지
     @GetMapping("/point")
-    public String pointPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public String pointPage() {
         // 적립금 내역
-        model.addAttribute("pointList", pointService.findAllPoint("testtest", page));
+//        model.addAttribute("pointList", pointService.getPointList("testtest", page));
         return "page/mypage/point.html";
     }
 
     // 배송지 관리 페이지
     @GetMapping("/address")
-    public String addressPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
+    public String addressPage() {
+//        model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
         return "page/mypage/address_list.html";
     }
 
@@ -127,8 +127,8 @@ public class MypageUIController {
 
     // 리뷰 관리 페이지
     @GetMapping("/review")
-    public String reviewPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
+    public String reviewPage() {
+//        model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
         return "page/mypage/review_list.html";
     }
 
@@ -141,10 +141,10 @@ public class MypageUIController {
 
     // 게시글 관리 페이지
     @GetMapping("/article")
-    public String mypagePage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public String articlePage() {
         // 게시글 리스트
-        Page<MemberArticleListDto> articleListDtoList = memberArticleService.getArticleList("testtest", page);
-        model.addAttribute("articleList", articleListDtoList);
+//        Page<MemberArticleListDto> articleListDtoList = memberArticleService.getArticleList("testtest", page);
+//        model.addAttribute("articleList", articleListDtoList);
         return "page/mypage/article_list.html";
     }
 

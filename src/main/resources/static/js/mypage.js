@@ -39,12 +39,7 @@ async function authentication() {
 
 // 프로필 (profile.html) =======================================================
 // 회원 정보 수정
-async function openProfilePopup() {
-    const result = await authentication()
-    if(result!="ok") {
-        alert("권한이 없습니다.")
-        return
-    }
+function openProfilePopup() {
     window.open("/mypage/profile/update", "회원 정보 수정", "width=620, height=600")
 }
 
@@ -211,50 +206,6 @@ function submitPet() {
             })
     }
 
-// 리뷰 작성 요청
-    function requestReview(opId) {
-        const reviewImgInput = document.getElementById('review-img-input')
-
-        const formData = new FormData()
-
-        const reviewImg = reviewImgInput.files[0]
-        formData.append('reviewImg', reviewImg)
-
-        const rating = document.querySelector('input[name="rate"]:checked')
-        if (!rating) {
-            alert('별점을 선택해주세요')
-            return
-        }
-
-        const reviewData = {
-            description: document.getElementById('text-review').value,
-            rating: rating.value
-        }
-
-        // 특수 문자와 공백을 제거 후 글자 수 체크 (20자 이상)
-        const cleanedDescription = reviewData.description.replace(/[^\w\s가-힣]/gi, '').replace(/\s/g, '')
-        if (cleanedDescription.length < 20) {
-            alert('후기 내용을 20자 이상 작성해주세요 (공백, 특수 문자, 단순 문자 제외)')
-            return
-        }
-
-        formData.append('reviewFormDto', new Blob([JSON.stringify(reviewData)], {type: 'application/json'}));
-
-        fetch("/mypage/order-list/review/" + opId, {
-            method: "POST",
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert("리뷰가 등록되었습니다")
-                    location.href = "/mypage/order-list"
-                } else {
-                    alert("리뷰 등록에 실패하였습니다")
-                }
-            })
-
-}
-
 
 // 배송지 (address) ==========================================================
 // 배송지 등록 버튼 클릭
@@ -266,6 +217,12 @@ function openAddressPopup() {
 function submitAddress() {
     const form = document.getElementById('addressForm')
     const formData = new FormData(form)
+
+    // 유효성 검사
+    if (!validateAddrssForm(formData)) {
+        return;
+    }
+
     fetch("/mypage/add-address", {
         method: "post",
         body: formData,
@@ -278,6 +235,29 @@ function submitAddress() {
                 }
             }
         )
+}
+
+function validateAddrssForm(formData) {
+    const addressName = formData.get('addressName');
+    const name = formData.get('name');
+    const phone = formData.get('phone');
+    const zipCode = formData.get('zipCode');
+    const address = formData.get('address');
+    const detailAddress = formData.get('detailAddress');
+
+    if (!addressName || !name || !phone || !zipCode || !address || !detailAddress) {
+        alert("필수 항목을 입력해주세요.");
+        return false;
+    }
+
+    // 휴대폰번호 형식 검사 (숫자만 허용하고 10자리 또는 11자리)
+    const phonePattern = /^\d{10,11}$/;
+    if (!phonePattern.test(phone)) {
+        alert("올바른 휴대폰번호를 입력해주세요.");
+        return false;
+    }
+
+    return true;
 }
 
 // 주소 API
@@ -326,13 +306,21 @@ function deleteAddress(addressId) {
     )
 }
 
+// 배송지 수정 페이지
 function openEditAddressPopup(addressId) {
     open("/mypage/address/update/" + addressId, "배송지 수정", "width=600, height=600, left=0, top=0")
 }
 
+// 배송지 수정
 function updateAddress(addressId) {
     const form = document.getElementById('addressForm')
     const formData = new FormData(form)
+
+    // 유효성 검사
+    if (!validateAddrssForm(formData)) {
+        return;
+    }
+
     fetch("/mypage/address/update/" + addressId, {
         method: "post",
         body: formData
@@ -352,6 +340,7 @@ function requestReviewUpdate(reviewId) {
 
     if (confirm("리뷰를 수정하시겠습니까?")) {
         const reviewImgInput = document.getElementById('review-img-input')
+        alert(reviewImgInput)
 
         const formData = new FormData()
 

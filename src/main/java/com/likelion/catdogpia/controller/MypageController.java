@@ -9,8 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,9 +52,9 @@ public class MypageController {
 
     // 회원 정보 수정 페이지
     @GetMapping("/profile/update/data")
-    public String updateProfilePage(Model model) {
+    public String updateProfilePage(@RequestHeader("Authorization") String accessToken) {
 
-        model.addAttribute("profile", profileService.getMemberProfile("testtest"));
+//        model.addAttribute("profile", profileService.getMemberProfile("testtest"));
         return "page/mypage/profile_modify.html";
     }
 
@@ -76,14 +74,6 @@ public class MypageController {
     }
 
     // 주문 내역 페이지
-//    @GetMapping("/order-list/data")
-//    public String orderListPage(@RequestHeader("Authorization") String accessToken, Model model, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-//        Page<OrderListDto> orderList = orderHistoryService.readAllOrder("testtest", orderStatus, page);
-//        model.addAttribute("orderList", orderList);
-//        // 주문 상태별 개수
-//        model.addAttribute("orderStatusCount", orderHistoryService.getOrderCountByStatus("testtest"));
-//        return "page/mypage/order_list.html";
-//    }
     @GetMapping("/order-list/data")
     public Map<String, Object>  orderListPage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, @RequestParam(value = "page", defaultValue = "0") Integer page) {
         Map<String, Object> response = new HashMap<>();
@@ -91,7 +81,7 @@ public class MypageController {
         String token = accessToken.split(" ")[1];
         String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 
-        Page<OrderListDto> orderList = orderHistoryService.readAllOrder(loginId, orderStatus, page);
+        Page<OrderListDto> orderList = orderHistoryService.getOrderList(loginId, orderStatus, page);
 
         response.put("orderList", orderList);
         response.put("orderStatusCount", orderHistoryService.getOrderCountByStatus(loginId));
@@ -108,9 +98,19 @@ public class MypageController {
 
     // 주문 내역 > 리뷰 작성 페이지
     @GetMapping("/order-list/review/{opId}/data")
-    public String reviewPage(@PathVariable Long opId, Model model) {
-        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
-        return "page/mypage/review_write.html";
+    public Map<String, Object> reviewPage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
+//        model.addAttribute("orderProduct", reviewService.getOrderProduct("testtest", opId));
+
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        ReviewProductDto orderProudct = reviewService.getOrderProduct(loginId, opId);
+
+        response.put("orderProudct", orderProudct);
+
+        return response;
     }
 
     // 리뷰 등록 요청
@@ -126,9 +126,9 @@ public class MypageController {
 
     // 교환 요청 페이지
     @GetMapping("/order-list/exchange/{opId}/data")
-    public String exchangePage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
-        model.addAttribute("option", orderHistoryService.getProductOption(opId));
+    public String exchangePage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
+//        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
+//        model.addAttribute("option", orderHistoryService.getProductOption(opId));
         return "page/mypage/exchange.html";
     }
 
@@ -141,8 +141,8 @@ public class MypageController {
 
     // 환불 요청 페이지
     @GetMapping("/order-list/refund/{opId}/data")
-    public String refundPage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
+    public String refundPage(@PathVariable Long opId, @RequestHeader("Authorization") String accessToken) {
+//        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
         return "page/mypage/refund.html";
     }
 
@@ -155,25 +155,52 @@ public class MypageController {
 
     // 주문 상세 페이지
     @GetMapping("/order-detail/{orderId}/data")
-    public String orderDetailPage(Model model, @PathVariable Long orderId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("productList", orderHistoryService.readOrder("testtest", orderId, page, limit));
-        model.addAttribute("productDetail", orderHistoryService.readDetail("testtest", orderId));
-        return "page/mypage/order_detail.html";
+    public Map<String, Object> orderDetailPage(@PathVariable Long orderId, @RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<OrderListDto> productList = orderHistoryService.getOrder(loginId, orderId, page);
+        OrderDetailDto productDetail = orderHistoryService.getDetail(loginId, orderId);
+
+        response.put("productList", productList);
+        response.put("productDetail", productDetail);
+
+        return response;
     }
 
     // 적립금 페이지
     @GetMapping("/point/data")
-    public String pointPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        // 적립금 내역
-        model.addAttribute("pointList", pointService.findAllPoint("testtest", page));
-        return "page/mypage/point.html";
+    public Map<String, Object> pointPage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<PointDto> pointList = pointService.getPointList(loginId, page);
+
+        response.put("pointList", pointList);
+
+        return response;
     }
 
     // 배송지 관리 페이지
     @GetMapping("/address/data")
-    public String addressPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("addressList", addressService.readAllAddress("testtest", page, limit));
-        return "page/mypage/address_list.html";
+    public Map<String, Object> addressPage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<AddressListDto> addressList = addressService.readAllAddress(loginId, page);
+
+        log.info("배송지총개수:" + addressList.getTotalElements());
+
+        response.put("addressList", addressList);
+
+        return response;
     }
 
     // 배송지 등록 요청
@@ -185,8 +212,8 @@ public class MypageController {
 
     // 배송지 수정 팝업 페이지
     @GetMapping("/address/update/{addressId}/data")
-    public String updateAddressPage(@PathVariable Long addressId, Model model) {
-        model.addAttribute("address", addressService.readAddress(addressId));
+    public String updateAddressPage(@PathVariable Long addressId, @RequestHeader("Authorization") String accessToken) {
+//        model.addAttribute("address", addressService.readAddress(addressId));
         return "page/mypage/address_modify.html";
     }
 
@@ -206,15 +233,24 @@ public class MypageController {
 
     // 리뷰 관리 페이지
     @GetMapping("/review/data")
-    public String reviewPage(Model model, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-        model.addAttribute("reviewList", reviewService.findAllReview("testtest", page));
-        return "page/mypage/review_list.html";
+    public Map<String, Object> reviewPage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<ReviewListDto> reviewList = reviewService.getReviewList(loginId, page);
+
+        response.put("reviewList", reviewList);
+
+        return response;
     }
 
     // 리뷰 수정 페이지
     @GetMapping("/review/{reviewId}/data")
-    public String reviewModifyPage(@PathVariable Long reviewId, Model model) {
-        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
+    public String reviewModifyPage(@PathVariable Long reviewId, @RequestHeader("Authorization") String accessToken) {
+//        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
         return "page/mypage/review_modify.html";
     }
 
@@ -234,8 +270,18 @@ public class MypageController {
 
     // 게시글 관리 페이지
     @GetMapping("/article/data")
-    public String mypagePage(Model model) {
-        return "page/mypage/article_list.html";
+    public Map<String, Object> articlePage(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        Page<MemberArticleListDto> articleList = memberArticleService.getArticleList(loginId, page);
+
+        response.put("articleList", articleList);
+
+        return response;
     }
 
     // 게시글 삭제

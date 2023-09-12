@@ -33,7 +33,7 @@ public class OrderHistoryService {
     private final ExchangeRefundRepository exchangeRefundRepository;
 
     // 주문 내역 리스트 조회
-    public Page<OrderListDto> readAllOrder(String loginId, OrderStatus orderStatus, Integer page) {
+    public Page<OrderListDto> getOrderList(String loginId, OrderStatus orderStatus, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
@@ -45,17 +45,17 @@ public class OrderHistoryService {
     }
 
     // 주문 상세 조회 > 특정 주문 번호의 상품들 조회
-    public Page<OrderListDto> readOrder(String loginId, Long orderId, Integer page, Integer limit) {
+    public Page<OrderListDto> getOrder(String loginId, Long orderId, Integer page) {
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(page, limit, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<OrderListDto> orderListPage = orderRepository.findAllByOrderId(pageable, orderId);
 
         return orderListPage;
     }
 
     // 주문 상세 조회 > 배송지 정보, 결제 정보
-    public OrderDetailDto readDetail(String loginId, Long orderId) {
+    public OrderDetailDto getDetail(String loginId, Long orderId) {
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
         if (optionalMember.isEmpty()) {
             new ResponseStatusException(HttpStatus.FORBIDDEN);

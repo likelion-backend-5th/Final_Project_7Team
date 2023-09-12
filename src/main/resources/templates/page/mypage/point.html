@@ -4,33 +4,29 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/common/layouts/default_layout}">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
-  <script src="/js/authentication-mypage.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage-point.js"></script>
 </head>
 <body>
 <div layout:fragment="content" class="mypage-container">
-  <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
-  <th:block th:if="${pointList.hasContent()}">
-    <p class="point-total">총 <span th:text="${pointList.content[0].totalPoint}"></span>원</p>
-  </th:block>
-  <table class="mypage-table point-table">
-    <tr>
-      <th>상태</th>
-      <th>적립금</th>
-      <th>적립 내용</th>
-      <th>주문번호</th>
-      <th>적용 일시</th>
-    </tr>
-    <tr th:each="point : ${pointList}">
-      <td th:text="${point.status}">사용</td>
-      <td th:text="${point.point}">-2774</td>
-      <td th:text="${point.pointSource}">적립금 결제</td>
-      <td th:text="${point.orderNumber}">20230810938950</td>
-      <td th:text="${#temporals.format(point.usedAt, 'yyyy-MM-dd')}">2023.08.10</td>
-    </tr>
-  </table>
-</div>
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+<!--    <th:block th:if="${pointList.hasContent()}">-->
+    <p class="point-total">총 <span></span>원</p>
+<!--    </th:block>-->
+    <table class="mypage-table point-table">
+        <thead>
+        <tr>
+            <th>상태</th>
+            <th>적립금</th>
+            <th>적립 내용</th>
+            <th>주문번호</th>
+            <th>적용 일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

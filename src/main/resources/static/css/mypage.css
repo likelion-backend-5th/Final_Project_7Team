@@ -11,6 +11,7 @@
     padding: 10px 15px;
     background-color: #ADC2A9;
     border: none;
+    cursor: pointer;
 }
 
 /* 카테고리 */
@@ -331,20 +332,57 @@ ul.order-state li {
 /* ======================================================================= */
 /* 교환 (exchange) */
 
+.exchange-order-info-table {
+    margin-bottom: 50px;
+}
+
 .exchange-address-table th {
     width: 120px;
-    font-weight: normal;
+    font-weight: bold;
+}
+
+.exchange-order-info-table p {
+    margin: 0;
 }
 
 .exchange-option-box select {
-    width: 100px;
+    width: 150px;
+    height: 30px;
+    margin-right: 20px;
+    border: 1px solid #c0bebe;
+}
+
+.exchange-reason input {
+    margin-right: 7px;
+}
+
+#detailReason {
+    width: 700px;
+    height: 200px;
+    padding: 15px;
+}
+
+.exchange-container > div {
+    margin-bottom: 50px;
+}
+
+.exchange-title {
+    margin-bottom: 20px;
 }
 
 
 /* ======================================================================= */
 /* 리뷰 (review) */
-.review-section > * {
+.review-container-box > * {
     display: block;
+}
+
+.review-container-box > p {
+    font-size: 20px;
+}
+
+.review-list-box .rating span {
+    color: #f8d700;
 }
 
 #rating-box {
@@ -374,6 +412,9 @@ ul.order-state li {
     padding: 20px;
 }
 
+.img-section {
+}
+
 #review-upload-img {
     width: 150px;
     height: 120px;
@@ -386,12 +427,19 @@ ul.order-state li {
     line-height: 60px;
     color: gray;
     font-size: 30px;
-    font-weight: bold;
+    /*font-weight: bold;*/
     background-color: #eeeded;
 }
 
 #review-img-input {
     visibility: hidden;
+}
+
+#btn-remove-image {
+    width: 45px;
+    height: 26px;
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
 }
 
 
@@ -445,8 +493,17 @@ ul.order-state li {
     padding: 30px;
 }
 
-.add-address-container p:nth-child(1) {
+.add-address-container .title-box {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.add-address-container .title-box p {
+    color: #99A799;
     font-size: 30px;
+    font-weight: bold;
+    margin: auto;
 }
 
 .add-address-container table tr {
@@ -469,6 +526,15 @@ ul.order-state li {
 
 .add-address-container table tr:nth-child(4) .address-input {
     margin-bottom: 10px;
+}
+
+.add-address-container .btn-box {
+    width: 100%;
+    text-align: center;
+}
+
+#addressForm table {
+    margin-bottom: 20px;
 }
 
 .address-input {
@@ -499,51 +565,61 @@ ul.order-state li {
 
 /* ======================================================================= */
 /* 리뷰 관리 */
-.review-box {
+.review-list-box {
     display: flex;
-    height: 130px;
-    margin-bottom: 50px;
+    height: 150px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid lightgray;
 }
 
-.review-box .btn-box {
+.review-list-box .btn-box {
     width: 100%;
 }
 
-.review-box .content-box {
+.review-list-box .content-box {
     width: 80%;
 }
 
-.review-box .content-box p {
+.review-list-box .content-box p {
     margin: 5px 0;
 }
 
-.review-box .content-box p:nth-child(1) {
+.review-list-box .content-box p:nth-child(1) {
     font-weight: bold;
     font-size: 18px;
 }
 
-.review-box .content-box p:nth-child(2) {
+.review-list-box .content-box p:nth-child(2) {
     color: #b4b4b4;
     font-weight: bold;
 }
 
-.review-box .review-btn-box button {
-    margin-bottom: 5px;
-    border: 1px solid lightgray;
+.review-list-box .btn-and-img-box {
+    width: 110px;
+    text-align: end;
 }
 
-.review-box .img-box {
+.review-list-box .img-box {
     width: 110px;
     height: 110px;
     border: 1px solid lightgray;
     overflow: hidden;
 }
 
-.review-box .img-box img {
+.review-list-box .img-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
+.review-list-box .btn-review-list-update, .btn-review-list-delete {
+    width: 45px;
+    height: 26px;
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+}
+
+
 
 /* ======================================================================= */
 /* 게시글 관리 */
@@ -564,6 +640,18 @@ ul.order-state li {
     display: flex;
     align-items: center;
     text-align: start;
+}
+
+.mypage-article-table .category {
+    margin-right: 10px;
+    font-weight: bold;
+    color: gray;
+}
+
+.mypage-article-table .comment-cnt {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #ADC2A9;
 }
 
 

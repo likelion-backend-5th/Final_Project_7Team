@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function loadPage() {
-    const body = document.getElementsByTagName("body");
-    body[0].style.display = "none";
+    // const body = document.getElementsByTagName("body");
+    // body[0].style.display = "none";
 
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
@@ -63,48 +63,17 @@ function dataOnPage(data) {
     const orderStatusCount = data.orderStatusCount;
 
     const orderStatusList = document.getElementById('orderStatusList');
-    // 반복문 사용하여 <li> 요소를 생성하고 추가
-    for (const status in orderStatusCount) {
-        const count = orderStatusCount[status];
-        let statusName = ""
-        switch (status) {
-            case "RECEIVED":
-                statusName = "주문접수"
-                break;
-            case "PREPARING_FOR_SHIPMENT":
-                statusName = "배송준비"
-                break;
-            case "SHIPPED":
-                statusName = "배송중"
-                break;
-            case "DELIVERED":
-                statusName = "배송완료"
-                break;
-            case "PURCHASE_CONFIRMED":
-                statusName = "구매확정"
-                break;
-            case "EXCHANGE_REQUESTED":
-                statusName = "교환요청"
-                break;
-            case "EXCHANGE_COMPLETED":
-                statusName = "교환완료"
-                break;
-            case "REFUND_REQUESTED":
-                statusName = "환불요청"
-                break;
-            case "REFUND_COMPLETED":
-                statusName = "환불완료"
-                break;
+    const lis = orderStatusList.getElementsByTagName('li');
+
+    for (let i = 0; i < lis.length; i++) {
+        const li = lis[i];
+        const id = li.id;
+        if (orderStatusCount.hasOwnProperty(id)) {
+            const count = orderStatusCount[id];
+            const span = li.querySelector('span');
+            span.textContent = count;
         }
-        const li = document.createElement('li');
-        li.textContent = `${statusName} ${count}`;
-        li.addEventListener('click', function () {
-            filterOrderStatus(status);
-        });
-        orderStatusList.appendChild(li);
     }
-
-
 
     //테이블 생성
     const tbody = document.querySelector('tbody')
@@ -244,7 +213,6 @@ function dataOnPage(data) {
 
 function formatDate(inputDate) {
     const date = new Date(inputDate);
-
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
     const day = String(date.getDate()).padStart(2, '0');
