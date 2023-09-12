@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function loadPage() {
                 body[0].style.display = "block";
             } else {
                 alert('권한이 없습니다.');
-                window.location.href = "/login";
+                window.location.href = "/";
             }
         } else if (response.status === 401 || response.status === 403) {
             const reissueResponse = await fetch('/reissue', {
@@ -33,16 +33,16 @@ document.addEventListener('DOMContentLoaded', async function loadPage() {
                 await loadPage(); // 원래 요청을 다시 시도
             } else {
                 alert('권한이 없습니다.');
-                window.location.href = "/login";
+                window.location.href = "/";
             }
         } else {
             alert('권한이 없습니다.');
-            window.location.href = "/login";
+            window.location.href = "/";
         }
     } catch (error) {
         console.error('오류:', error);
         alert('권한이 없습니다.');
-        window.location.href = "/login";
+        window.location.href = "/";
     }
 });
 
@@ -62,7 +62,7 @@ async function tokenCheck(accessToken) {
             const responseData = await response.json();
             if(responseData.role !== "ADMIN") {
                 alert('권한이 없습니다.1');
-                window.location.href = "/login";
+                window.location.href = "/";
             }
         } else if (response.status === 401 || response.status === 403) {
             const reissueResponse = await fetch('/reissue', {
@@ -76,16 +76,16 @@ async function tokenCheck(accessToken) {
                 await tokenCheck(reissuedData.accessToken); // 원래 요청을 다시 시도
             } else {
                 alert('권한이 없습니다.2');
-                window.location.href = "/login";
+                window.location.href = "/";
             }
         } else {
             alert('권한이 없습니다.3');
-            window.location.href = "/login";
+            window.location.href = "/";
         }
     } catch (error) {
         console.error('오류:', error);
         alert('권한이 없습니다.4');
-        window.location.href = "/login";
+        window.location.href = "/";
     }
 }
 
