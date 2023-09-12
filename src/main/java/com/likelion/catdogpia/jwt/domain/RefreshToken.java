@@ -28,4 +28,8 @@ public class RefreshToken {
         this.refreshTokenValidTime = refreshTokenValidTime;
         this.loginId = loginId;
     }
+
+    public void setRefreshToken(String token) {
+        this.token = token;
+    }
 }
