@@ -35,6 +35,10 @@ public class LoginController {
             Map<String, String> response = new HashMap<>();
             response.put("result", "fail");
             return ResponseEntity.ok(response);
+        } else if (result.equals("black")) {
+            Map<String, String> response = new HashMap<>();
+            response.put("result", "black");
+            return ResponseEntity.ok(response);
         }
         JwtTokenResponseDto jwt = jwtTokenProvider.createTokensByLogin(loginId);
         String accessToken = jwt.getAccessToken();

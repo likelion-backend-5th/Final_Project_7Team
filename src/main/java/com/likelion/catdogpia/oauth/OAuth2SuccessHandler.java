@@ -4,25 +4,22 @@ import com.likelion.catdogpia.domain.entity.user.CustomMemberDetails;
 import com.likelion.catdogpia.domain.entity.user.Role;
 import com.likelion.catdogpia.jwt.JwtTokenProvider;
 import com.likelion.catdogpia.jwt.domain.JwtTokenResponseDto;
+import com.likelion.catdogpia.service.LoginService;
 import com.likelion.catdogpia.service.MemberService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 @Slf4j
 @Component
@@ -30,11 +27,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsManager userDetailsManager;
     private final MemberService memberService;
+    private final OAuth2UserServiceImpl oAuth2UserService;
 
-    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider, UserDetailsManager userDetailsManager, MemberService memberService) {
+    public OAuth2SuccessHandler(JwtTokenProvider jwtTokenProvider, UserDetailsManager userDetailsManager, MemberService memberService, OAuth2UserServiceImpl oAuth2UserService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsManager = userDetailsManager;
         this.memberService = memberService;
+        this.oAuth2UserService = oAuth2UserService;
     }
 
     @Override
@@ -66,13 +65,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build());
         }
 
+        if (oAuth2UserService.isBlacklist(loginId).equals('Y')) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
         JwtTokenResponseDto jwt = jwtTokenProvider.createTokensByLogin(loginId);
         String refreshToken = jwt.getRefreshToken();
 
         //RefreshToken Cookie
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setMaxAge(24*60*60);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
 
