@@ -59,7 +59,6 @@ public class JwtController {
             //RefreshToken Cookie
             Cookie refreshTokenCookie = new Cookie("RefreshToken", newJwt.getRefreshToken());
             refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setMaxAge(24*60*60);
             refreshTokenCookie.setPath("/");
             httpResponse.addCookie(refreshTokenCookie);
 
