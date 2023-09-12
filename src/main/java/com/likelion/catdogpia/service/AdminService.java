@@ -343,8 +343,9 @@ public class AdminService {
 
     // 주문 상태 변경
     @Transactional
-    public void changeOrderStatus(List<OrderStatusUpdateDto> updateDtoList) {
-
+    public void changeOrderStatus(List<OrderStatusUpdateDto> updateDtoList, String loginId) {
+        // 권한체크
+        isAdmin(loginId);
         for (OrderStatusUpdateDto updateDto : updateDtoList) {
             // id를 가지고 해당 주문 상품을 찾음
             OrderProduct findOrderProduct = orderProductRepository.findById(updateDto.getId()).orElseThrow(IllegalArgumentException::new);

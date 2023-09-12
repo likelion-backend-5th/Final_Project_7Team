@@ -273,17 +273,23 @@ public class AdminController {
 
     // 주문 상태 변경
     @PostMapping("/orders/change-status")
-    public String changeOrderStatus(@RequestBody List<OrderStatusUpdateDto> updateDtoList) {
-        log.info("hi");
+    @ResponseBody
+    public ResponseEntity<String> changeOrderStatus(@RequestHeader("Authorization") String accessToken, @RequestBody List<OrderStatusUpdateDto> updateDtoList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 백단에서 한번 더 list validation check 수행
         if(updateDtoList.isEmpty()) {
             throw new IllegalArgumentException("list is empty");
         }
         else {
-            adminService.changeOrderStatus(updateDtoList);
+            adminService.changeOrderStatus(updateDtoList, loginId);
         }
 
-        return "redirect:/admin/orders";
+        return ResponseEntity.ok("ok");
     }
 
     // 주문내역상세 조회 및 수정

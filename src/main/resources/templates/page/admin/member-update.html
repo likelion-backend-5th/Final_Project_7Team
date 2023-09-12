@@ -161,7 +161,7 @@
           </div>
           <div class="col text-center">
             <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submitBnt" type="submit">
-              변경
+              수정
             </button>
           </form>
             &nbsp;&nbsp;&nbsp;
@@ -233,7 +233,7 @@
         "Authorization": `Bearer ${accessToken}`
       },
       success: function(response) {
-          alert("변경되었습니다.");
+          alert("수정되었습니다.");
           window.location.href = '/admin/members';
       },
       error: function() {

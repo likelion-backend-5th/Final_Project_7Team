@@ -14,7 +14,8 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/authentication.js"></script>
   </head>
   <body>
     <!-- 헤더-->
@@ -195,19 +196,23 @@
         selectedItems.push({ id: id, status: status });
       });
 
-      alert(selectedItems.length)
-
-      if (selectedItems.length > 0) {
+      if (selectedItems.length > 0 && confirm("수정하시겠습니까??")) {
         // 선택된 상품의 상태값 변경 요청
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
+        // 선택된 상품의 상태값 변경 요청정
         $.ajax({
           url: "/admin/orders/change-status",
           type: "POST",
           contentType: "application/json",
           dataType: "text",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          },
           data: JSON.stringify(selectedItems),
           success: function (response) {
             // 성공적으로 처리된 경우의 동작
-            alert("변경되었습니다.")
+            alert("수정되었습니다.")
             window.location.href= "/admin/orders";
           },
           error: function (error) {
