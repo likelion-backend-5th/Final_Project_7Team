@@ -77,7 +77,7 @@ public class MypageUIController {
     // 교환 요청 페이지
     @GetMapping("/order-list/exchange/{opId}")
     public String exchangePage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
+        model.addAttribute("order", orderHistoryService.getOrderInfo(opId));
         model.addAttribute("option", orderHistoryService.getProductOption(opId));
         return "page/mypage/exchange.html";
     }
@@ -85,7 +85,7 @@ public class MypageUIController {
     // 환불 요청 페이지
     @GetMapping("/order-list/refund/{opId}")
     public String refundPage(@PathVariable Long opId, Model model) {
-        model.addAttribute("order", orderHistoryService.getOrderInfo("testtest", opId));
+        model.addAttribute("order", orderHistoryService.getOrderInfo(opId));
         return "page/mypage/refund.html";
     }
 
@@ -135,7 +135,7 @@ public class MypageUIController {
     // 리뷰 수정 페이지
     @GetMapping("/review/{reviewId}")
     public String reviewModifyPage(@PathVariable Long reviewId, Model model) {
-        model.addAttribute("review", reviewService.getReview("testtest", reviewId));
+        model.addAttribute("review", reviewService.getReview(reviewId));
         return "page/mypage/review_modify.html";
     }
 
