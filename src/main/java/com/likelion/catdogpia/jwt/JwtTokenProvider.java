@@ -48,10 +48,8 @@ public class JwtTokenProvider {
         RefreshToken checkRefreshToken = optionalRefreshToken.get();
         if (!refreshToken.equals(checkRefreshToken.getToken())) throw new ForbiddenException("리프레시 토큰 확인 실패");
         String newAccessToken = createToken(userDetails, 30);
-        tokenRepository.deleteByLoginId(loginId);
         String newRefreshToken = createToken(userDetails, 3600);
-        RefreshToken saveRefreshToken = new RefreshToken(newRefreshToken, Duration.ofMillis(3600), loginId);
-        tokenRepository.save(saveRefreshToken);
+        optionalRefreshToken.get().setRefreshToken(newRefreshToken);
         return new JwtTokenResponseDto(newAccessToken, newRefreshToken);
     }
 
@@ -84,6 +82,7 @@ public class JwtTokenProvider {
     }
 
     //Token 유효성 검증
+    @Transactional
     public boolean validate(String token) {
         try {
             jwtParser.parseClaimsJws(token);
@@ -94,6 +93,7 @@ public class JwtTokenProvider {
     }
 
     //토큰 회원 정보 추출
+    @Transactional
     public Claims parseClaims(String token) {
         return jwtParser
                 .parseClaimsJws(token)

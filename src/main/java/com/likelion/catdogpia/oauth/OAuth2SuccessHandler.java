@@ -57,7 +57,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .password(providerId)
                     .name(name)
                     .phone(phone)
-                    .email(email)
+                    .email(String.format("{%S}%s", provider, email))
                     .nickname(nickname)
                     .role(Role.USER)
                     .socialLogin('Y')
