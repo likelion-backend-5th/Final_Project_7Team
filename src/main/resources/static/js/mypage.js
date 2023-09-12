@@ -229,10 +229,11 @@ async function submitAddress() {
     };
 
     try {
-        const response = await fetch('/authorize', {
-            method: 'GET',
+        const response = await fetch("/mypage/add-address", {
+            method: "post",
             headers: headers,
-        });
+            body: formData,
+        })
 
         if (response.ok) {
             self.close();

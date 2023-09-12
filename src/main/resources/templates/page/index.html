@@ -209,15 +209,15 @@
                                 </ul>
                             </div>
                             <div class="featured__item__text">
-                                <h6><a th:href="@{/products/{id}(id=${newProduct.id})}" th:text="${newProduct.getName}"></a></h6>
+                                <h6><a th:href="@{/products/detail/{id}(id=${newProduct.id})}" th:text="${newProduct.getName}"></a></h6>
                                 <hr>
                                 <div class="main-product-summary">
                                     <h6 th:text="${#numbers.formatInteger(newProduct.price, 0, 'COMMA')+'원'}"></h6>
-                                    <div class="main-product-rating">
-                                        <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                        5.0</h6>
-                                    </div>
-                                    <h6>후기1</h6>
+<!--                                    <div class="main-product-rating">-->
+<!--                                        <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt="">-->
+<!--                                        <h6>5.0</h6>-->
+<!--                                    </div>-->
+<!--                                    <h6>후기1</h6>-->
                                 </div>
                             </div>
                         </div>
