@@ -16,16 +16,11 @@
     <script src="../../../../js/init-alpine.js"></script>
   </head>
   <body>
-  <!-- 헤더-->
-  <div th:insert="~{common/fragments/admin-header :: header}"></div>
     <div
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen}"
     >
-      <!-- 사이드바 -->
-      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
       <!-- 500 에러 페이지 -->
-
         <main class="h-full w-full pb-16 overflow-y-auto">
           <div class="container flex flex-col items-center px-6 mx-auto">
             <svg

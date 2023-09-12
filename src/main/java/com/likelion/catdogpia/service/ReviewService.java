@@ -57,15 +57,15 @@ public class ReviewService {
     }
 
     // 리뷰 등록
-    public void saveReview(String loginId, Long opId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
+    public void saveReview(Long opId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
 
         // 상품 구매자와 일치하는지 확인
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         OrderProduct orderProduct = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Long orderMemberId = orderRepository.findMemberIdByOrderProductId(opId);
-        if (orderMemberId != member.getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "member 불일치");
-        }
+//        Long orderMemberId = orderRepository.findMemberIdByOrderProductId(opId);
+//        if (orderMemberId != member.getId()) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "member 불일치");
+//        }
 
         // 이미 등록한 리뷰가 있는지 확인
         if (reviewRepository.findByOrderProductId(opId) != null) {
@@ -88,7 +88,7 @@ public class ReviewService {
 
         // 리뷰 등록
         reviewRepository.save(Review.builder()
-                .member(member)
+                .member(orderProduct.getOrder().getMember())
                 .orderProduct(orderProduct)
                 .attach(attach)
                 .description(reviewFormDto.getDescription())
@@ -100,14 +100,14 @@ public class ReviewService {
     }
 
     // 리뷰 조회
-    public ReviewUpdateDto getReview(String loginId, Long reviewId) {
+    public ReviewUpdateDto getReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return ReviewUpdateDto.fromEntity(review);
     }
 
     // 리뷰 수정
     @Transactional
-    public void updateReview(String loginId, Long reviewId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
+    public void updateReview(Long reviewId, MultipartFile reviewImg, ReviewFormDto reviewFormDto) throws IOException {
 
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -163,7 +163,7 @@ public class ReviewService {
     }
 
     // 리뷰 삭제
-    public void deleteReview(String testtest, Long reviewId) {
+    public void deleteReview(Long reviewId) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         reviewRepository.deleteById(reviewId);

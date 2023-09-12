@@ -13,9 +13,10 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="/js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../js/productValidation.js"></script>
+    <script src="/js/authentication.js"></script>
+    <script src="/js/productValidation.js"></script>
     <style>
       /* label 스타일 조정 */
       .button {
@@ -137,19 +138,9 @@
                       type="radio" id="sale"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="accountType"
-                      value="판매중" th:checked="${productDto.status == '판매중'}"
+                      value="SELL" th:checked="${productDto.status.name() == 'SELL'}"
                     />
                     <span class="ml-2">판매중</span>
-                  </label>
-                  <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio" id="stop"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="accountType" value="판매중지" th:checked="${productDto.status == '판매중지'}"
-                    />
-                    <span class="ml-2">판매중지</span>
                   </label>
                   <label
                           class="inline-flex ml-6 items-center text-gray-600 dark:text-gray-400"
@@ -157,7 +148,7 @@
                     <input
                             type="radio" id="soldOut"
                             class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                            name="accountType" value="품절" th:checked="${productDto.status == '품절'}"
+                            name="accountType" value="SOLD_OUT" th:checked="${productDto.status.name() == 'SOLD_OUT'}"
                     />
                     <span class="ml-2">품절</span>
                   </label>
@@ -412,23 +403,32 @@
         alert(errorMessage);
       } else {
 
-        const url = `/admin/products/${productId}/modify`;
+        if(confirm("수정하시겠습니까??")){
+          const accessToken = localStorage.getItem("accessToken");
+          // 토큰 사용기간 확인
+          tokenCheck(accessToken)
+          const url = `/admin/products/${productId}/modify`;
 
-        $.ajax({
-          type: "POST",
-          url: url,
-          contentType: false,
-          processData: false,
-          enctype: 'multipart/form-data',
-          data: formData,
-          success: function (response) {
-            console.log("Product created successfully!");
-            window.location.href = "/admin/products";
-          },
-          error: function (error) {
-            window.location.href = "/admin/error-page/500";
-          }
-        });
+          $.ajax({
+            type: "POST",
+            url: url,
+            contentType: false,
+            processData: false,
+            enctype: 'multipart/form-data',
+            headers: {
+              "Authorization": `Bearer ${accessToken}`
+            },
+            data: formData,
+            success: function (response) {
+              alert("수정되었습니다.");
+              window.location.href = "/admin/products";
+            },
+            error: function (error) {
+              alert("오류 발생");
+              window.location.href = "/admin/error-page/500";
+            }
+          });
+        }
       }
     });
   });

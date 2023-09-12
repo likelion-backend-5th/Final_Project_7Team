@@ -14,9 +14,17 @@ function validateProductData(data) {
     }
 
     let optionList = [];
+    let optionPairs = {};
 
     data.productOptionList.forEach(function (option) {
-        optionList.push(option.size);
+        const key = option.color + option.size; // color와 size를 합쳐서 고유한 키를 생성합니다.
+
+        if (!optionPairs[key]) {
+            optionPairs[key] = true;
+        } else {
+            errors.push("색상과 사이즈 조합이 중복되었습니다.");
+        }
+
         if (!option.color || option.color.trim() === "") {
             errors.push("색상이 작성되지 않았습니다.");
         }
@@ -29,12 +37,6 @@ function validateProductData(data) {
             errors.push("유효한 판매수량이 작성되지 않았습니다.");
         }
     });
-
-    const hasDuplicatesResult = new Set(optionList).size !== optionList.length;
-
-    if (hasDuplicatesResult) {
-        errors.push("같은 사이즈가 선택되었습니다. 다른 사이즈를 선택해주세요.");
-    }
 
     return errors;
 }
@@ -66,7 +68,7 @@ function duplicateName(name, productId) {
         url: '/admin/products/duplicate-check',
         data: {name : name, productId : productId},
         success: function (response) {
-            if (!response.duplicated) {
+            if (response.duplicated) {
                 alert("이미 등록된 상품명이 있습니다. 다시 작성해주세요.");
             }
         },

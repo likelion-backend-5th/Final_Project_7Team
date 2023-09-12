@@ -60,24 +60,20 @@ public class AdminService {
 
     // 회원관리 목록
     public Page<MemberListDto> findMemberList(Pageable pageable, String filter, String keyword) {
-        // 사용자가 관리자인지 확인하는 로직 필요
-
         // 목록 리턴
         return queryRepository.findByFilterAndKeyword(pageable, filter, keyword);
     }
 
     // 사용자 상세 조회
     public MemberDto findMember(Long memberId) {
-        // 관리자인지 확인하는 로직 필요
-
         return memberRepository.findByMember(memberId);
     }
 
     // 사용자 정보 변경
     @Transactional
-    public void modifyMember(MemberDto memberDto, Long memberId) {
-        // 관리자인지 확인하는 로직 필요
-
+    public void modifyMember(MemberDto memberDto, Long memberId, String loginId) {
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 회원 수정
         Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         findMember.changeMember(memberDto);
@@ -90,11 +86,11 @@ public class AdminService {
 
     // 회원 삭제
     @Transactional
-    public void removeMember(Long memberId) {
-        // 관리자 인지 확인하는 로직 필요
-
-        Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+    public void removeMember(Long memberId, String loginId) {
+        // 관리자인지 확인용
+        isAdmin(loginId);
         // 회원 삭제
+        Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         memberRepository.delete(findMember);
     }
 
@@ -129,9 +125,10 @@ public class AdminService {
 
     // 상품 등록
     @Transactional
-    public void createProduct(ProductDto productDto, MultipartFile mainImg, MultipartFile detailImg) throws IOException {
+    public void createProduct(ProductDto productDto, MultipartFile mainImg, MultipartFile detailImg, String loginId) throws IOException {
 
-        // 관리자인지 확인하는 로직 필요
+        // 관리자인지 확인
+        isAdmin(loginId);
 
         // 상품 등록 로직
         // 1. 등록할 카테고리를 찾아옴
@@ -189,10 +186,10 @@ public class AdminService {
 
     // 상품 수정
     @Transactional
-    public void modifyProduct(Long productId, ProductDto product, MultipartFile mainImg, MultipartFile detailImg) throws IOException {
-
+    public void modifyProduct(Long productId, ProductDto product, MultipartFile mainImg, MultipartFile detailImg, String loginId) throws IOException {
         // 상품 수정 로직
-
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 1. 상품 id를 가지고 상품 조회
         Product findProduct = productRepository.findById(productId).orElseThrow(RuntimeException::new);
 
@@ -318,9 +315,9 @@ public class AdminService {
 
     // 상품 삭제
     @Transactional
-    public void removeProduct(Long productId) {
-        // 권한 체크 필요
-
+    public void removeProduct(Long productId, String loginId) {
+        // 권한 체크
+        isAdmin(loginId);
         // 상품 조회
         Product findProduct = productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
         // 상품 옵션 삭제
@@ -346,8 +343,9 @@ public class AdminService {
 
     // 주문 상태 변경
     @Transactional
-    public void changeOrderStatus(List<OrderStatusUpdateDto> updateDtoList) {
-
+    public void changeOrderStatus(List<OrderStatusUpdateDto> updateDtoList, String loginId) {
+        // 권한체크
+        isAdmin(loginId);
         for (OrderStatusUpdateDto updateDto : updateDtoList) {
             // id를 가지고 해당 주문 상품을 찾음
             OrderProduct findOrderProduct = orderProductRepository.findById(updateDto.getId()).orElseThrow(IllegalArgumentException::new);
@@ -375,8 +373,9 @@ public class AdminService {
 
     // 커뮤니티 삭제
     @Transactional
-    public void deleteCommunities(List<Long> deleteList) {
-
+    public void deleteCommunities(List<Long> deleteList, String loginId) {
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 커뮤니티 id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(communityRepository.existsById(deleteId)) {
@@ -418,7 +417,10 @@ public class AdminService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long communityId, Long commentId) {
+    public void deleteComment(Long communityId, Long commentId, String loginId) {
+        // 관리자 권한 체크
+        isAdmin(loginId);
+
         if(commentRepository.existsById(commentId)) {
             commentRepository.deleteById(commentId);
         } else {
@@ -428,12 +430,15 @@ public class AdminService {
 
     // 댓글 등록
     @Transactional
-    public void createComment(Long communityId, String content) {
+    public void createComment(Long communityId, String content, String loginId) {
 
         Article findArticle = communityRepository.findById(communityId).orElseThrow(IllegalArgumentException::new);
         // 권한에서 사용자에 대한 정보가져오기
-        // 현재는 권한이 구현되지 않아 일단 1번으로 하기로함
-        Member findMember = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+        Member findMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!findMember.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
 
         commentRepository.save(Comment.builder()
                 .article(findArticle)
@@ -449,7 +454,8 @@ public class AdminService {
 
     // QnA삭제
     @Transactional
-    public void deleteQnaList(List<Long> deleteList) {
+    public void deleteQnaList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // QnA id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(qnaRepository.existsById(deleteId)) {
@@ -468,12 +474,14 @@ public class AdminService {
 
     // QnA 답변 등록 / 업데이트
     @Transactional
-    public void modifyQnaAnswer(Long qnaId, String answer) {
+    public void modifyQnaAnswer(Long qnaId, String answer, String loginId) {
         QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
-
-        // 사용자 권한 가져오도록 변경 필요
-        Member answerer = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
-
+        //
+        Member answerer = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!answerer.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 답글이 존재하지 않으면 새로 등록
         if(findQna.getQnAAnswer() == null) {
             qnAAnswerRepository.save(QnAAnswer.builder()
@@ -494,7 +502,8 @@ public class AdminService {
 
     // 1:1 문의 삭제
     @Transactional
-    public void deleteConsultationList(List<Long> deleteList) {
+    public void deleteConsultationList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(consultationRepository.existsById(deleteId)) {
@@ -518,7 +527,10 @@ public class AdminService {
 
         // 사용자 권한 가져오도록 변경 필요
         Member answerer = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
-
+        // 관리자인지 확인
+        if(!answerer.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 답글이 존재하지 않으면 새로 등록
         if(findConsultation.getConsultationAnswer() == null) {
             consultationAnswerRepository.save(ConsultationAnswer.builder()
@@ -539,7 +551,8 @@ public class AdminService {
 
     // 신고 삭제
     @Transactional
-    public void deleteReportList(List<Long> deleteList) {
+    public void deleteReportList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(reportRepository.existsById(deleteId)) {
@@ -562,6 +575,10 @@ public class AdminService {
         Report findReport = reportRepository.findById(reportId).orElseThrow(IllegalArgumentException::new);
         // 관리자 정보 가져오기
         Member manager = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!manager.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 신고 처리
         findReport.processed();
         // 신고 횟수가 3회 이상인 사람은 블랙리스트로 변경
@@ -571,8 +588,18 @@ public class AdminService {
         }
     }
 
+    // 관리자 메인페이지 카운트
     public CountDto findTotalCounts() {
         return queryRepository.findTotalCounts();
+    }
+
+    // 관리자인지 확인하는 메소드
+    private void isAdmin(String loginId) {
+        Member requestMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!requestMember.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
     }
 }
 

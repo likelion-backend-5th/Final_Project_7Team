@@ -13,9 +13,10 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="/js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../../js/productValidation.js"></script>
+    <script src="/js/authentication.js"></script>
+    <script src="/js/productValidation.js"></script>
     <style>
       /* label 스타일 조정 */
       .button {
@@ -120,13 +121,6 @@
                     />
                   </label>
                   <span class="ml-2 text-gray-700 dark:text-gray-400 font-medium" style="font-size: 15px">개</span>
-                  <!--<label class="inline-block text-sm ml-3">
-                    <span class="text-gray-700 dark:text-gray-400">가격<span class="dark:text-red-400"> *</span></span>
-                    <input
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                            placeholder="ex)40000"
-                    />
-                  </label>-->
                 </div>
               </div>
               <div class="mt-4 text-sm">
@@ -141,22 +135,10 @@
                       type="radio" checked="checked" id="sale"
                       class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                       name="accountType"
-                      value="판매중"
+                      value="SELL"
                       th:field="*{status}"
                     />
                     <span class="ml-2">판매중</span>
-                  </label>
-                  <label
-                    class="inline-flex items-center ml-6 text-gray-600 dark:text-gray-400"
-                  >
-                    <input
-                      type="radio" id="stop"
-                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                      name="accountType"
-                      value="판매중지"
-                      th:field="*{status}"
-                    />
-                    <span class="ml-2">판매중지</span>
                   </label>
                   <label
                           class="inline-flex ml-6 items-center text-gray-600 dark:text-gray-400"
@@ -165,7 +147,7 @@
                             type="radio" id="soldOut"
                             class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                             name="accountType"
-                            value="품절"
+                            value="SOLD_OUT"
                             th:field="*{status}"
                     />
                     <span class="ml-2">품절</span>
@@ -226,8 +208,7 @@
             </div>
 
             <!-- 상세 이미지 등록 -->
-            <h4
-                    class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
             >
               상품 상세 이미지 등록<span class="dark:text-red-400"> *</span>
             </h4>
@@ -346,6 +327,7 @@
 
     //== 등록 요청 ==//
     $("#submitBnt").on("click", function() {
+
       const productData = {
         categoryId: $("#selectedSubCategory :selected").val(),
         name: $("#name").val(),
@@ -379,15 +361,14 @@
         const size = $(this).find("select.size").val();
         const stock = $(this).find("input.stock").val();
 
-        // if (color && size && stock) {
-          const optionData = {
-            color: color,
-            size: size,
-            stock: parseInt(stock)
-          };
-          productData.productOptionList.push(optionData);
-        // }
+        const optionData = {
+          color: color,
+          size: size,
+          stock: parseInt(stock)
+        };
+        productData.productOptionList.push(optionData);
       });
+
       formData.append("productDto", JSON.stringify(productData));
 
       // validation check
@@ -400,34 +381,43 @@
         duplicateName(name);
         const errorMessage = errors.join("\n");
         alert(errorMessage);
-      }
-
-      if(mainImgErrors.length > 0) {
-        // 대표 이미지 오류 메시지 출력
-        const mainImgErrorMessage = mainImgErrors.join("\n");
-        alert(mainImgErrorMessage);
-
-      } else if(detailImgErrors.length > 0) {
-        // 상세 이미지 오류 메시지 출력
-        const detailImgErrorMessage = detailImgErrors.join("\n");
-        alert(detailImgErrorMessage);
       } else {
+        if(mainImgErrors.length > 0) {
+          // 대표 이미지 오류 메시지 출력
+          const mainImgErrorMessage = mainImgErrors.join("\n");
+          alert(mainImgErrorMessage);
 
-        $.ajax({
-          type: "POST",
-          url: "/admin/products/create",
-          contentType: false,
-          processData: false,
-          enctype: 'multipart/form-data',
-          data: formData,
-          success: function (response) {
-            console.log("Product created successfully!");
-            window.location.href = "/admin/products";
-          },
-          error: function (error) {
-            window.location.href = "/admin/error-page/500";
+        } else if(detailImgErrors.length > 0) {
+          // 상세 이미지 오류 메시지 출력
+          const detailImgErrorMessage = detailImgErrors.join("\n");
+          alert(detailImgErrorMessage);
+        } else {
+
+          if(confirm("등록하시겠습니까?")) {
+
+            const accessToken = localStorage.getItem("accessToken");
+            tokenCheck(accessToken)
+            $.ajax({
+              type: "POST",
+              url: "/admin/products/create",
+              contentType: false,
+              processData: false,
+              enctype: 'multipart/form-data',
+              headers: {
+                "Authorization": `Bearer ${accessToken}`
+              },
+              data: formData,
+              success: function (response) {
+                alert("등록되었습니다.");
+                window.location.href = "/admin/products";
+              },
+              error: function (error) {
+                alert("오류 발생")
+                //window.location.href = "/admin/error-page/500";
+              }
+            });
           }
-        });
+        }
       }
     });
   });

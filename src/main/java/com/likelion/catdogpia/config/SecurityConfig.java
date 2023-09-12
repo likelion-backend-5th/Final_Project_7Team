@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/mypage/review/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/review/{reviewId}/data").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/mypage/article/data").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/cart/data").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login

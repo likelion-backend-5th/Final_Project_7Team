@@ -64,6 +64,7 @@ public class AdminController {
         MemberDto member = adminService.findMember(memberId);
         // 금액 포맷 맞추기
         member.changeFormat(member);
+        log.info("member : " + member.toString());
         model.addAttribute("member", member);
         return "/page/admin/member-detail";
     }
@@ -80,10 +81,18 @@ public class AdminController {
 
     // 사용자 정보 수정
     @PostMapping("/members/{memberId}/modify")
-    public String memberModify(@ModelAttribute("member") MemberDto memberDto, @PathVariable Long memberId) {
+    @ResponseBody
+    public ResponseEntity<String> memberModify(@RequestHeader("Authorization") String accessToken, @RequestBody MemberDto memberDto, @PathVariable Long memberId) {
         log.info("dto.toString() : " + memberDto.toString());
-        adminService.modifyMember(memberDto, memberId);
-        return "redirect:/admin/members";
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        //
+        adminService.modifyMember(memberDto, memberId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 이메일, 닉네임 중복 확인
@@ -105,10 +114,17 @@ public class AdminController {
 
     // 회원 삭제
     @PostMapping("/members/{memberId}/delete")
-    public String memberRemove(@PathVariable Long memberId) {
-        log.info("delete");
-        adminService.removeMember(memberId);
-        return "redirect:/admin/members";
+    @ResponseBody
+    public ResponseEntity<String> memberRemove(@RequestHeader("Authorization") String accessToken, @PathVariable Long memberId) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        adminService.removeMember(memberId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 목록
@@ -136,11 +152,20 @@ public class AdminController {
 
     // 상품 등록
     @PostMapping(value = "/products/create")
-    public String productCreate(
+    @ResponseBody
+    public ResponseEntity<String> productCreate(
+            @RequestHeader("Authorization") String accessToken,
             @RequestParam("mainImg") MultipartFile mainImg,
             @RequestParam("detailImg") MultipartFile detailImg,
             @RequestParam("productDto") String productDto
     ) throws IOException {
+
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 
         log.info("product : " + productDto);
         log.info("mainImg :" + mainImg.getOriginalFilename());
@@ -150,9 +175,9 @@ public class AdminController {
         ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
         log.info("product toString : " + product.toString());
 
-        adminService.createProduct(product, mainImg, detailImg);
+        adminService.createProduct(product, mainImg, detailImg, loginId);
 
-        return "redirect:/admin/products";
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 수정 페이지
@@ -167,12 +192,20 @@ public class AdminController {
 
     // 상품 수정
     @PostMapping("/products/{productId}/modify")
-    public String productModify(
+    public ResponseEntity<String> productModify(
+            @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId,
             @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
             @RequestParam(value = "detailImg", required = false) MultipartFile detailImg,
             @RequestParam("productDto") String productDto
     ) throws IOException {
+
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
 
         log.info("productDto : " + productDto);
         // json -> productDto
@@ -180,16 +213,24 @@ public class AdminController {
         ProductDto product = objectMapper.readValue(productDto, ProductDto.class);
         log.info("product toString : " + product.toString());
 
-        adminService.modifyProduct(productId, product, mainImg, detailImg);
+        adminService.modifyProduct(productId, product, mainImg, detailImg, loginId);
 
-        return "redirect:/admin/products";
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 삭제
     @PostMapping("/products/{productId}/delete")
-    public String productRemove(@PathVariable Long productId){
-        adminService.removeProduct(productId);
-        return "redirect:/admin/products";
+    @ResponseBody
+    public ResponseEntity<String> productRemove(@RequestHeader("Authorization") String accessToken, @PathVariable Long productId){
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        adminService.removeProduct(productId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 상품명 중복 확인
@@ -233,17 +274,23 @@ public class AdminController {
 
     // 주문 상태 변경
     @PostMapping("/orders/change-status")
-    public String changeOrderStatus(@RequestBody List<OrderStatusUpdateDto> updateDtoList) {
-        log.info("hi");
+    @ResponseBody
+    public ResponseEntity<String> changeOrderStatus(@RequestHeader("Authorization") String accessToken, @RequestBody List<OrderStatusUpdateDto> updateDtoList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 백단에서 한번 더 list validation check 수행
         if(updateDtoList.isEmpty()) {
             throw new IllegalArgumentException("list is empty");
         }
         else {
-            adminService.changeOrderStatus(updateDtoList);
+            adminService.changeOrderStatus(updateDtoList, loginId);
         }
 
-        return "redirect:/admin/orders";
+        return ResponseEntity.ok("ok");
     }
 
     // 주문내역상세 조회 및 수정
@@ -282,7 +329,14 @@ public class AdminController {
 
     // 커뮤니티 삭제
     @PostMapping("/communities/delete-list")
-    public String communitiesDelete(@RequestBody List<Map<String, Object>> requestList) {
+    @ResponseBody
+    public ResponseEntity<String> communitiesDelete(@RequestHeader("Authorization") String accessToken, @RequestBody List<Map<String, Object>> requestList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -292,10 +346,10 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteCommunities(deleteList);
+            adminService.deleteCommunities(deleteList, loginId);
         }
 
-        return "redirect:/admin/communities";
+        return ResponseEntity.ok("ok");
     }
 
     // 커뮤니티 상세 조회
@@ -318,15 +372,28 @@ public class AdminController {
 
     // 댓글 삭제
     @PostMapping("/communities/{communityId}/comments/{commentId}")
-    public String commentDelete(@PathVariable Long communityId, @PathVariable Long commentId) {
-        adminService.deleteComment(communityId, commentId);
-        return "redirect:/admin/communities/" + communityId;
+    @ResponseBody
+    public ResponseEntity<String> commentDelete(@RequestHeader("Authorization") String accessToken,  @PathVariable Long communityId, @PathVariable Long commentId) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.deleteComment(communityId, commentId, loginId);
+        return  ResponseEntity.ok("ok");
     }
 
     // 댓글 등록
     @PostMapping("/communities/{communityId}/comments/create")
-    public ResponseEntity<String> commentCreate(@PathVariable Long communityId, @RequestBody String content) {
-        adminService.createComment(communityId,content);
+    public ResponseEntity<String> commentCreate(@RequestHeader("Authorization") String accessToken,  @PathVariable Long communityId, @RequestBody String content) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.createComment(communityId, content, loginId);
         return ResponseEntity.ok("ok");
     }
 
@@ -350,9 +417,16 @@ public class AdminController {
         return "/page/admin/qna";
     }
 
-    // 커뮤니티 삭제
+    // QnA 삭제
     @PostMapping("/qna/delete-list")
-    public String qnaDelete(@RequestBody List<Map<String, Object>> requestList) {
+    @ResponseBody
+    public ResponseEntity<String> qnaDelete(@RequestHeader("Authorization") String accessToken, @RequestBody List<Map<String, Object>> requestList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -362,10 +436,10 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteQnaList(deleteList);
+            adminService.deleteQnaList(deleteList,loginId);
         }
 
-        return "redirect:/admin/communities";
+        return ResponseEntity.ok("ok");
     }
 
     // QnA 상세
@@ -378,10 +452,17 @@ public class AdminController {
 
     // QnA 답변 등록 / 업데이트
     @PostMapping("/qna/{qnaId}/update-answer")
-    public String qnaUpdateAnswer(@PathVariable Long qnaId, @RequestParam("answer") String answer) {
-        adminService.modifyQnaAnswer(qnaId, answer);
+    @ResponseBody
+    public ResponseEntity<String> qnaUpdateAnswer(@RequestHeader("Authorization") String accessToken, @PathVariable Long qnaId, @RequestParam("answer") String answer) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.modifyQnaAnswer(qnaId, answer, loginId);
 
-        return "redirect:/admin/qna";
+        return ResponseEntity.ok("ok");
     }
 
     // 1:1문의 목록
@@ -405,6 +486,7 @@ public class AdminController {
 
     // 1:1 문의 삭제
     @PostMapping("/consultations/delete-list")
+    @ResponseBody
     public ResponseEntity<String> consultationsDelete(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody List<Map<String, Object>> requestList
@@ -413,6 +495,9 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -422,7 +507,7 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteConsultationList(deleteList);
+            adminService.deleteConsultationList(deleteList, loginId);
         }
 
         return ResponseEntity.ok(HttpStatus.OK.name());
@@ -448,7 +533,6 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
-
         // 토큰에서 loginId 가져옴
         String token = accessToken.split(" ")[1];
         String loginId = jwtTokenProvider.parseClaims(token).getSubject();
@@ -485,6 +569,9 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -494,7 +581,7 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteReportList(deleteList);
+            adminService.deleteReportList(deleteList, loginId);
         }
 
         return ResponseEntity.ok(HttpStatus.OK.name());

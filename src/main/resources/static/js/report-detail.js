@@ -1,7 +1,6 @@
 let isRun = false;
 function deleteReport() {
     let selectedItems = [];
-    const accessToken = localStorage.getItem("accessToken");
 
     // 동작중일때 중복으로 동작하지 않도록
     if(isRun === true) {
@@ -13,6 +12,8 @@ function deleteReport() {
     selectedItems.push({id: id});
 
     if (confirm("삭제하시겠습니까??") && selectedItems.length > 0) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
         $.ajax({
             url: "/admin/reports/delete-list",
             type: "POST",
@@ -37,9 +38,10 @@ function deleteReport() {
 
 function processReport() {
     let reportId = parseInt($('#reportId').val());
-    const accessToken = localStorage.getItem("accessToken");
 
     if(confirm("처리하시겠습니까??")) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
         $.ajax({
             url: `/admin/reports/${reportId}/processed`,
             type: "POST",

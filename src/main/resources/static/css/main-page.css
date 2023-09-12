@@ -53,3 +53,7 @@
 .featured__item__pic__hover li a:hover {
     background-color: #D3E4CD;
 }
+
+.hot-article-img-box {
+    text-align: center;
+}

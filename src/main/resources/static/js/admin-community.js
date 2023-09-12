@@ -111,22 +111,29 @@ function createPagination(page) {
 }
 
 function deleteComment(commentId) {
-    let communityId = parseInt($("#communityId").val());
-    let page = $("#cur").val();
-    $.ajax({
-        url: `/admin/communities/${communityId}/comments/${commentId}`,
-        type: "POST",
-        contentType: "application/json",
-        success: function (response) {
-            // 성공적으로 처리된 경우의 동작
-            alert("삭제되었습니다.")
-            loadComments(page);
-        },
-        error: function (error) {
-            // 오류 처리 동작
-            window.location.href = "/admin/error-page/500";
-        }
-    });
+    if(confirm("삭제하시겠습니까??")) {
+        let communityId = parseInt($("#communityId").val());
+        let page = $("#cur").val();
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
+        $.ajax({
+            url: `/admin/communities/${communityId}/comments/${commentId}`,
+            type: "POST",
+            contentType: "application/json",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+            success: function (response) {
+                // 성공적으로 처리된 경우의 동작
+                alert("삭제되었습니다.")
+                loadComments(page);
+            },
+            error: function (error) {
+                // 오류 처리 동작
+                window.location.href = "/admin/error-page/500";
+            }
+        });
+    }
 }
 
 function deleteCommunity() {
@@ -135,12 +142,18 @@ function deleteCommunity() {
     let id = $("#communityId").val();
     selectedItems.push({id: id});
 
-    if (selectedItems.length > 0) {
+    if (selectedItems.length > 0 && confirm("삭제하시겠습니까??")) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
+
         $.ajax({
             url: "/admin/communities/delete-list",
             type: "POST",
             contentType: "application/json",
             dataType: "text",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
             data: JSON.stringify(selectedItems),
             success: function (response) {
                 // 성공적으로 처리된 경우의 동작
@@ -168,20 +181,27 @@ function addComment() {
     }
     isRun = true;
 
-    $.ajax({
-        url: `/admin/communities/${communityId}/comments/create`,
-        type: "POST",
-        contentType: "application/json",
-        dataType: "text",
-        data: value,
-        success: function () {
-            // 성공적으로 처리된 경우의 동작
-            alert("등록되었습니다.")
-            window.location.reload();
-        },
-        error: function (error) {
-            // 오류 처리 동작
-            window.location.href = "/admin/error-page/500";
-        }
-    });
+    if(confirm("등록하시겠습니까??")) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
+        $.ajax({
+            url: `/admin/communities/${communityId}/comments/create`,
+            type: "POST",
+            contentType: "application/json",
+            dataType: "text",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+            data: value,
+            success: function () {
+                // 성공적으로 처리된 경우의 동작
+                alert("등록되었습니다.")
+                window.location.reload();
+            },
+            error: function (error) {
+                // 오류 처리 동작
+                window.location.href = "/admin/error-page/500";
+            }
+        });
+    }
 }

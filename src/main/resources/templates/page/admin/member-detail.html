@@ -13,7 +13,8 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/authentication.js"></script>
   </head>
   <body>
   <!-- 헤더-->
@@ -119,8 +120,8 @@
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-10 py-3 text-sm">
                           <div>
-                            <p class="font-semibold w-1" th:if="${member.address == null and member.address == ''}" th:text="${member.address}"></p>
-                            <p class="font-semibold w-1" th:unless="${member.address == null and member.address == ''}">미입력</p>
+                            <p class="p font-semibold w-1" th:if="${member.address} != null" th:text="|${member.address} ${member.detailAddress}|"></p>
+                            <p class="p font-semibold w-1" th:unless="${member.address} != null">미입력</p>
                           </div>
                       </td>
                       <td class="pl-10 py-3 text-sm" th:text="${member.role.name()}">
@@ -137,7 +138,7 @@
             <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   th:onclick="|location.href='@{/admin/members/{memberId}/modify-form (memberId=${member.id})}'|"
             >
-              변경
+              수정
             </button>
             &nbsp;&nbsp;&nbsp;
             <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
@@ -146,56 +147,6 @@
               취소
             </button>
           </div>
-          <!-- 게시글 시작 -->
-<!--          <div class="container grid px-6 mx-auto">-->
-<!--            <h4-->
-<!--              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"-->
-<!--            >-->
-<!--              커뮤니티 게시글-->
-<!--            </h4>-->
-<!--            &lt;!&ndash; With avatar &ndash;&gt;-->
-<!--          <div class="flex">-->
-<!--          </div>-->
-<!--            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">-->
-<!--              <div class="w-full overflow-x-auto">-->
-<!--                <table class="w-full whitespace-no-wrap">-->
-<!--                  <thead>-->
-<!--                    <tr-->
-<!--                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"-->
-<!--                    >-->
-<!--                      <th class="pl-10 py-3" style="width: 5%;">번호</th>-->
-<!--                      <th class="pl-10 py-3" style="width: 15%;">제목</th>-->
-<!--                      <th class="pl-10 py-3" style="width: 10%;">조회수</th>-->
-<!--                      <th class="pl-10 py-3" style="width: 10%;">좋아요</th>-->
-<!--                      <th class="pl-10 py-3" style="width: 10%;">신고</th>-->
-<!--                    </tr>-->
-<!--                  </thead>-->
-<!--                  &lt;!&ndash; 반복되는 테이블 &ndash;&gt;-->
-<!--                  <tbody-->
-<!--                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"-->
-<!--                  >-->
-<!--                    <tr class="text-gray-700 dark:text-gray-400">-->
-<!--                      <td class="px-10 py-3 text-sm">-->
-<!--                        10-->
-<!--                      </td>-->
-<!--                      <td class="pl-10 py-3 text-sm">-->
-<!--                        우리강아지 이뿌죠~?-->
-<!--                      </td>-->
-<!--                      <td class="pl-10 py-3 text-sm">-->
-<!--                        10회-->
-<!--                      </td>-->
-<!--                      <td class="pl-10 py-3 text-sm">-->
-<!--                        10개-->
-<!--                      </td>-->
-<!--                      <td class="pl-10 py-3 text-sm">-->
-<!--                        10회-->
-<!--                      </td>-->
-<!--                    </tr>-->
-<!--                  </tbody>-->
-<!--                </table>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>  -->
         </main>
       </div>
     </div>

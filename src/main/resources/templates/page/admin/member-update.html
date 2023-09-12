@@ -15,6 +15,7 @@
     ></script>
     <script src="../../../js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/authentication.js"></script>
     <style>
       input::placeholder {
         color: darkgray;
@@ -160,7 +161,7 @@
           </div>
           <div class="col text-center">
             <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submitBnt" type="submit">
-              변경
+              수정
             </button>
           </form>
             &nbsp;&nbsp;&nbsp;
@@ -181,24 +182,64 @@
       let email = $("#email").val();
       let nickname = $("#nickname").val();
       let memberId = $("#memberId").val();
+      let phone = $("#phone").val();
+      let name = $("#name").val();
+      let blackListYn = $("#blackListYn").val();
 
-      // AJAX 요청으로 중복 여부 확인
-      $.ajax({
-        url: "/admin/members/check-duplicate",
-        method: "GET",
-        data: {email: email, nickname: nickname, memberId: memberId},
-        success: function(response) {
-          if (!response.duplicated) {
-            alert("중복된 닉네임이나 이메일이 있습니다. 다시 확인해주세요.");
-          } else {
-            $("#registrationForm").submit();
+      // 비어있지 않아야함
+      if(email && nickname && memberId && phone && name && blackListYn) {
+        if(confirm("수정하시겠습니까??")) {
+            $.ajax({
+              // AJAX 요청으로 중복 여부 확인
+              url: "/admin/members/check-duplicate",
+              method: "GET",
+              data: {email: email, nickname: nickname, memberId: memberId},
+              success: function(response) {
+                if (!response.duplicated) {
+                  alert("중복된 닉네임이나 이메일이 있습니다. 다시 확인해주세요.");
+                } else {
+                  updateMember(email, nickname, memberId, phone, name, blackListYn)
+                }
+              },
+              error: function() {
+                alert("오류가 발생했습니다. 다시 시도해주세요.");
+              }
+            });
           }
-        },
-        error: function() {
-          alert("오류가 발생했습니다. 다시 시도해주세요.");
-        }
-      });
+        } else {
+        alert("입력되지 않은 값이 있습니다. 다시 확인해주세요.");
+      }
     });
   });
+
+  function updateMember(email, nickname, memberId, phone, name, blackListYn) {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const requestData = {
+      email: email,
+      nickname: nickname,
+      phone : phone,
+      name : name,
+      blackListYn : blackListYn
+    };
+
+    $.ajax({
+      // AJAX 요청으로 중복 여부 확인
+      url: `/admin/members/${memberId}/modify`,
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(requestData),
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      },
+      success: function(response) {
+          alert("수정되었습니다.");
+          window.location.href = '/admin/members';
+      },
+      error: function() {
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    });
+  }
 </script>
 </html>

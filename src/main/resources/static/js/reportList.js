@@ -127,7 +127,6 @@ let isRun = false;
 // qna삭제
 function deleteReportList() {
     let selectedItems = [];
-    const accessToken = localStorage.getItem("accessToken");
     // 동작중일때 중복으로 동작하지 않도록
     if(isRun === true) {
         return;
@@ -139,7 +138,9 @@ function deleteReportList() {
         selectedItems.push({id: id});
     });
 
-    if (confirm("선택된 글을 삭제하시겠습니까??") && selectedItems.length > 0) {
+    if (confirm("삭제하시겠습니까??") && selectedItems.length > 0) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
         $.ajax({
             url: "/admin/reports/delete-list",
             type: "POST",

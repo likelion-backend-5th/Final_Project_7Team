@@ -44,6 +44,45 @@ document.addEventListener('DOMContentLoaded', async function loadPage() {
 
 });
 
+async function tokenCheck(accessToken) {
+
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`
+    };
+
+    try {
+        const response = await fetch('/authorize', {
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+        } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+                method: 'POST',
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await tokenCheck(reissuedData.accessToken); // 원래 요청을 다시 시도
+            } else {
+                alert('권한이 없습니다.2');
+                window.location.href = "/login";
+            }
+        } else {
+            alert('권한이 없습니다.3');
+            window.location.href = "/login";
+        }
+    } catch (error) {
+        console.error('오류:', error);
+        alert('권한이 없습니다.4');
+        window.location.href = "/login";
+    }
+}
+
 function consultationPage(pageNumber, filter, keyword) {
     // Ajax 요청을 보낼 URL 설정
     let url = '/notices/consultations?page=' + pageNumber;
@@ -77,7 +116,7 @@ function consultationPage(pageNumber, filter, keyword) {
 }
 
 function updatePage(data) {
-    if(data) {
+    if(data.content) {
         // 테이블의 tbody 선택
         let tbody = $('.notice-table tbody');
 
@@ -131,6 +170,11 @@ function updatePage(data) {
             // tbody에 행 추가
             tbody.append(tr);
         });
+    } else {
+        let tbody = $('.notice-table tbody');
+        let tr = $('<tr>');
+        tr.append('<td>' + '내역이 존재하지 않습니다.' + '</td>');
+        tbody.append(tr);
     }
 }
 
@@ -147,13 +191,13 @@ function createPagination(page) {
         endPage=page.totalPages;
 
     if(cur > 0) // 이전 버튼
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${cur - 1})"> < </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${cur - 1})"> < </a></li>`);
 
     for(let i=startPage; i <= endPage; i++) { // 페이지네이션
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${i - 1})"> ${i} </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${i - 1})"> ${i} </a></li>`);
     }
     if(cur + 1 <page.totalPages) // 다음 버튼
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${cur + 1})"> > </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${cur + 1})"> > </a></li>`);
     pageNationContainer.append(`<input type="hidden" id="cur" value="${cur}">`)
 
 }
@@ -180,23 +224,24 @@ function createConsultation() {
     };
 
     if(subject && classification && content) {
-        if(confirm("등록하시겠습니까??")) {
-            $.ajax({
-                url: '/notices/consultations',
-                method: 'POST',
-                contentType: "application/json",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                data: JSON.stringify(requestData),
-                success: function (data) {
-                    alert("등록되었습니다.")
-                    window.location.href = '/notices/consultations-form';
-                },
-                error: function () {
-                    alert("오류가 발생했습니다.")
-                }
-            });
+            if(confirm("등록하시겠습니까??")) {
+                tokenCheck(accessToken);
+                $.ajax({
+                    url: '/notices/consultations',
+                    method: 'POST',
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+                        alert("등록되었습니다.")
+                        window.location.href = '/notices/consultations-form';
+                    },
+                    error: function () {
+                        alert("오류가 발생했습니다.")
+                    }
+                });
         }
     } else {
         alert("입력되지 않은 필드가 있습니다. 다시 확인해주세요.")

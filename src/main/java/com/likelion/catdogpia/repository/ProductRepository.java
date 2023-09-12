@@ -53,7 +53,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "JOIN Orders o ON o.id = op.order.id " +
             "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id " +
             "WHERE o.orderAt >= :period " +
-            "GROUP BY p " +
+            "GROUP BY p, ad.fileUrl " +
             "ORDER BY SUM(op.quantity) DESC limit 5")
     List<HotProductListDto> findTop5BySalesCount(@Param("period") LocalDateTime period); // 기간, 조회개수
 

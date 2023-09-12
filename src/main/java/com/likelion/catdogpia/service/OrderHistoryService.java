@@ -81,8 +81,8 @@ public class OrderHistoryService {
 
     // 구매 확정
     @Transactional
-    public void purchaseConfirm(String loginId, Long opId) {
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public void purchaseConfirm(Long opId) {
+//        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         OrderProduct op = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (!(op.getOrderStatus().equals("배송중") || op.getOrderStatus().equals("배송완료"))) {
@@ -94,7 +94,7 @@ public class OrderHistoryService {
     }
 
     // 교환,환불 요청 페이지 - 주문 정보
-    public ExchangeRefundDto getOrderInfo(String loginId, Long opId) {
+    public ExchangeRefundDto getOrderInfo(Long opId) {
         return orderProductRepository.findByOrderProductId(opId);
     }
 
@@ -118,16 +118,16 @@ public class OrderHistoryService {
 
     // 교환 요청 처리
     @Transactional
-    public void exchange(String loginId, ExchangeRequestDto dto) {
+    public void exchange(ExchangeRequestDto dto) {
 
         // 주문 상품
         OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
-        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (order.getMember().getLoginId() != loginId) {
-            new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+//        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//        if (order.getMember().getLoginId() != loginId) {
+//            new ResponseStatusException(HttpStatus.FORBIDDEN);
+//        }
 
         ExchangeRefund exchangeRefund = dto.toEntity(op);
 
@@ -140,16 +140,16 @@ public class OrderHistoryService {
 
     // 환불 요청 처리
     @Transactional
-    public void refund(String loginId, RefundRequestDto dto) {
+    public void refund(RefundRequestDto dto) {
 
         // 주문 상품
         OrderProduct op = orderProductRepository.findById(dto.getOpId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         // 주문한 사람과 현재 로그인한 사람이 일치하는지 확인
-        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (order.getMember().getLoginId() != loginId) {
-            new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+//        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//        if (order.getMember().getLoginId() != loginId) {
+//            new ResponseStatusException(HttpStatus.FORBIDDEN);
+//        }
 
         ExchangeRefund exchangeRefund = dto.toEntity(op);
 

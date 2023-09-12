@@ -38,7 +38,7 @@ public class MemberArticleService {
     }
 
     // 게시물 삭제
-    public void deleteArticle(String loginId, List<Long> articleIds) {
+    public void deleteArticle(List<Long> articleIds) {
         for(Long articleId : articleIds) {
             Article article = articleRepository.findById(articleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
             articleRepository.delete(article);
