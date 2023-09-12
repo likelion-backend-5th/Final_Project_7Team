@@ -112,6 +112,11 @@
     text-align: center;
 }
 
+.td-total-price {
+    text-align: end;
+    padding-right: 50px;
+}
+
 
 /* 품절 */
 .sold-out span {

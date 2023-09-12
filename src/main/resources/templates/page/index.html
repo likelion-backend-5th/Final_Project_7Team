@@ -148,7 +148,7 @@
                     <th:block th:each="hotProduct : ${hotProductList}">
                         <div class="col-lg-3">
                             <div class="categories__item set-bg" th:data-setbg="${hotProduct.FileUrl}">
-                                <h5><a th:href="@{/products/{id}(id=${hotProduct.id})}" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
+                                <h5><a th:href="@{/products/detail/{id}(id=${hotProduct.id})}" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
                             </div>
                         </div>
                     </th:block>
@@ -201,9 +201,9 @@
                         <div class="featured__item">
                             <div class="featured__item__pic set-bg" th:data-setbg="${newProduct.FileUrl}">
                                 <ul class="featured__item__pic__hover">
-                                    <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png"
-                                                         alt=""></a>
-                                    </li>
+<!--                                    <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png"-->
+<!--                                                         alt=""></a>-->
+<!--                                    </li>-->
                                     <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
                                                          alt=""></a></li>
                                 </ul>

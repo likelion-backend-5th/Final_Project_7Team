@@ -292,6 +292,15 @@ ul.order-state li {
     object-fit: cover;
 }
 
+.order-list-table .product-info-box .content-box {
+    text-align: start;
+}
+
+.order-list-table .product-info-box .content-box div {
+    font-size: 13px;
+    color: gray;
+}
+
 .order-list-table .order-status-box {
     display: flex;
     align-items: center;

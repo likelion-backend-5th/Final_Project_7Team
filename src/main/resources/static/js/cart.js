@@ -93,7 +93,7 @@ function dataOnPage(data) {
 
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-            <td colspan="4">
+            <td colspan="5" class="td-total-price">
                 <p>전체 상품 금액</p>
                 <p id="total-price"></p>
             </td>

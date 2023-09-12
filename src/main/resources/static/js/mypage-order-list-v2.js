@@ -114,7 +114,7 @@ function dataOnPage(data) {
         nameLink.textContent = order.name;
         nameLink.href = `/products/detail/${order.productId}`;
         const optionDiv = document.createElement('div');
-        optionDiv.textContent = `옵션 : ${order.size} / ${order.color}`;
+        optionDiv.textContent = `${order.size} / ${order.color}`;
 
         alink.appendChild(img);
         contentBox.appendChild(nameLink);
@@ -126,7 +126,7 @@ function dataOnPage(data) {
         //--------------------상품정보 ---------------------------
 
         const priceTd = document.createElement('td');
-        priceTd.textContent = `${order.price}(${order.quantity}개)`;
+        priceTd.textContent = `${order.price}   (${order.quantity}개)`;
 
         const orderStatusTd = document.createElement('td');
         const orderStatusBox = document.createElement('div');
@@ -172,22 +172,22 @@ function dataOnPage(data) {
             orderStatusChildBox2.appendChild(button3)
         }
 
-        if(order.orderStatus == "구매확정"){
-            if(order.writeReview == false){
-                const button = document.createElement('button');
-                button.addEventListener('click', function () {
-                    handleOrderAction(order.opId,"리뷰작성");
-                });
-                button.textContent = "리뷰 작성"
-                orderStatusChildBox2.appendChild(button)
-            }else{
-                orderStatusChildBox2.textContent = "리뷰 작성 완료"
-            }
-        }
+        // if(order.orderStatus == "구매확정"){
+        //     if(order.writeReview == false){
+        //         const button = document.createElement('button');
+        //         button.addEventListener('click', function () {
+        //             handleOrderAction(order.opId,"리뷰작성");
+        //         });
+        //         button.textContent = "리뷰 작성"
+        //         orderStatusChildBox2.appendChild(button)
+        //     }else{
+        //         orderStatusChildBox2.textContent = "리뷰 작성 완료"
+        //     }
+        // }
 
-        if(order.orderStatus == "교환요청" || order.orderStatus == "교환완료"){
-            orderStatusChildBox2.textContent = "리뷰 작성 불가"
-        }
+        // if(order.orderStatus == "교환요청" || order.orderStatus == "교환완료"){
+        //     orderStatusChildBox2.textContent = "리뷰 작성 불가"
+        // }
 
 
 
