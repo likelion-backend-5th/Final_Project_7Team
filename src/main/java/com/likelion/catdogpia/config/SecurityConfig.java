@@ -36,7 +36,6 @@ public class SecurityConfig {
                                 .requestMatchers("/authorize").authenticated()
                                 .requestMatchers("/signout").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/community/**").authenticated()
-                                //.requestMatchers("/login", "/signup").anonymous()
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
