@@ -75,9 +75,9 @@ public class AdminService {
 
     // 사용자 정보 변경
     @Transactional
-    public void modifyMember(MemberDto memberDto, Long memberId) {
-        // 관리자인지 확인하는 로직 필요
-
+    public void modifyMember(MemberDto memberDto, Long memberId, String loginId) {
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 회원 수정
         Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         findMember.changeMember(memberDto);
@@ -90,11 +90,11 @@ public class AdminService {
 
     // 회원 삭제
     @Transactional
-    public void removeMember(Long memberId) {
-        // 관리자 인지 확인하는 로직 필요
-
-        Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+    public void removeMember(Long memberId, String loginId) {
+        // 관리자인지 확인
+        isAdmin(loginId);
         // 회원 삭제
+        Member findMember = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         memberRepository.delete(findMember);
     }
 
@@ -571,8 +571,18 @@ public class AdminService {
         }
     }
 
+    // 관리자 메인페이지 카운트
     public CountDto findTotalCounts() {
         return queryRepository.findTotalCounts();
+    }
+
+    // 관리자인지 확인하는 메소드
+    private void isAdmin(String loginId) {
+        Member requestMember = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!requestMember.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
     }
 }
 

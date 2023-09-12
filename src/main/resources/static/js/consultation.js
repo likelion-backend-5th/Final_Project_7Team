@@ -180,7 +180,7 @@ function createConsultation() {
     };
 
     if(subject && classification && content) {
-        if(confirm("등록하시겠습니까??")) {
+            if(confirm("등록하시겠습니까??")) {
             $.ajax({
                 url: '/notices/consultations',
                 method: 'POST',

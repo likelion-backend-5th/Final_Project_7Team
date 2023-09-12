@@ -80,10 +80,18 @@ public class AdminController {
 
     // 사용자 정보 수정
     @PostMapping("/members/{memberId}/modify")
-    public String memberModify(@ModelAttribute("member") MemberDto memberDto, @PathVariable Long memberId) {
+    @ResponseBody
+    public ResponseEntity<String> memberModify(@RequestHeader("Authorization") String accessToken, @RequestBody MemberDto memberDto, @PathVariable Long memberId) {
         log.info("dto.toString() : " + memberDto.toString());
-        adminService.modifyMember(memberDto, memberId);
-        return "redirect:/admin/members";
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        //
+        adminService.modifyMember(memberDto, memberId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 이메일, 닉네임 중복 확인
@@ -105,10 +113,18 @@ public class AdminController {
 
     // 회원 삭제
     @PostMapping("/members/{memberId}/delete")
-    public String memberRemove(@PathVariable Long memberId) {
+    @ResponseBody
+    public ResponseEntity<String> memberRemove(@RequestHeader("Authorization") String accessToken, @PathVariable Long memberId) {
         log.info("delete");
-        adminService.removeMember(memberId);
-        return "redirect:/admin/members";
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+
+        adminService.removeMember(memberId, loginId);
+        return ResponseEntity.ok("ok");
     }
 
     // 상품 목록
