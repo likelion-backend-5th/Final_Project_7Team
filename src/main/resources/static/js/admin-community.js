@@ -110,98 +110,122 @@ function createPagination(page) {
 
 }
 
-function deleteComment(commentId) {
-    if(confirm("삭제하시겠습니까??")) {
-        let communityId = parseInt($("#communityId").val());
-        let page = $("#cur").val();
-        const accessToken = localStorage.getItem("accessToken");
-        tokenCheck(accessToken);
-        $.ajax({
-            url: `/admin/communities/${communityId}/comments/${commentId}`,
-            type: "POST",
-            contentType: "application/json",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            },
-            success: function (response) {
-                // 성공적으로 처리된 경우의 동작
-                alert("삭제되었습니다.")
-                loadComments(page);
-            },
-            error: function (error) {
-                // 오류 처리 동작
-                window.location.href = "/admin/error-page/500";
-            }
+async function deleteComment(commentId) {
+    let communityId = parseInt($("#communityId").val());
+
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+    };
+    // 선택된 상품의 상태값 변경 요청
+    try {
+        const response = await fetch(`/admin/communities/${communityId}/comments/${commentId}`, {
+            method: 'POST',
+            headers: headers
         });
+
+        if (response.ok) {
+            alert('삭제되었습니다.');
+            window.location.reload();
+        } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+                method: 'POST',
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await deleteComment(); // 원래 요청을 다시 시도
+            } else {
+                alert('토큰 재발급 실패');
+            }
+        }
+    } catch (error) {
+        alert("오류 발생");
     }
 }
 
-function deleteCommunity() {
+async function deleteCommunity() {
     let selectedItems = [];
 
     let id = $("#communityId").val();
     selectedItems.push({id: id});
 
-    if (selectedItems.length > 0 && confirm("삭제하시겠습니까??")) {
+    if (selectedItems.length > 0) {
         const accessToken = localStorage.getItem("accessToken");
-        tokenCheck(accessToken);
+        const headers = {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        };
+        // 선택된 상품의 상태값 변경 요청
+        try {
+            const response = await fetch('/admin/communities/delete-list', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(selectedItems)
+            });
 
-        $.ajax({
-            url: "/admin/communities/delete-list",
-            type: "POST",
-            contentType: "application/json",
-            dataType: "text",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            },
-            data: JSON.stringify(selectedItems),
-            success: function (response) {
-                // 성공적으로 처리된 경우의 동작
-                alert("삭제되었습니다.")
+            if (response.ok) {
+                alert('삭제되었습니다.');
                 window.location.href = "/admin/communities";
-            },
-            error: function (error) {
-                // 오류 처리 동작
-                window.location.href = "/admin/error-page/500";
+            } else if (response.status === 401 || response.status === 403) {
+                const reissueResponse = await fetch('/reissue', {
+                    method: 'POST',
+                    credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                });
+
+                if (reissueResponse.ok) {
+                    const reissuedData = await reissueResponse.json();
+                    localStorage.setItem('accessToken', reissuedData.accessToken);
+                    await deleteCommunity(); // 원래 요청을 다시 시도
+                } else {
+                    alert('토큰 재발급 실패');
+                }
             }
-        });
+        } catch (error) {
+            alert("오류 발생");
+        }
     }
 }
 
-let isRun = false;
 
-function addComment() {
+async function addComment() {
 
     let value = $("#commentValue").val();
     let communityId = parseInt($("#communityId").val());
 
-    // 동작중일때 중복으로 등록되지 않도록
-    if(isRun === true) {
-        return;
-    }
-    isRun = true;
-
-    if(confirm("등록하시겠습니까??")) {
-        const accessToken = localStorage.getItem("accessToken");
-        tokenCheck(accessToken);
-        $.ajax({
-            url: `/admin/communities/${communityId}/comments/create`,
-            type: "POST",
-            contentType: "application/json",
-            dataType: "text",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            },
-            data: value,
-            success: function () {
-                // 성공적으로 처리된 경우의 동작
-                alert("등록되었습니다.")
-                window.location.reload();
-            },
-            error: function (error) {
-                // 오류 처리 동작
-                window.location.href = "/admin/error-page/500";
-            }
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+    };
+    try {
+        const response = await fetch(`/admin/communities/${communityId}/comments/create`, {
+            method: 'POST',
+            headers: headers,
+            body: value
         });
+
+        if (response.ok) {
+            alert('등록되었습니다.');
+            window.location.reload();
+        } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+                method: 'POST',
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await addComment(); // 원래 요청을 다시 시도
+            } else {
+                alert('토큰 재발급 실패');
+            }
+        }
+    } catch (error) {
+        alert("오류 발생");
     }
 }

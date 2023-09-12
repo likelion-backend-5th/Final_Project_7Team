@@ -17,6 +17,16 @@
     <script src="/js/init-alpine.js"></script>
     <script src="/js/qnaList.js"></script>
     <script src="/js/authentication.js"></script>
+    <style>
+      p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break:break-all;
+        width: 200px;
+        height: 20px;
+      }
+    </style>
   </head>
   <body>
     <!-- 헤더-->
@@ -136,13 +146,13 @@
                     >
                       <th class="px-5 py-3 text-sm" style="width: 5%"><input type="checkbox" id="selectAll"></th>
                       <th class="px-4 py-3 text-center" style="width: 5%">번호</th>
-                      <th class="px-4 py-3 text-center" style="width: 5%">분류</th>
-                      <th class="px-4 py-3 text-center" style="width: 15%">상품명</th>
+                      <th class="px-4 py-3 text-center" style="width: 10%">분류</th>
+                      <th class="px-4 py-3 text-center" style="width: 20%">상품명</th>
                       <th class="px-4 py-3 text-center" style="width: 20%">제목</th>
-                      <th class="px-4 py-3 text-center" style="width: 10%">이름</th>
-                      <th class="px-4 py-3 text-center" style="width: 15%">등록일시</th>
-                      <th class="px-4 py-3 text-center" style="width: 15%">답변일시</th>
-                      <th class="px-4 py-3 text-center" style="width: 10%">답변자</th>
+                      <th class="px-4 py-3 text-center" style="width: 7.5%">이름</th>
+                      <th class="px-4 py-3 text-center" style="width: 12.5%">등록일시</th>
+                      <th class="px-4 py-3 text-center" style="width: 12.5%">답변일시</th>
+                      <th class="px-4 py-3 text-center" style="width: 7.5%">답변자</th>
                     </tr>
                   </thead>
                   <!-- 반복되는 테이블 -->
@@ -155,9 +165,11 @@
                           <input type="checkbox" class="checkbox" th:value="${qna.id}">
                         </div>
                       </td>
-                      <td class="px-5 py-3 text-sm" style="width: 5%" th:text="${qna.id}"></td>
-                      <td class="px-5 py-3 text-sm" style="width: 10%" th:text="${qna.classification.getClassification()}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${qna.productName}"></td>
+                      <td class="px-5 py-3 text-center text-sm" style="width: 5%" th:text="${qna.id}"></td>
+                      <td class="px-5 py-3 text-center text-sm" style="width: 10%" th:text="${qna.classification.getClassification()}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 20%">
+                        <p class="font-semibold" th:text="${qna.productName}"></p>
+                      </td>
                       <td class="px-4 py-3" style="width: 20%">
                         <div class="text-center">
                           <a class="inline-flex text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -166,12 +178,12 @@
                           </a>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:text="${qna.writer}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${#temporals.format(qna.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:if="${qna.answeredAt} != null" th:text="${#temporals.format(qna.answeredAt, 'yyyy-MM-dd HH:mm')}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:unless="${qna.answeredAt} != null">-</td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:if="${qna.answerer} != null" th:text="${qna.answerer}"></td>
-                      <td class="px-4 py-3 text-center text-sm" style="width: 10%" th:unless="${qna.answerer} != null">-</td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 7.5%" th:text="${qna.writer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 12.5%" th:text="${#temporals.format(qna.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 12.5%" th:if="${qna.answeredAt} != null" th:text="${#temporals.format(qna.answeredAt, 'yyyy-MM-dd HH:mm')}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 12.5%" th:unless="${qna.answeredAt} != null">-</td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 7.5%" th:if="${qna.answerer} != null" th:text="${qna.answerer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 7.5%" th:unless="${qna.answerer} != null">-</td>
                     </tr>
                   </tbody>
                 </table>

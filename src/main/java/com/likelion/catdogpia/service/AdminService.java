@@ -581,6 +581,13 @@ public class AdminService {
         }
         // 신고 처리
         findReport.processed();
+//        // 신고된 댓글 안보이게
+//        if(findReport.getArticle() != null) {
+//            communityRepository.delete(findReport.getArticle());
+//        } else {
+//            // 댓글이면 댓글 삭제
+//            commentRepository.delete(findReport.getComment());
+//        }
         // 신고 횟수가 3회 이상인 사람은 블랙리스트로 변경
         if(reportRepository.countByWriterAndProcessedAtIsNotNull(findReport.getWriter()) >= 3) {
             findReport.getWriter().changeBlackListYn();
@@ -601,5 +608,6 @@ public class AdminService {
             throw new IllegalArgumentException("관리자가 아닙니다.");
         }
     }
+
 }
 

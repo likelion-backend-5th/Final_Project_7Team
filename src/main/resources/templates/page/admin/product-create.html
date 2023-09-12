@@ -392,39 +392,38 @@
           const detailImgErrorMessage = detailImgErrors.join("\n");
           alert(detailImgErrorMessage);
         } else {
+          // 등록
+          const accessToken = localStorage.getItem("accessToken");
+          const headers = {
+            'Authorization': `Bearer ${accessToken}`
+          };
+          try {
+            const response = await fetch('/admin/products/create', {
+              method: 'POST',
+              headers: headers,
+              body: formData
+            });
 
-            const accessToken = localStorage.getItem("accessToken");
-            const headers = {
-              'Authorization': `Bearer ${accessToken}`
-            };
-
-            try {
-              const response = await fetch('/admin/products/create', {
+            if (response.ok) {
+              alert('등록되었습니다.');
+              window.location.href = "/admin/products";
+            } else if (response.status === 401 || response.status === 403) {
+              const reissueResponse = await fetch('/reissue', {
                 method: 'POST',
-                headers: headers,
-                body: formData
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
               });
 
-              if (response.ok) {
-                alert('등록되었습니다.');
-                window.location.href = "/admin/products";
-              } else if (response.status === 401 || response.status === 403) {
-                const reissueResponse = await fetch('/reissue', {
-                  method: 'POST',
-                  credentials: 'same-origin' // 쿠키를 보내기 위해 필수
-                });
-
-                if (reissueResponse.ok) {
-                  const reissuedData = await reissueResponse.json();
-                  localStorage.setItem('accessToken', reissuedData.accessToken);
-                  await createProduct(); // 원래 요청을 다시 시도
-                } else {
-                  alert('토큰 재발급 실패');
-                }
+              if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await createProduct(); // 원래 요청을 다시 시도
+              } else {
+                alert('토큰 재발급 실패');
               }
-            } catch (error) {
-              alert("오류 발생");
             }
+          } catch (error) {
+            alert("오류 발생");
+          }
         }
       }
     });

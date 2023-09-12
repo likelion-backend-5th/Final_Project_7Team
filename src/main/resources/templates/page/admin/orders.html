@@ -422,7 +422,7 @@
     });
 
     // 상태 일괄변경
-    function updateOrderStatus() {
+    async function updateOrderStatus() {
       let selectedItems = [];
 
       $(".checkbox:checked").each(function () {
@@ -431,30 +431,38 @@
         selectedItems.push({ id: id, status: status });
       });
 
-      if (selectedItems.length > 0 && confirm(selectedItems.length + "건의 주문상태를 수정하시겠습니까??")) {
+      if (selectedItems.length > 0) {
         // 선택된 상품의 상태값 변경 요청
         const accessToken = localStorage.getItem("accessToken");
-        tokenCheck(accessToken);
-
-        $.ajax({
-          url: "/admin/orders/change-status",
-          type: "POST",
-          contentType: "application/json",
-          dataType: "text",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`
-          },
-          data: JSON.stringify(selectedItems),
-          success: function (response) {
-            // 성공적으로 처리된 경우의 동작
+        const headers = {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        };
+        try {
+          const response = await fetch("/admin/orders/change-status", {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(selectedItems),
+          });
+          if (response.ok) {
             alert("수정되었습니다.")
-            window.location.href = "/admin/orders"; // 페이지 새로고침
-          },
-          error: function (error) {
-            // 오류 처리 동작
-            window.location.href = "/admin/error-page/500";
+            window.location.href= "/admin/orders";
+          } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+              method: 'POST',
+              credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+            if (reissueResponse.ok) {
+              const reissuedData = await reissueResponse.json();
+              localStorage.setItem('accessToken', reissuedData.accessToken);
+              await updateOrderStatus(); // 원래 요청을 다시 시도
+            } else {
+              alert('토큰 재발급 실패');
+            }
           }
-        });
+        } catch (error) {
+          alert("오류 발생!!");
+        }
       }
     }
   </script>

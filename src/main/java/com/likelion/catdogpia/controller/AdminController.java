@@ -453,13 +453,14 @@ public class AdminController {
     // QnA 답변 등록 / 업데이트
     @PostMapping("/qna/{qnaId}/update-answer")
     @ResponseBody
-    public ResponseEntity<String> qnaUpdateAnswer(@RequestHeader("Authorization") String accessToken, @PathVariable Long qnaId, @RequestParam("answer") String answer) {
+    public ResponseEntity<String> qnaUpdateAnswer(@RequestHeader("Authorization") String accessToken, @PathVariable Long qnaId, @RequestBody Map<String, String> requestBody) {
         if(accessToken == null){
             throw new RuntimeException();
         }
         // 토큰에서 loginId 가져옴
         String token = accessToken.split(" ")[1];
         String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        String answer = requestBody.get("answer");
         adminService.modifyQnaAnswer(qnaId, answer, loginId);
 
         return ResponseEntity.ok("ok");
@@ -527,7 +528,7 @@ public class AdminController {
     public ResponseEntity<String> consultationUpdateAnswer(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long consulId,
-            @RequestParam String answer
+            @RequestBody Map<String, String> requestBody
     ){
         // 토큰이 없으면 오류 발생
         if(accessToken == null){
@@ -537,6 +538,7 @@ public class AdminController {
         String token = accessToken.split(" ")[1];
         String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         //
+        String answer = requestBody.get("answer");
         adminService.modifyConsultationAnswer(consulId, answer, loginId);
         return ResponseEntity.ok(HttpStatus.OK.name());
     }
@@ -561,6 +563,7 @@ public class AdminController {
 
     // 신고 삭제
     @PostMapping("/reports/delete-list")
+    @ResponseBody
     public ResponseEntity<String> reportDelete(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody List<Map<String, Object>> requestList
@@ -596,6 +599,7 @@ public class AdminController {
 
     // 신고 처리
     @PostMapping("/reports/{reportId}/processed")
+    @ResponseBody
     public ResponseEntity<String> reportProcessed(@RequestHeader("Authorization") String accessToken, @PathVariable Long reportId){
         // 토큰이 없으면 오류 발생
         if(accessToken == null){
@@ -609,6 +613,7 @@ public class AdminController {
 
         return ResponseEntity.ok(HttpStatus.OK.name());
     }
+
 
     // 공지사항 목록
     @GetMapping("/notices")

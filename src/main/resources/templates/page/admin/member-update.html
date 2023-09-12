@@ -13,7 +13,7 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
+    <script src="/js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/authentication.js"></script>
     <style>
@@ -188,7 +188,6 @@
 
       // 비어있지 않아야함
       if(email && nickname && memberId && phone && name && blackListYn) {
-        if(confirm("수정하시겠습니까??")) {
             $.ajax({
               // AJAX 요청으로 중복 여부 확인
               url: "/admin/members/check-duplicate",
@@ -205,15 +204,13 @@
                 alert("오류가 발생했습니다. 다시 시도해주세요.");
               }
             });
-          }
         } else {
         alert("입력되지 않은 값이 있습니다. 다시 확인해주세요.");
       }
     });
   });
 
-  function updateMember(email, nickname, memberId, phone, name, blackListYn) {
-    const accessToken = localStorage.getItem("accessToken");
+async function updateMember(email, nickname, memberId, phone, name, blackListYn) {
 
     const requestData = {
       email: email,
@@ -223,23 +220,37 @@
       blackListYn : blackListYn
     };
 
-    $.ajax({
-      // AJAX 요청으로 중복 여부 확인
-      url: `/admin/members/${memberId}/modify`,
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(requestData),
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      },
-      success: function(response) {
-          alert("수정되었습니다.");
-          window.location.href = '/admin/members';
-      },
-      error: function() {
-        alert("오류가 발생했습니다. 다시 시도해주세요.");
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      const response = await fetch(`/admin/members/${memberId}/modify`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (response.ok) {
+        alert("수정되었습니다.");
+        window.location.href = '/admin/members';
+      } else if (response.status === 401 || response.status === 403) {
+        const reissueResponse = await fetch('/reissue', {
+          method: 'POST',
+          credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+        });
+        if (reissueResponse.ok) {
+          const reissuedData = await reissueResponse.json();
+          localStorage.setItem('accessToken', reissuedData.accessToken);
+          await updateMember(email, nickname, memberId, phone, name, blackListYn); // 원래 요청을 다시 시도
+        } else {
+          alert('토큰 재발급 실패');
+        }
       }
-    });
+    } catch (error) {
+      alert("오류 발생!!");
+    }
   }
 </script>
 </html>

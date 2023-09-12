@@ -152,7 +152,7 @@
                   <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
                   <tr class="text-gray-700 dark:text-gray-400">
-                    <td class="px-5 py-3 text-center text-sm" style="width: 25%" th:text="${#numbers.formatInteger(order[0].totalAmount + order[0].deliveryCharge + order[0].discountAmount, 3, 'COMMA') + '원'}"></td>
+                    <td class="px-5 py-3 text-center text-sm" style="width: 25%" th:text="${#numbers.formatInteger(order[0].totalAmount - order[0].deliveryCharge + order[0].discountAmount, 3, 'COMMA') + '원'}"></td>
                     <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:if="${order[0].deliveryCharge != 0}" th:text="${#numbers.formatInteger(order[0].deliveryCharge, 3, 'COMMA') + '원'}"></td>
                     <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:unless="${order[0].deliveryCharge != 0}" th:text="0원"></td>
                     <td class="px-4 py-3 text-center text-sm" style="width: 25%" th:if="${order[0].discountAmount != 0}" th:text="${#numbers.formatInteger(order[0].discountAmount, 3, 'COMMA') + '원'}"></td>
@@ -186,7 +186,7 @@
   </body>
   <script>
     // 상태 일괄변경
-    function updateOrderStatus() {
+    async function updateOrderStatus() {
       let selectedItems = [];
 
       $("#productTable tr").not(":first").each(function() {
@@ -196,30 +196,38 @@
         selectedItems.push({ id: id, status: status });
       });
 
-      if (selectedItems.length > 0 && confirm("수정하시겠습니까??")) {
+      if (selectedItems.length > 0) {
         // 선택된 상품의 상태값 변경 요청
         const accessToken = localStorage.getItem("accessToken");
-        tokenCheck(accessToken);
-        // 선택된 상품의 상태값 변경 요청정
-        $.ajax({
-          url: "/admin/orders/change-status",
-          type: "POST",
-          contentType: "application/json",
-          dataType: "text",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`
-          },
-          data: JSON.stringify(selectedItems),
-          success: function (response) {
-            // 성공적으로 처리된 경우의 동작
+        const headers = {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        };
+        try {
+          const response = await fetch("/admin/orders/change-status", {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(selectedItems),
+          });
+          if (response.ok) {
             alert("수정되었습니다.")
             window.location.href= "/admin/orders";
-          },
-          error: function (error) {
-            // 오류 처리 동작
-            window.location.href = "/admin/error-page/500";
+          } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+              method: 'POST',
+              credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+            if (reissueResponse.ok) {
+              const reissuedData = await reissueResponse.json();
+              localStorage.setItem('accessToken', reissuedData.accessToken);
+              await updateOrderStatus(); // 원래 요청을 다시 시도
+            } else {
+              alert('토큰 재발급 실패');
+            }
           }
-        });
+        } catch (error) {
+          alert("오류 발생!!");
+        }
       }
     }
   </script>

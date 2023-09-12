@@ -346,7 +346,7 @@
     // =================================================================== //
 
     //== 수정 요청 ==//
-    $("#submitBnt").on("click", function() {
+    $("#submitBnt").on("click", async function modifyProduct() {
       const productData = {
         categoryId: $("#selectedSubCategory :selected").val(),
         name: $("#name").val(),
@@ -393,6 +393,7 @@
         // }
       });
       formData.append("productDto", JSON.stringify(productData));
+
       const productId = $("#productId").val();
       // validation check
       const errors = validateProductData(productData);
@@ -403,31 +404,36 @@
         alert(errorMessage);
       } else {
 
-        if(confirm("수정하시겠습니까??")){
-          const accessToken = localStorage.getItem("accessToken");
-          // 토큰 사용기간 확인
-          tokenCheck(accessToken)
-          const url = `/admin/products/${productId}/modify`;
-
-          $.ajax({
-            type: "POST",
-            url: url,
-            contentType: false,
-            processData: false,
-            enctype: 'multipart/form-data',
-            headers: {
-              "Authorization": `Bearer ${accessToken}`
-            },
-            data: formData,
-            success: function (response) {
-              alert("수정되었습니다.");
-              window.location.href = "/admin/products";
-            },
-            error: function (error) {
-              alert("오류 발생");
-              window.location.href = "/admin/error-page/500";
-            }
+        const accessToken = localStorage.getItem("accessToken");
+        const headers = {
+          'Authorization': `Bearer ${accessToken}`
+        };
+        try {
+          const response = await fetch(`/admin/products/${productId}/modify`, {
+            method: 'POST',
+            headers: headers,
+            body: formData
           });
+
+          if (response.ok) {
+            alert('수정되었습니다.');
+            window.location.href = "/admin/products";
+          } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+              method: 'POST',
+              credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+              const reissuedData = await reissueResponse.json();
+              localStorage.setItem('accessToken', reissuedData.accessToken);
+              await modifyProduct(); // 원래 요청을 다시 시도
+            } else {
+              alert('토큰 재발급 실패');
+            }
+          }
+        } catch (error) {
+          alert("오류 발생");
         }
       }
     });

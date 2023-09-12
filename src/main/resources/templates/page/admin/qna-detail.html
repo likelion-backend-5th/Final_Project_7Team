@@ -112,12 +112,11 @@
             <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
               답변
             </h4>
-            <form th:action="@{/admin/qna/{qnaId}/update-answer (qnaId=${qna.id})}" method="post">
             <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
               <label class="text-sm w-full">
                 <span class=" text-gray-700 mt-6 dark:text-gray-400">답변</span>
-                <textarea th:if="${qna.answer} != null" th:text="${qna.answer}" rows="10" name="answer" class="w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
-                <textarea th:unless="${qna.answer} != null" rows="10" name="answer" class="w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+                <textarea th:if="${qna.answer} != null" th:text="${qna.answer}" rows="10" name="answer" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+                <textarea th:unless="${qna.answer} != null" rows="10" name="answer" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
               </label>
             </div>
           </div>
@@ -140,59 +139,87 @@
     </div>
   </body>
 <script>
-  function createQna(qnaId) {
-    if (confirm("등록하시겠습니까??")) {
+  async function createQna(qnaId) {
+    let answer = $('.answer').val();
+    if(answer) {
+      const requestBody = {
+        answer: answer
+      };
+
       const accessToken = localStorage.getItem("accessToken");
-      tokenCheck(accessToken);
-      $.ajax({
-        url: `/admin/qna/${qnaId}/update-answer`,
-        type: "POST",
-        contentType: "application/json",
-        dataType: "text",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        },
-        success: function (response) {
-          // 성공적으로 처리된 경우의 동작
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      };
+      try {
+        const response = await fetch(`/admin/qna/${qnaId}/update-answer`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(requestBody)
+        });
+        if (response.ok) {
           alert("등록되었습니다.")
-          window.location.href = "/admin/qna"; // 페이지 새로고침
-        },
-        error: function (error) {
-          // 오류 처리 동작
-          window.location.href = "/admin/error-page/500";
+          window.location.href = "/admin/qna";
+        } else if (response.status === 401 || response.status === 403) {
+          const reissueResponse = await fetch('/reissue', {
+            method: 'POST',
+            credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+          });
+          if (reissueResponse.ok) {
+            const reissuedData = await reissueResponse.json();
+            localStorage.setItem('accessToken', reissuedData.accessToken);
+            await createQna(qnaId); // 원래 요청을 다시 시도
+          } else {
+            alert('토큰 재발급 실패');
+          }
         }
-      });
+      } catch (error) {
+        alert("오류 발생!!");
+      }
+    } else {
+      alert("답변이 작성되지 않았습니다. 다시 작성해주세요.")
     }
   }
 
   // qna삭제
-  function deleteQna() {
+  async function deleteQna() {
     let selectedItems = [];
     let id = $("#qnaId").val();
     selectedItems.push({id: id});
 
-    if (confirm("삭제하시겠습니까??") && selectedItems.length > 0) {
+    if (selectedItems.length > 0) {
       const accessToken = localStorage.getItem("accessToken");
-      tokenCheck(accessToken);
-      $.ajax({
-        url: "/admin/qna/delete-list",
-        type: "POST",
-        contentType: "application/json",
-        dataType: "text",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        },
-        data: JSON.stringify(selectedItems),
-        success: function (response) {
-          // 성공적으로 처리된 경우의 동작
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      };
+      try {
+        const response = await fetch("/admin/qna/delete-list", {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(selectedItems),
+        });
+
+        if (response.ok) {
           alert("삭제되었습니다.")
-          window.location.href = "/admin/qna"; // 페이지 새로고침
-        },
-        error: function (error) {
-          // 오류 처리 동작
-          window.location.href = "/admin/error-page/500";
+          window.location.href = "/admin/qna";
+        } else if (response.status === 401 || response.status === 403) {
+          const reissueResponse = await fetch('/reissue', {
+            method: 'POST',
+            credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+          });
+
+          if (reissueResponse.ok) {
+            const reissuedData = await reissueResponse.json();
+            localStorage.setItem('accessToken', reissuedData.accessToken);
+            await deleteQna(); // 원래 요청을 다시 시도
+          } else {
+            alert('토큰 재발급 실패');
+          }
         }
-      });
+      } catch (error) {
+        alert("오류 발생");
+      }
     }
   }
 </script>
