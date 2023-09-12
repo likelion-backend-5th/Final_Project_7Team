@@ -13,8 +13,9 @@
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
       defer
     ></script>
-    <script src="../../../js/init-alpine.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/authentication.js"></script>
   </head>
   <body>
 
@@ -122,10 +123,9 @@
           </div>
           <!-- 버튼 영역 -->
           <div class="col text-center">
-            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submit-btn" type="submit">
+            <button th:onclick="'createQna(\'' + ${qna.id} + '\')'" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               확인
             </button>
-          </form>
             &nbsp;&nbsp;&nbsp;
             <button onclick="deleteQna()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               삭제
@@ -140,26 +140,48 @@
     </div>
   </body>
 <script>
-  let isRun = false;
+  function createQna(qnaId) {
+    if (confirm("등록하시겠습니까??")) {
+      const accessToken = localStorage.getItem("accessToken");
+      tokenCheck(accessToken);
+      $.ajax({
+        url: `/admin/qna/${qnaId}/update-answer`,
+        type: "POST",
+        contentType: "application/json",
+        dataType: "text",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        },
+        success: function (response) {
+          // 성공적으로 처리된 경우의 동작
+          alert("등록되었습니다.")
+          window.location.href = "/admin/qna"; // 페이지 새로고침
+        },
+        error: function (error) {
+          // 오류 처리 동작
+          window.location.href = "/admin/error-page/500";
+        }
+      });
+    }
+  }
+
   // qna삭제
   function deleteQna() {
     let selectedItems = [];
-
-    // 동작중일때 중복으로 동작하지 않도록
-    if(isRun === true) {
-      return;
-    }
-    isRun = true;
-
     let id = $("#qnaId").val();
     selectedItems.push({id: id});
 
     if (confirm("삭제하시겠습니까??") && selectedItems.length > 0) {
+      const accessToken = localStorage.getItem("accessToken");
+      tokenCheck(accessToken);
       $.ajax({
         url: "/admin/qna/delete-list",
         type: "POST",
         contentType: "application/json",
         dataType: "text",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        },
         data: JSON.stringify(selectedItems),
         success: function (response) {
           // 성공적으로 처리된 경우의 동작
