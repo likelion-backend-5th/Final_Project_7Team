@@ -326,7 +326,7 @@
     });
 
     //== 등록 요청 ==//
-    $("#submitBnt").on("click", function() {
+    $("#submitBnt").on("click", async function createProduct() {
 
       const productData = {
         categoryId: $("#selectedSubCategory :selected").val(),
@@ -356,7 +356,7 @@
       formData.append("detailImg", detailImg);
 
 
-      $("#items-container .item").each(function() {
+      $("#items-container .item").each(function () {
         const color = $(this).find("input.color").val();
         const size = $(this).find("select.size").val();
         const stock = $(this).find("input.stock").val();
@@ -376,47 +376,55 @@
       const mainImgErrors = validateImage(mainImg);
       const detailImgErrors = validateImage(detailImg);
 
-      if (errors.length > 0 ) {
+      if (errors.length > 0) {
         // 오류 메시지 출력
         duplicateName(name);
         const errorMessage = errors.join("\n");
         alert(errorMessage);
       } else {
-        if(mainImgErrors.length > 0) {
+        if (mainImgErrors.length > 0) {
           // 대표 이미지 오류 메시지 출력
           const mainImgErrorMessage = mainImgErrors.join("\n");
           alert(mainImgErrorMessage);
 
-        } else if(detailImgErrors.length > 0) {
+        } else if (detailImgErrors.length > 0) {
           // 상세 이미지 오류 메시지 출력
           const detailImgErrorMessage = detailImgErrors.join("\n");
           alert(detailImgErrorMessage);
         } else {
 
-          if(confirm("등록하시겠습니까?")) {
-
             const accessToken = localStorage.getItem("accessToken");
-            tokenCheck(accessToken)
-            $.ajax({
-              type: "POST",
-              url: "/admin/products/create",
-              contentType: false,
-              processData: false,
-              enctype: 'multipart/form-data',
-              headers: {
-                "Authorization": `Bearer ${accessToken}`
-              },
-              data: formData,
-              success: function (response) {
-                alert("등록되었습니다.");
+            const headers = {
+              'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+              const response = await fetch('/admin/products/create', {
+                method: 'POST',
+                headers: headers,
+                body: formData
+              });
+
+              if (response.ok) {
+                alert('등록되었습니다.');
                 window.location.href = "/admin/products";
-              },
-              error: function (error) {
-                alert("오류 발생")
-                //window.location.href = "/admin/error-page/500";
+              } else if (response.status === 401 || response.status === 403) {
+                const reissueResponse = await fetch('/reissue', {
+                  method: 'POST',
+                  credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                });
+
+                if (reissueResponse.ok) {
+                  const reissuedData = await reissueResponse.json();
+                  localStorage.setItem('accessToken', reissuedData.accessToken);
+                  await createProduct(); // 원래 요청을 다시 시도
+                } else {
+                  alert('토큰 재발급 실패');
+                }
               }
-            });
-          }
+            } catch (error) {
+              alert("오류 발생");
+            }
         }
       }
     });
