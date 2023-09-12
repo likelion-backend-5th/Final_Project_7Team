@@ -116,7 +116,7 @@ function consultationPage(pageNumber, filter, keyword) {
 }
 
 function updatePage(data) {
-    if(data) {
+    if(data.content) {
         // 테이블의 tbody 선택
         let tbody = $('.notice-table tbody');
 
@@ -170,6 +170,11 @@ function updatePage(data) {
             // tbody에 행 추가
             tbody.append(tr);
         });
+    } else {
+        let tbody = $('.notice-table tbody');
+        let tr = $('<tr>');
+        tr.append('<td>' + '내역이 존재하지 않습니다.' + '</td>');
+        tbody.append(tr);
     }
 }
 
@@ -186,13 +191,13 @@ function createPagination(page) {
         endPage=page.totalPages;
 
     if(cur > 0) // 이전 버튼
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${cur - 1})"> < </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${cur - 1})"> < </a></li>`);
 
     for(let i=startPage; i <= endPage; i++) { // 페이지네이션
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${i - 1})"> ${i} </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${i - 1})"> ${i} </a></li>`);
     }
     if(cur + 1 <page.totalPages) // 다음 버튼
-        pageNationContainer.append(`<li class="mr-3"><a onclick="loadComments(${cur + 1})"> > </a></li>`);
+        pageNationContainer.append(`<li class="mr-3"><a onclick="consultationPage(${cur + 1})"> > </a></li>`);
     pageNationContainer.append(`<input type="hidden" id="cur" value="${cur}">`)
 
 }

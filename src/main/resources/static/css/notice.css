@@ -159,3 +159,27 @@
     min-height: 100px;
     line-height: 1.6;
 }
+
+#outerDiv {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: .875rem;
+}
+
+#span {
+    justify-content: center;
+    display: flex;
+}
+
+#pagination {
+    align-items: center;
+    display: inline-flex;
+}
+
+ul {
+    list-style: none;
+}
+
+.mr-3 {
+    margin-right: 0.75rem;
+}
