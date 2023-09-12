@@ -4,12 +4,14 @@ import com.likelion.catdogpia.domain.dto.admin.AttachDetailDto;
 import com.likelion.catdogpia.domain.dto.admin.MemberListDto;
 import com.likelion.catdogpia.domain.dto.admin.ProductListDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.dto.notice.NoticeDto;
 import com.likelion.catdogpia.domain.entity.attach.AttachDetail;
 import com.likelion.catdogpia.domain.entity.attach.QAttach;
 import com.likelion.catdogpia.domain.entity.attach.QAttachDetail;
 import com.likelion.catdogpia.domain.entity.community.QArticle;
 import com.likelion.catdogpia.domain.entity.community.QComment;
 import com.likelion.catdogpia.domain.entity.community.QLikeArticle;
+import com.likelion.catdogpia.domain.entity.notice.QNotice;
 import com.likelion.catdogpia.domain.entity.product.QProduct;
 import com.likelion.catdogpia.domain.entity.product.QProductOption;
 import com.likelion.catdogpia.domain.dto.admin.*;
@@ -21,12 +23,14 @@ import com.likelion.catdogpia.domain.entity.order.QOrders;
 import com.likelion.catdogpia.domain.entity.product.*;
 import com.likelion.catdogpia.domain.entity.report.QReport;
 import com.likelion.catdogpia.domain.entity.review.QReview;
+import com.likelion.catdogpia.domain.entity.user.Member;
 import com.likelion.catdogpia.domain.entity.user.QMember;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -47,6 +51,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static com.likelion.catdogpia.domain.entity.community.QArticle.article;
+import static com.likelion.catdogpia.domain.entity.notice.QNotice.*;
 import static com.likelion.catdogpia.domain.entity.user.QMember.*;
 import static com.likelion.catdogpia.domain.entity.product.QProduct.*;
 import static com.likelion.catdogpia.domain.entity.product.QOrderProduct.*;
@@ -425,7 +430,6 @@ public class QueryRepository {
                 queryFactory.select(Projections.fields(ConsultationListDto.class,
                                 consultation.id,
                                 consultation.classification,
-                                consultation.orders.orderNumber,
                                 consultation.subject,
                                 consultation.member.name.as("writer"),
                                 consultation.createdAt,
@@ -453,14 +457,13 @@ public class QueryRepository {
         return new PageImpl<>(list, pageable, count);
     }
 
-    // QnA 조건 추가
+    // 1:1문의 조건 추가
     private BooleanExpression consulSearchFilter(String filter, String keyword) {
         if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
             return switch (filter) {
                 case "title" -> consultation.subject.contains(keyword);
                 case "writer" -> consultation.member.name.contains(keyword);
-                case "classification" -> consultation.classification.eq(ConsulClassification.valueOf(keyword));
-                default -> consultation.orders.orderNumber.contains(keyword);
+                default -> consultation.classification.eq(ConsulClassification.valueOf(keyword));
             };
         } else {
             return null;
@@ -676,5 +679,100 @@ public class QueryRepository {
             return null;
         }
         return null;
+    }
+
+    // 공지사항 목록
+    public Page<NoticeDto> findByNoticeList(Pageable pageable, String filter, String keyword) {
+
+        List<NoticeDto> list =
+                queryFactory.select(Projections.fields(NoticeDto.class,
+                        notice.id,
+                        notice.title,
+                        notice.content,
+                        notice.createdAt,
+                        notice.updatedAt,
+                        notice.viewCnt))
+                        .from(notice)
+                        .join(member).on(notice.member.eq(member))
+                        .where(noticeSearchFilter(filter, keyword))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(notice.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(notice.count())
+                        .from(notice)
+                        .join(member).on(notice.member.eq(member))
+                        .where(noticeSearchFilter(filter, keyword))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // 공지사항 조건 추가
+    private BooleanExpression noticeSearchFilter(String filter, String keyword) {
+        if (StringUtils.hasText(filter) && StringUtils.hasText(keyword)) {
+            return notice.title.contains(keyword);
+        } else {
+            return null;
+        }
+    }
+
+    public Page<ConsultationListDto> findByConsultationListWithMember(Pageable pageable, String filter, String keyword, Member findMember) {
+        List<ConsultationListDto> list =
+                queryFactory.select(Projections.fields(ConsultationListDto.class,
+                                consultation.id,
+                                consultation.classification,
+                                consultation.subject,
+                                consultation.member.name.as("writer"),
+                                consultation.createdAt,
+                                consultationAnswer.createdAt.as("answeredAt")))
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .where(consulSearchFilter(filter, keyword), consultation.member.eq(findMember))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(consultation.id.desc())
+                        .fetch();
+
+        Long count =
+                queryFactory.select(consultation.count())
+                        .from(consultation)
+                        .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                        .where(consulSearchFilter(filter, keyword), consultation.member.eq(findMember))
+                        .fetchOne();
+
+        return new PageImpl<>(list, pageable, count);
+    }
+
+    // 관리자 메인화면 카운트
+    public CountDto findTotalCounts() {
+        return queryFactory.select(Projections.fields(CountDto.class,
+                ExpressionUtils.as(
+                        JPAExpressions.select(member.count())
+                                .from(member), "totalMemberCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(product.count())
+                                .from(product), "totalProductCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(orders.totalAmount.sum().coalesce(0).castToNum(Long.class))
+                                .from(orders)
+                                .where(orders.cancelAt.isNull()), "totalAmount"
+                ),
+                ExpressionUtils.as(
+                JPAExpressions.select(report.count())
+                        .from(report)
+                        .where(report.processedAt.isNull()), "totalReportCnt"
+                ),
+                ExpressionUtils.as(
+                        JPAExpressions.select(consultation.count())
+                                .from(consultation)
+                                .leftJoin(consultationAnswer).on(consultationAnswer.consultation.eq(consultation))
+                                .where(consultation.deletedAt.isNull()), "totalConsulCnt"
+                )
+        )).from(member).limit(1).fetchOne();
     }
 }

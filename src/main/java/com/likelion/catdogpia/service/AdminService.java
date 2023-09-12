@@ -570,5 +570,9 @@ public class AdminService {
             log.info("블랙리스트 처리");
         }
     }
+
+    public CountDto findTotalCounts() {
+        return queryRepository.findTotalCounts();
+    }
 }
 

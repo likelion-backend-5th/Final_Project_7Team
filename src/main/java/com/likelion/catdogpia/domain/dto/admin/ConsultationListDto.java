@@ -13,7 +13,6 @@ public class ConsultationListDto {
 
     private Long id;
     private ConsulClassification classification;
-    private String orderNumber;
     private String subject;
     private String writer;
     private String answerer;
@@ -21,10 +20,9 @@ public class ConsultationListDto {
     private LocalDateTime answeredAt;
 
     @Builder
-    public ConsultationListDto(Long id, ConsulClassification classification, String orderNumber, String subject, String writer, String answerer, LocalDateTime createdAt, LocalDateTime answeredAt) {
+    public ConsultationListDto(Long id, ConsulClassification classification, String subject, String writer, String answerer, LocalDateTime createdAt, LocalDateTime answeredAt) {
         this.id = id;
         this.classification = classification;
-        this.orderNumber = orderNumber;
         this.subject = subject;
         this.writer = writer;
         this.answerer = answerer;

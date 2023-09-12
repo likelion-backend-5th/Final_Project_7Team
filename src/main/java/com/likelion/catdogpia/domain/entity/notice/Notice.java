@@ -1,5 +1,6 @@
-package com.likelion.catdogpia.domain.entity.notion;
+package com.likelion.catdogpia.domain.entity.notice;
 
+import com.likelion.catdogpia.domain.dto.notice.NoticeDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.user.Member;
 import jakarta.persistence.*;
@@ -17,9 +18,9 @@ import static jakarta.persistence.FetchType.LAZY;
 @SuperBuilder
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE notion SET deleted_at = now() WHERE id = ?")
+@SQLDelete(sql = "UPDATE notice SET deleted_at = now() WHERE id = ?")
 @Where(clause = "deleted_at is null")
-public class Notion extends BaseEntity {
+public class Notice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,7 @@ public class Notion extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(columnDefinition = "0")
     private int viewCnt;
 
     //== 연관관계 ==//
@@ -38,8 +40,24 @@ public class Notion extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    //== DTO -> Entity ==/
+    public static Notice toEntity(NoticeDto noticeDto, Member member) {
+        return Notice.builder()
+                .title(noticeDto.getTitle())
+                .content(noticeDto.getContent())
+                .member(member)
+                .build();
+    }
+
+    //== 게시글 수정 ==//
+    public void changeNotice(NoticeDto noticeDto, Member member) {
+        this.title = noticeDto.getTitle();
+        this.content = noticeDto.getContent();
+        this.member = member;
+    }
+
     @Builder
-    public Notion(Long id, String title, String content, int viewCnt, Member member) {
+    public Notice(Long id, String title, String content, int viewCnt, Member member) {
         this.id = id;
         this.title = title;
         this.content = content;

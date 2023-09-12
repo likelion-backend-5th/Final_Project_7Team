@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>1:1문의</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/notice.css">
+  <link rel="stylesheet" href="/css/mypage.css">
+  <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/consultation.js"></script>
+</head>
+<body>
+  <div layout:fragment="content" class="notice-container">
+      <!-- 카테고리 -->
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+      <!-- 검색 -->
+    <div class="search-part mb-4">
+      <div style="margin: auto">
+        <input id="keyword" type="text" name="keyword" placeholder="검색어를 입력해주세요">
+        <button id="searchBtn" onclick="searchNotice()">검색</button>
+      </div>
+      <div style="margin-left: -80px">
+        <button id="createBtn" th:onclick="|location.href='@{/notices/consultations/create-form}'|">문의등록</button>
+      </div>
+    </div>
+      <!-- 목록 리스트 -->
+    <table class="notice-table">
+      <tr style="width: 100%">
+        <th style="width: 5%">번호</th>
+          <th style="width: 10%">분류</th>
+        <th style="width: 50%">제목</th>
+        <th style="width: 10%">작성자</th>
+        <th style="width: 10%">상태</th>
+        <th style="width: 15%">작성일</th>
+      </tr>
+      <tr>
+        <td style="width: 5%"></td>
+        <td style="width: 10%"></td>
+        <td style="width: 50%">
+            <a>
+                <span id="titleText"></span>
+            </a>
+        </td>
+        <td style="width: 10%"></td>
+        <td style="width: 10%"></td>
+        <td style="width: 15%"></td>
+      </tr>
+    </table>
+      <!-- 페이지네이션 -->
+    <div id="outerDiv" class="py-3 text-sm font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+      <span class="flex mt-4 sm:mt-auto sm:justify-center">
+          <ul id="pagination" class="inline-flex items-center">
+          </ul>
+      </span>
+    </div>
+  </div>
+</body>
+</html>
