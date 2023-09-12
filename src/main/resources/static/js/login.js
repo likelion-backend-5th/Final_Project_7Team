@@ -20,6 +20,8 @@ function login() {
             } else if (data.result === 'admin') {
                 localStorage.setItem('accessToken', data.accessToken);
                 window.location.href = '/admin/main';
+            } else if (data.result === 'black') {
+                alert("블랙리스트로 등록된 회원이므로 로그인이 불가능합니다.");
             } else {
                 alert("아이디 또는 비밀번호가 일치하지 않습니다.");
                 window.location.href = '/login';
