@@ -45,7 +45,11 @@ document.addEventListener('DOMContentLoaded', async function loadPointPage() {
 
 function dataOnPage(data) {
     const totalPointElement = document.querySelector('.point-total span');
-    totalPointElement.textContent = data.pointList.content[0].totalPoint;
+    if(data.pointList.content == "") {
+        totalPointElement.textContent = 0;
+    } else {
+        totalPointElement.textContent = data.pointList.content[0].totalPoint;
+    }
 
     const pointList = data.pointList.content;
     const pointTable = document.querySelector('.point-table tbody');

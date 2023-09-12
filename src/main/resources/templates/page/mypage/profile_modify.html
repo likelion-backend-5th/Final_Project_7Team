@@ -43,7 +43,7 @@
         <div class="textForm">
             <label for="nickname">닉네임</label>
             <input type="text" class="nickname" id="nickname" name="nickname" required maxlength="10" placeholder="사용하실 닉네임을 입력해주세요">
-            <button type="button" class="btn-profile" th:onclick="checkDuplicateNicknameModify([[${profile.nickname}]])">중복확인</button>
+            <button type="button" class="btn-profile">중복확인</button>
             <br>
             <span id="nickname-duplicate-message"></span>
         </div>

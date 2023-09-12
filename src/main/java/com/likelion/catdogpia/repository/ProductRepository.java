@@ -51,11 +51,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "JOIN ProductOption po ON po.product.id = p.id " +
             "JOIN OrderProduct op ON op.productOption.id = po.id " +
             "JOIN Orders o ON o.id = op.order.id " +
-            "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id " +
+            "LEFT JOIN AttachDetail ad ON ad.attach.id = p.attach.id AND ad.id = (SELECT MIN(ad2.id) FROM AttachDetail ad2 WHERE ad2.attach.id = p.attach.id) " +
             "WHERE o.orderAt >= :period " +
             "GROUP BY p, ad.fileUrl " +
             "ORDER BY SUM(op.quantity) DESC limit 5")
     List<HotProductListDto> findTop5BySalesCount(@Param("period") LocalDateTime period); // 기간, 조회개수
+
+    // 주문 상품으로 상품 가격 조회
+    @Query("SELECT p.price " +
+            "FROM Product p " +
+            "LEFT JOIN ProductOption po ON po.product.id = p.id " +
+            "LEFT join OrderProduct op ON op.productOption.id = po.id " +
+            "WHERE op.id = :opId")
+    int findPriceByOrderProduct(@Param("opId") Long opId);
 
 
 }

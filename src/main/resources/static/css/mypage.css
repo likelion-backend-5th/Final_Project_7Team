@@ -1,6 +1,7 @@
 /* 공통 사용 */
 .mypage-container {
     width: 60%;
+    min-height: 500px;
     margin: auto;
     font-size: 14px;
 }
@@ -291,6 +292,15 @@ ul.order-state li {
     object-fit: cover;
 }
 
+.order-list-table .product-info-box .content-box {
+    text-align: start;
+}
+
+.order-list-table .product-info-box .content-box div {
+    font-size: 13px;
+    color: gray;
+}
+
 .order-list-table .order-status-box {
     display: flex;
     align-items: center;
@@ -459,10 +469,11 @@ ul.order-state li {
     align-items: center;
 }
 
-.td-address span {
+.default-address {
     margin-right: 15px;
     width: 100px;
     height: 30px;
+    line-height: 30px;
     color: #99A799;
     font-weight: bold;
     border: 1px solid #99A799;

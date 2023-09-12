@@ -148,7 +148,7 @@
                     <th:block th:each="hotProduct : ${hotProductList}">
                         <div class="col-lg-3">
                             <div class="categories__item set-bg" th:data-setbg="${hotProduct.FileUrl}">
-                                <h5><a th:href="@{/products/{id}(id=${hotProduct.id})}" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
+                                <h5><a th:href="@{/products/detail/{id}(id=${hotProduct.id})}" th:text="${hotProduct.name}" class="main-hot-product-a"></a></h5>
                             </div>
                         </div>
                     </th:block>
@@ -201,23 +201,23 @@
                         <div class="featured__item">
                             <div class="featured__item__pic set-bg" th:data-setbg="${newProduct.FileUrl}">
                                 <ul class="featured__item__pic__hover">
-                                    <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png"
-                                                         alt=""></a>
-                                    </li>
+<!--                                    <li><a href="#"><img class="main-wish-icon" src="/img/main-page/heart-icon.png"-->
+<!--                                                         alt=""></a>-->
+<!--                                    </li>-->
                                     <li><a href="#"><img class="main-cart-icon" src="/img/main-page/cart-icon.png"
                                                          alt=""></a></li>
                                 </ul>
                             </div>
                             <div class="featured__item__text">
-                                <h6><a th:href="@{/products/{id}(id=${newProduct.id})}" th:text="${newProduct.getName}"></a></h6>
+                                <h6><a th:href="@{/products/detail/{id}(id=${newProduct.id})}" th:text="${newProduct.getName}"></a></h6>
                                 <hr>
                                 <div class="main-product-summary">
                                     <h6 th:text="${#numbers.formatInteger(newProduct.price, 0, 'COMMA')+'원'}"></h6>
-                                    <div class="main-product-rating">
-                                        <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt=""><h6>
-                                        5.0</h6>
-                                    </div>
-                                    <h6>후기1</h6>
+<!--                                    <div class="main-product-rating">-->
+<!--                                        <img class="main-rating-icon" src="/img/main-page/rating-icon.png" alt="">-->
+<!--                                        <h6>5.0</h6>-->
+<!--                                    </div>-->
+<!--                                    <h6>후기1</h6>-->
                                 </div>
                             </div>
                         </div>
@@ -417,8 +417,8 @@
                             <div class="blog__item__text">
                                 <ul>
                                     <li th:text="${#temporals.format(hotArticle.createdAt, 'yyyy / MM / dd')}"></li>
-                                    <li><img th:text="${hotArticle.commentCnt}" class="main-comment-icon" src="/img/main-page/comment-icon.png" alt="">
-                                    </li>
+<!--                                    <li><img th:text="${hotArticle.commentCnt}" class="main-comment-icon" src="/img/main-page/comment-icon.png" alt="">-->
+<!--                                    </li>-->
                                     <li><img th:text="${hotArticle.likeCnt}" class="main-heart-icon" src="/img/main-page/empty-heart-icon.png" alt="">
                                     </li>
                                 </ul>

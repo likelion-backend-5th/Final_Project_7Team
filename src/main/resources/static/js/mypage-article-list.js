@@ -55,7 +55,7 @@ function dataOnPage(data) {
             <td>${article.articleId}</td>
             <td class="td-title">
                 <span class="category">${'[' + article.categoryName + ']'}</span>
-                <div>${article.title}</div>
+                <a href="/community/${article.articleId}">${article.title}</a>
                 <span class="comment-cnt">${'(' + article.commentCnt + ')'}</span>
             </td>
             <td>${article.viewCnt}</td>

@@ -2,6 +2,8 @@ package com.likelion.catdogpia.service;
 
 import com.likelion.catdogpia.domain.dto.mypage.*;
 import com.likelion.catdogpia.domain.entity.mypage.ExchangeRefund;
+import com.likelion.catdogpia.domain.entity.mypage.Point;
+import com.likelion.catdogpia.domain.entity.mypage.PointStatus;
 import com.likelion.catdogpia.domain.entity.order.Orders;
 import com.likelion.catdogpia.domain.entity.product.OrderProduct;
 import com.likelion.catdogpia.domain.entity.product.OrderStatus;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -31,6 +34,7 @@ public class OrderHistoryService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ExchangeRefundRepository exchangeRefundRepository;
+    private final PointRepository pointRepository;
 
     // 주문 내역 리스트 조회
     public Page<OrderListDto> getOrderList(String loginId, OrderStatus orderStatus, Integer page) {
@@ -82,15 +86,35 @@ public class OrderHistoryService {
     // 구매 확정
     @Transactional
     public void purchaseConfirm(Long opId) {
-//        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         OrderProduct op = orderProductRepository.findById(opId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (!(op.getOrderStatus().equals("배송중") || op.getOrderStatus().equals("배송완료"))) {
             new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
+        // 주문 상태 변경
         op.changeOrderStatus(OrderStatus.valueOf("PURCHASE_CONFIRMED"));
+        // 구매 확정 일시
         op.changePurchaseConfirmAt();
+
+        // point 적립 (해당 상품 가격의 1%)
+        int price = productRepository.findPriceByOrderProduct(opId);
+
+        Orders order = orderRepository.findById(op.getOrder().getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Long memberId = orderRepository.findMemberIdByOrderProductId(opId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        Point point = Point.builder()
+                .status(PointStatus.SAVED)
+                .point(price / 100)
+                .pointSource("상품 구매 확정")
+                .usedAt(LocalDateTime.now())
+                .member(member)
+                .order(order)
+                .build();
+        log.info("적립금 : " + point.getPoint());
+        pointRepository.save(point);
+
     }
 
     // 교환,환불 요청 페이지 - 주문 정보
