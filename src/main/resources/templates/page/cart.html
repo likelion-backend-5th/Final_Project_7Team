@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/cart.css}" type="text/css">
     <script src="/js/cart.js"></script>
+    <script src="/js/authentication-mypage.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -18,8 +19,8 @@
                 rowChecks.forEach(rowCheck => {
                     rowCheck.checked = isChecked;
                 });
-            });
-        });
+            })
+        })
     </script>
 </head>
 <body>
@@ -64,9 +65,12 @@
             </td>
             <td>
                 <div>
-                    <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus', [[${cart.price}]])">-</button>
+                    <button class="btn_minus" th:onclick="changeQuantity([[${cart.id}]], 'minus', [[${cart.price}]])">
+                        -
+                    </button>
                     <p th:id="'quantity-'+${cart.id}" th:text="${cart.productCnt}"></p>
-                    <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus', [[${cart.price}]])">+</button>
+                    <button class="btn_plus" th:onclick="changeQuantity([[${cart.id}]], 'plus', [[${cart.price}]])">+
+                    </button>
                 </div>
             </td>
             <td th:id="'price-'+${cart.id}" class="p-price" th:text="${cart.price * cart.productCnt}+'원'"></td>

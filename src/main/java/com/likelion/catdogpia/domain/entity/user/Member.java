@@ -1,6 +1,9 @@
 package com.likelion.catdogpia.domain.entity.user;
 
 import com.likelion.catdogpia.domain.dto.admin.MemberDto;
+import com.likelion.catdogpia.domain.dto.mypage.AddressFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberModifyFormDto;
+import com.likelion.catdogpia.domain.dto.mypage.MemberProfileDto;
 import com.likelion.catdogpia.domain.entity.BaseEntity;
 import com.likelion.catdogpia.domain.entity.cart.Cart;
 import com.likelion.catdogpia.domain.entity.community.Article;
@@ -19,6 +22,7 @@ import com.likelion.catdogpia.domain.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SuperBuilder
@@ -171,5 +176,15 @@ public class Member extends BaseEntity {
     @Builder
     public void setTempPassword(String password) {
         this.password = password;
+    }
+
+    // 회원 정보 수정
+    public void updateMember(MemberModifyFormDto dto) {
+        this.name = dto.getName();
+        this.nickname = dto.getNickname();
+        this.phone = dto.getPhone();
+        if(dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            this.password = dto.getPassword();
+        }
     }
 }

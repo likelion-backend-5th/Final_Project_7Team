@@ -10,9 +10,9 @@
 </head>
 
 <body>
-<div layout:fragment="content" class="mypage-container">
+<div layout:fragment="content" class="mypage-container exchange-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
-    <table class="mypage-table">
+    <table class="mypage-table exchange-order-info-table">
         <tr>
             <th width="45%">상품명</th>
             <th width="15%">옵션</th>
@@ -29,7 +29,7 @@
         </tr>
     </table>
     <div class="exchange-reason">
-        <p class="mypage-title">사유 선택</p>
+        <p class="mypage-title exchange-title">교환 사유</p>
         <p>구매자 책임 사유</p>
         <input type="radio" name="exchangeReason" value="BUYER_SIMPLE_REMORSE"><label>단순 변심</label><br>
         <input type="radio" name="exchangeReason" value="BUYER_WRONG_OPTION"><label>잘못된 옵션 선택</label><br>
@@ -45,7 +45,7 @@
         <textarea id="detailReason" placeholder="상세 사유를 입력하세요"></textarea>
     </div>
     <div class="exchange-option-box">
-        <p class="mypage-title">교환 희망 옵션 선택</p>
+        <p class="mypage-title exchange-title">교환 희망 옵션 선택</p>
         <select id="selectColor">
             <option value="" selected>색상</option>
             <th:block th:each="color : ${option['color']}">
@@ -60,7 +60,7 @@
         </select>
     </div>
     <div class="exchange-address">
-        <p class="mypage-title">회수지 정보</p>
+        <p class="mypage-title exchange-title">회수지 정보</p>
         <table class="exchange-address-table">
             <tr>
                 <th>이름</th>
@@ -79,7 +79,7 @@
     <!--    <div>-->
     <!--        <p>반품 배송비</p>-->
     <!--    </div>-->
-    <button th:onclick="requestExchange([[${order.opId}]])">교환 요청</button>
+    <button class="btn-mypage-submit" th:onclick="requestExchange([[${order.opId}]])">교환 요청</button>
 </div>
 </body>
 

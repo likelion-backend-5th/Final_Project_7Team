@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
     <script src="/js/mypage.js"></script>
+    <script src="/js/authentication-mypage.js"></script>
 </head>
 
 <body>
-<div layout:fragment="content" class="mypage-container">
+<div layout:fragment="content" class="mypage-container exchange-container">
     <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
     <table class="mypage-table">
         <tr>
@@ -29,7 +30,7 @@
         </tr>
     </table>
     <div class="exchange-reason">
-        <p class="mypage-title">사유 선택</p>
+        <p class="mypage-title">환불 사유</p>
         <p>구매자 책임 사유</p>
         <input type="radio" name="exchangeReason" value="BUYER_SIMPLE_REMORSE"><label>단순 변심</label><br>
         <input type="radio" name="exchangeReason" value="BUYER_WRONG_OPTION"><label>잘못된 옵션 선택</label><br>
@@ -64,7 +65,7 @@
     <!--    <div>-->
     <!--        <p>반품 배송비</p>-->
     <!--    </div>-->
-    <button th:onclick="requestRefund([[${order.opId}]])">환불 요청</button>
+    <button class="btn-mypage-submit" th:onclick="requestRefund([[${order.opId}]])">환불 요청</button>
 </div>
 </body>
 
