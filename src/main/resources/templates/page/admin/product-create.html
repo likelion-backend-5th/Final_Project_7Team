@@ -381,42 +381,42 @@
         duplicateName(name);
         const errorMessage = errors.join("\n");
         alert(errorMessage);
-      }
-
-      if(mainImgErrors.length > 0) {
-        // 대표 이미지 오류 메시지 출력
-        const mainImgErrorMessage = mainImgErrors.join("\n");
-        alert(mainImgErrorMessage);
-
-      } else if(detailImgErrors.length > 0) {
-        // 상세 이미지 오류 메시지 출력
-        const detailImgErrorMessage = detailImgErrors.join("\n");
-        alert(detailImgErrorMessage);
       } else {
+        if(mainImgErrors.length > 0) {
+          // 대표 이미지 오류 메시지 출력
+          const mainImgErrorMessage = mainImgErrors.join("\n");
+          alert(mainImgErrorMessage);
 
-        if(confirm("등록하시겠습니까?")) {
+        } else if(detailImgErrors.length > 0) {
+          // 상세 이미지 오류 메시지 출력
+          const detailImgErrorMessage = detailImgErrors.join("\n");
+          alert(detailImgErrorMessage);
+        } else {
 
-          const accessToken = localStorage.getItem("accessToken");
-          tokenCheck(accessToken)
-          $.ajax({
-            type: "POST",
-            url: "/admin/products/create",
-            contentType: false,
-            processData: false,
-            enctype: 'multipart/form-data',
-            headers: {
-              "Authorization": `Bearer ${accessToken}`
-            },
-            data: formData,
-            success: function (response) {
-              alert("등록되었습니다.");
-              window.location.href = "/admin/products";
-            },
-            error: function (error) {
-              alert("오류 발생")
-              //window.location.href = "/admin/error-page/500";
-            }
-          });
+          if(confirm("등록하시겠습니까?")) {
+
+            const accessToken = localStorage.getItem("accessToken");
+            tokenCheck(accessToken)
+            $.ajax({
+              type: "POST",
+              url: "/admin/products/create",
+              contentType: false,
+              processData: false,
+              enctype: 'multipart/form-data',
+              headers: {
+                "Authorization": `Bearer ${accessToken}`
+              },
+              data: formData,
+              success: function (response) {
+                alert("등록되었습니다.");
+                window.location.href = "/admin/products";
+              },
+              error: function (error) {
+                alert("오류 발생")
+                //window.location.href = "/admin/error-page/500";
+              }
+            });
+          }
         }
       }
     });
