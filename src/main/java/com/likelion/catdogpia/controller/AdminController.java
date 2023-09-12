@@ -418,7 +418,14 @@ public class AdminController {
 
     // QnA 삭제
     @PostMapping("/qna/delete-list")
-    public String qnaDelete(@RequestBody List<Map<String, Object>> requestList) {
+    @ResponseBody
+    public ResponseEntity<String> qnaDelete(@RequestHeader("Authorization") String accessToken, @RequestBody List<Map<String, Object>> requestList) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -428,10 +435,10 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteQnaList(deleteList);
+            adminService.deleteQnaList(deleteList,loginId);
         }
 
-        return "redirect:/admin/communities";
+        return ResponseEntity.ok("ok");
     }
 
     // QnA 상세
@@ -444,10 +451,17 @@ public class AdminController {
 
     // QnA 답변 등록 / 업데이트
     @PostMapping("/qna/{qnaId}/update-answer")
-    public String qnaUpdateAnswer(@PathVariable Long qnaId, @RequestParam("answer") String answer) {
-        adminService.modifyQnaAnswer(qnaId, answer);
+    @ResponseBody
+    public ResponseEntity<String> qnaUpdateAnswer(@RequestHeader("Authorization") String accessToken, @PathVariable Long qnaId, @RequestParam("answer") String answer) {
+        if(accessToken == null){
+            throw new RuntimeException();
+        }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+        adminService.modifyQnaAnswer(qnaId, answer, loginId);
 
-        return "redirect:/admin/qna";
+        return ResponseEntity.ok("ok");
     }
 
     // 1:1문의 목록
@@ -471,6 +485,7 @@ public class AdminController {
 
     // 1:1 문의 삭제
     @PostMapping("/consultations/delete-list")
+    @ResponseBody
     public ResponseEntity<String> consultationsDelete(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody List<Map<String, Object>> requestList
@@ -479,6 +494,9 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -488,7 +506,7 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteConsultationList(deleteList);
+            adminService.deleteConsultationList(deleteList, loginId);
         }
 
         return ResponseEntity.ok(HttpStatus.OK.name());
@@ -514,7 +532,6 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
-
         // 토큰에서 loginId 가져옴
         String token = accessToken.split(" ")[1];
         String loginId = jwtTokenProvider.parseClaims(token).getSubject();
@@ -551,6 +568,9 @@ public class AdminController {
         if(accessToken == null){
             throw new RuntimeException();
         }
+        // 토큰에서 loginId 가져옴
+        String token = accessToken.split(" ")[1];
+        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
         // 한번더 체크
         if(requestList.isEmpty()) {
             throw new IllegalArgumentException();
@@ -560,7 +580,7 @@ public class AdminController {
             for (Map<String, Object> map : requestList) {
                 deleteList.add(Long.valueOf((String) map.get("id")));
             }
-            adminService.deleteReportList(deleteList);
+            adminService.deleteReportList(deleteList, loginId);
         }
 
         return ResponseEntity.ok(HttpStatus.OK.name());

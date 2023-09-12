@@ -44,6 +44,45 @@ document.addEventListener('DOMContentLoaded', async function loadPage() {
 
 });
 
+async function tokenCheck(accessToken) {
+
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`
+    };
+
+    try {
+        const response = await fetch('/authorize', {
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+        } else if (response.status === 401 || response.status === 403) {
+            const reissueResponse = await fetch('/reissue', {
+                method: 'POST',
+                credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+            });
+
+            if (reissueResponse.ok) {
+                const reissuedData = await reissueResponse.json();
+                localStorage.setItem('accessToken', reissuedData.accessToken);
+                await tokenCheck(reissuedData.accessToken); // 원래 요청을 다시 시도
+            } else {
+                alert('권한이 없습니다.2');
+                window.location.href = "/login";
+            }
+        } else {
+            alert('권한이 없습니다.3');
+            window.location.href = "/login";
+        }
+    } catch (error) {
+        console.error('오류:', error);
+        alert('권한이 없습니다.4');
+        window.location.href = "/login";
+    }
+}
+
 function consultationPage(pageNumber, filter, keyword) {
     // Ajax 요청을 보낼 URL 설정
     let url = '/notices/consultations?page=' + pageNumber;
@@ -181,22 +220,23 @@ function createConsultation() {
 
     if(subject && classification && content) {
             if(confirm("등록하시겠습니까??")) {
-            $.ajax({
-                url: '/notices/consultations',
-                method: 'POST',
-                contentType: "application/json",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                data: JSON.stringify(requestData),
-                success: function (data) {
-                    alert("등록되었습니다.")
-                    window.location.href = '/notices/consultations-form';
-                },
-                error: function () {
-                    alert("오류가 발생했습니다.")
-                }
-            });
+                tokenCheck(accessToken);
+                $.ajax({
+                    url: '/notices/consultations',
+                    method: 'POST',
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+                        alert("등록되었습니다.")
+                        window.location.href = '/notices/consultations-form';
+                    },
+                    error: function () {
+                        alert("오류가 발생했습니다.")
+                    }
+                });
         }
     } else {
         alert("입력되지 않은 필드가 있습니다. 다시 확인해주세요.")

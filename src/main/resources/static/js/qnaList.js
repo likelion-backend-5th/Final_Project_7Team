@@ -143,17 +143,22 @@ function deleteQnaList() {
         selectedItems.push({id: id});
     });
 
-    if (confirm("선택된 글을 삭제하시겠습니까??") && selectedItems.length > 0) {
+    if (confirm("삭제하시겠습니까??") && selectedItems.length > 0) {
+        const accessToken = localStorage.getItem("accessToken");
+        tokenCheck(accessToken);
         $.ajax({
             url: "/admin/qna/delete-list",
             type: "POST",
             contentType: "application/json",
             dataType: "text",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
             data: JSON.stringify(selectedItems),
             success: function (response) {
                 // 성공적으로 처리된 경우의 동작
                 alert("삭제되었습니다.")
-                window.location.reload(); // 페이지 새로고침
+                window.location.href = "/admin/qna"; // 페이지 새로고침
             },
             error: function (error) {
                 // 오류 처리 동작

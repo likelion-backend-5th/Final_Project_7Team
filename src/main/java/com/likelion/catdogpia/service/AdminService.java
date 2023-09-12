@@ -454,7 +454,8 @@ public class AdminService {
 
     // QnA삭제
     @Transactional
-    public void deleteQnaList(List<Long> deleteList) {
+    public void deleteQnaList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // QnA id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(qnaRepository.existsById(deleteId)) {
@@ -473,11 +474,10 @@ public class AdminService {
 
     // QnA 답변 등록 / 업데이트
     @Transactional
-    public void modifyQnaAnswer(Long qnaId, String answer) {
+    public void modifyQnaAnswer(Long qnaId, String answer, String loginId) {
         QnA findQna = qnaRepository.findById(qnaId).orElseThrow(IllegalArgumentException::new);
-
         //
-        Member answerer = memberRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+        Member answerer = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
         // 관리자인지 확인
         if(!answerer.getRole().name().equals("ADMIN")) {
             throw new IllegalArgumentException("관리자가 아닙니다.");
@@ -502,7 +502,8 @@ public class AdminService {
 
     // 1:1 문의 삭제
     @Transactional
-    public void deleteConsultationList(List<Long> deleteList) {
+    public void deleteConsultationList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(consultationRepository.existsById(deleteId)) {
@@ -526,7 +527,10 @@ public class AdminService {
 
         // 사용자 권한 가져오도록 변경 필요
         Member answerer = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
-
+        // 관리자인지 확인
+        if(!answerer.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 답글이 존재하지 않으면 새로 등록
         if(findConsultation.getConsultationAnswer() == null) {
             consultationAnswerRepository.save(ConsultationAnswer.builder()
@@ -547,7 +551,8 @@ public class AdminService {
 
     // 신고 삭제
     @Transactional
-    public void deleteReportList(List<Long> deleteList) {
+    public void deleteReportList(List<Long> deleteList, String loginId) {
+        isAdmin(loginId);
         // id가 있으면 삭제
         for (Long deleteId : deleteList) {
             if(reportRepository.existsById(deleteId)) {
@@ -570,6 +575,10 @@ public class AdminService {
         Report findReport = reportRepository.findById(reportId).orElseThrow(IllegalArgumentException::new);
         // 관리자 정보 가져오기
         Member manager = memberRepository.findByLoginId(loginId).orElseThrow(IllegalArgumentException::new);
+        // 관리자인지 확인
+        if(!manager.getRole().name().equals("ADMIN")) {
+            throw new IllegalArgumentException("관리자가 아닙니다.");
+        }
         // 신고 처리
         findReport.processed();
         // 신고 횟수가 3회 이상인 사람은 블랙리스트로 변경
