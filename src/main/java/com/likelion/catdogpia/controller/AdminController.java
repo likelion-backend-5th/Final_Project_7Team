@@ -64,6 +64,7 @@ public class AdminController {
         MemberDto member = adminService.findMember(memberId);
         // 금액 포맷 맞추기
         member.changeFormat(member);
+        log.info("member : " + member.toString());
         model.addAttribute("member", member);
         return "/page/admin/member-detail";
     }

@@ -27,12 +27,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   
     @Query("select new com.likelion.catdogpia.domain.dto.admin.MemberDto(" +
             "m.id, m.name, m.loginId, m.nickname, m.phone, " +
-            "m.email, a.address, m.role, m.createdAt, m.blackListYn, " +
+            "m.email, a.address, a.detailAddress, m.role, m.createdAt, m.blackListYn, " +
             "(select coalesce(sum(p.point), 0) from Point p where p.member = m)," +
             "(select coalesce(count(r.id), 0) from Report r where r.member = m), " +
             "(select coalesce(sum(o.totalAmount), 0) from Orders o where o.member = m)) " +
             "from Member m " +
-            "left join fetch Point p on p.member = m " +
             "left join fetch Address a on a.member = m and a.defaultAddress = 'Y'" +
             "where m.id = :memberId")
     MemberDto findByMember(Long memberId);
