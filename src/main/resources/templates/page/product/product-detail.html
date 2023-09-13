@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ProductDetail</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--    <link rel="apple-touch-icon" href="/assets/img/apple-icon.png">-->
+<!--    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico">-->
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/templatemo.css">
+<!--    <link rel="stylesheet" href="/assets/css/custom.css">-->
+
+    <!-- Load fonts style after rendering the layout styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
+
+</head>
+
+<body>
+
+<!-- Open Content -->
+<section class="bg-light">
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-5 mt-5">
+                <div class="card mb-3">
+                    <img class="card-img rounded-0 img-fluid" th:src="${product.getThumbnailImage()}" alt="Thumbnail Image">
+                </div>
+                <div class="row">
+                    <!--Start Carousel Wrapper-->
+                </div>
+            </div>
+
+            <!-- col end -->
+            <div class="col-lg-7 mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="h2" th:text="${product.name}">상품명</h1>
+                        <p class="h3 py-2" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}"></p>
+                        <div>
+                            <p style="display: inline-block; margin-right: 28px;">색상</p>
+                            <select id="colorSelect" style="width: 200px;">
+                                <option value="">색상을 선택하세요.</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <p style="display: inline-block; margin-right: 10px;">사이즈</p>
+                            <select id="sizeSelect" style="width: 200px;">
+                                <option value="">사이즈를 선택하세요.</option>
+                            </select>
+                        </div>
+
+
+                        <p class="py-2">
+<!-- TODO 리뷰 평균 별점, 리뷰 개수 추가-->
+                            <span class="list-inline-item text-dark">Rating 4.8 | 후기 36</span>
+                        </p>
+
+                        <form action="" method="GET">
+                            <input type="hidden" name="product-title" value="Activewear">
+                            <div class="row">
+
+                            </div>
+                            <div class="row pb-3">
+                                <div class="col d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="buy">구매</button>
+                                </div>
+                                <div class="col d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="addtocard">장바구니</button>
+                                </div>
+                                <div class="col d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="addtocard">위시리스트</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Close Content -->
+<!-- Start Article -->
+<section class="py-5">
+    <div class="container">
+        <div>
+            <h4>제품 정보</h4>
+            <img class="card-img rounded-0 img-fluid" th:src="${product.getContentImage()}" alt="Thumbnail Image">
+        </div>
+        <!--Start Carousel Wrapper-->
+        <div id="carousel-related-product">
+            <div class="p-2 pb-3">
+                <div class="product-wap card rounded-0">
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row text-left p-2 pb-3">
+            <h4>구매 후기 (후기 count 추가) 후기 바로가기 버튼 추가, 리뷰 리스트 추가</h4>
+        </div>
+        <div class="row text-left p-2 pb-3">
+            <h4>QnA (QnA count 추가) QnA 바로가기 버튼 추가, QnA리스트 추가 </h4>
+        </div>
+    </div>
+</section>
+<!-- End Article -->
+
+
+<script th:inline="javascript">
+    var productOptions = /*[[${product.productOptionList}]]*/ [];
+
+    var colorSelect = document.getElementById('colorSelect');
+    var sizeSelect = document.getElementById('sizeSelect');
+
+    // Color 옵션 추가 및 이벤트 리스너 등록
+    var colorSet = new Set();
+    productOptions.forEach(function(option) {
+        if (!colorSet.has(option.color)) {
+            colorSet.add(option.color);
+            colorSelect.innerHTML += '<option value="' + option.color + '">' + option.color + '</option>';
+        }
+    });
+
+    colorSelect.addEventListener('change', function() {
+        var selectedColor = this.value;
+        updateSizeOptions(selectedColor);
+    });
+
+    // Size 옵션 업데이트
+    function updateSizeOptions(selectedColor) {
+        sizeSelect.innerHTML = '<option value="">Select Size</option>';
+
+        // 선택한 색상에 해당하는 사이즈 및 stock 정보 수집
+        var sizes = [];
+        productOptions.forEach(function(option) {
+            if (option.color === selectedColor) {
+                sizes.push({ size: option.size, stock: option.stock });
+            }
+        });
+
+        // size의 stock이 0일 경우 품절
+        sizes.forEach(function(size) {
+            var sizeOption = document.createElement('option');
+            sizeOption.value = size.size;
+            sizeOption.text = size.stock > 0 ? size.size : size.size + ' (품절)';
+            sizeOption.disabled = size.stock === 0;
+            sizeSelect.appendChild(sizeOption);
+        });
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/cart.css}" type="text/css">
+    <script src="/js/cart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="cart-container">
+    <p class="cart-total-quantity">총 <span class="cart-total"></span>개</p>
+    <button class="btn-cart-delete" onclick="deleteCart()">선택 상품 삭제</button>
+    <table class="cart-table">
+        <tr>
+            <th width="5%"><input type="checkbox" class="allCheck"></th>
+            <th width="55%">상품명(옵션)</th>
+            <th width="15%">판매가</th>
+            <th width="10%">수량</th>
+            <th width="15%">총 금액</th>
+        </tr>
+<!--        <tr>-->
+<!--            <td colspan="4">-->
+<!--                <p>전체 상품 금액</p>-->
+<!--                <p th:id="total-price" th:text="${totalAmount}+'원'"></p>-->
+<!--            </td>-->
+<!--        </tr>-->
+    </table>
+    <section class="section-order-btn">
+        <button class="btn-cart-order" type="button">주문하기</button>
+    </section>
+</div>
+
+</body>
+</html>

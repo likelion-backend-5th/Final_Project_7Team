@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage.js"></script>
+    <script src="/js/mypage-address-list.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <table class="mypage-table mypage-address-table">
+        <thead>
+        <tr>
+            <th width="15%">배송지명</th>
+            <th width="10%">수령인</th>
+            <th width="45%">주소</th>
+            <th width="15%">연락처</th>
+            <th width="15%"></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div class="address-submit-btn-box">
+        <button type="button" id="btn-address-submit" class="btn-mypage-submit" onclick="openAddressPopup()">배송지 등록
+        </button>
+    </div>
+    <!-- 페이지네이션 -->
+<!--    <div class="mypage-pagination" th:if="${addressList.totalElements > 0}">-->
+<!--        <span th:if="${addressList.hasPrevious()}">-->
+<!--            <a th:href="@{${'/mypage/address'}(page=0)}">-->
+<!--                <i class="fa fa-angle-double-left"></i>-->
+<!--            </a>-->
+<!--        </span>-->
+<!--        <span th:if="${addressList.hasPrevious()}">-->
+<!--            <a th:href="@{${'/mypage/address'}(page=${addressList.number - 1})}">-->
+<!--                <i class="fa fa-angle-left"></i>-->
+<!--            </a>-->
+<!--        </span>-->
+<!--        <span th:each="i : ${#numbers.sequence(0, addressList.totalPages - 1)}">-->
+<!--            <span th:if="${addressList.number == i}" th:classappend="${'current-page'}" th:text="${i + 1}"></span>-->
+<!--            <a th:if="${addressList.number != i}" th:href="@{${'/mypage/address'}(page=${i})}"-->
+<!--               th:text="${i + 1}"></a>-->
+<!--        </span>-->
+<!--        <span th:if="${addressList.hasNext()}">-->
+<!--            <a th:href="@{${'/mypage/address'}(page=${addressList.number + 1})}">-->
+<!--                <i class="fa fa-angle-right"></i>-->
+<!--            </a>-->
+<!--        </span>-->
+<!--        <span th:if="${addressList.hasNext()}">-->
+<!--            <a th:href="@{${'/mypage/address'}(page=${addressList.totalPages - 1})}">-->
+<!--                <i class="fa fa-angle-double-right"></i>-->
+<!--            </a>-->
+<!--        </span>-->
+<!--    </div>-->
+</div>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>커뮤니티 상세</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/authentication.js"></script>
+    <script src="/js/admin-community.js"></script>
+  </head>
+  <body>
+
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+      <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+
+      <div class="flex flex-col flex-1">
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200" th:text="${community.title}"></h2>
+            <!-- General elements -->
+            <h6 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+                th:text="|${community.writer} ${#temporals.format(community.createdAt, 'yyyy-MM-dd HH:mm')} 조회 ${community.viewCnt}|"
+            >
+            </h6>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <img th:if="${!community.fileUrlList.isEmpty()}" th:each="fileUrl : ${community.fileUrlList}"
+                   th:src="${fileUrl}" style="width: 400px; padding-top: 20px;" class="rounded mx-auto d-block" alt="...">
+              <span th:if="${community.content} != null" th:text="${community.content}"
+                    class="mt-8 mb-8 block text-center text-gray-700 dark:text-gray-400">
+              </span>
+            </div>
+            <input type="hidden" id="communityId" th:value="${community.id}">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+              댓글
+            </h2>
+            <div class="flex mr-5 mb-6">
+              <input id="commentValue" class="block w-full mt-1 mr-3 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                     placeholder="댓글을 입력해 주세요."
+                >
+              <button onclick="addComment()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  style="width: 5%">
+                등록
+              </button>
+            </div>
+            <!-- 댓글 목록 -->
+            <div class="px-4 py-3 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <div id="commentContainer">
+              </div>
+            </div>
+            <div id="outerDiv" class="py-3 text-sm font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+              <span class="flex mt-4 sm:mt-auto sm:justify-center">
+                  <ul id="pagination" class="inline-flex items-center">
+                    <!-- Pagination -->
+                  </ul>
+              </span>
+            </div>
+            <div class="col text-center mt-6">
+              <button onclick="deleteCommunity()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                삭제
+              </button>
+              &nbsp
+              <button th:onclick="|location.href='@{/admin/communities}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                취소
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

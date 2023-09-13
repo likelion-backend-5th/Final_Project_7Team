@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/mypage-profile.js"></script>
+    <script src="/js/mypage.js"></script>
+
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+
+    <table class="profile-table">
+        <tr>
+            <th>아이디</th>
+            <td class="loginId"></td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td class="name"></td>
+        </tr>
+        <tr>
+            <th>닉네임</th>
+            <td class="nickname"><p class="nickname"></p></td>
+        </tr>
+        <tr>
+            <th>이메일</th>
+            <td class="email"></td>
+        </tr>
+        <tr>
+            <th>휴대폰 번호</th>
+            <td class="phone"></td>
+        </tr>
+    </table>
+    <div class="profile-btn-box">
+        <button class="btn-mypage-submit btn-profile-update" onclick="openProfilePopup()">정보 수정</button>
+    </div>
+
+    <!--    <div class="mypage-box pet-info-box">-->
+    <!--        <p class="mypage-title">반려동물 관리</p>-->
+    <!--        <hr>-->
+    <!--        <p>이름</p>-->
+    <!--        <p>견종/묘종</p><p>몸무게</p>-->
+    <!--        <button class="mypage-button" onclick="openPetPopup()">등록</button>-->
+    <!--    </div>-->
+    <!--    <div class="mypage-box order-state-box">-->
+    <!--        <p class="mypage-title">주문 처리 현황</p>-->
+    <!--        <hr>-->
+    <!--        <table>-->
+    <!--            <tr>-->
+    <!--                <th>입금전</th>-->
+    <!--                <th>배송준비중</th>-->
+    <!--                <th>배송중</th>-->
+    <!--                <th>배송완료</th>-->
+    <!--                <th>취소</th>-->
+    <!--                <th>교환</th>-->
+    <!--                <th>환불</th>-->
+    <!--            </tr>-->
+    <!--            <tr>-->
+    <!--                <td>0</td>-->
+    <!--                <td>1</td>-->
+    <!--                <td>0</td>-->
+    <!--                <td>5</td>-->
+    <!--                <td>1</td>-->
+    <!--                <td>1</td>-->
+    <!--                <td>0</td>-->
+    <!--            </tr>-->
+    <!--        </table>-->
+    <!--    </div>-->
+</div>
+</body>
+</html>

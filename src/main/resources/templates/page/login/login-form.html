@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatDogPia</title>
+    <!-- JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <script src="/js/login.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/login-page.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script>
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const body = document.getElementsByTagName("body");
+
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    alert('이미 로그인중인 상태입니다.');
+                    window.history.back();
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    }
+                } else {
+                    window.history.back();
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                window.history.back();
+            }
+        });
+    </script>
+</head>
+<body>
+<div layout:fragment="content" class="login-form">
+    <div class="titleText">
+        <h2>로그인</h2>
+        <hr>
+    </div>
+    <br>
+    <form action="/login" method="post" id="loginForm">
+        <div class="textForm">
+            <input type="text" class="loginId" id="loginId" name="loginId" required maxlength="12" placeholder="아이디">
+        </div>
+        <div class="textForm">
+            <input type="password" class="password" id="password" name="password" required maxlength="20"
+                   placeholder="비밀번호">
+        </div>
+        <div class="loginBtnDiv">
+            <button type="button" class="loginBtn" id="loginBtn" onclick="login()">로그인</button>
+        </div>
+        <div class="find">
+            <a href="/find/id">아이디 찾기</a>
+            <span class="separator">|</span>
+            <a href="/find/password">비밀번호 찾기</a>
+            <span class="separator">|</span>
+            <a href="/signup">회원가입</a>
+        </div>
+        <div class="socialLogin">
+            <a href="/oauth2/authorization/naver">
+                <img src="/naverLogin.png" alt="Naver Social Login" class="naver-login">
+            </a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

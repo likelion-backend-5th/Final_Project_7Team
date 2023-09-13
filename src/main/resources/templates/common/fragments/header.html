@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Header -->
+<!-- Header Section Begin -->
+<header th:fragment="header" class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="header__logo">
+                    <a href="/"><img src="/img/logo.png" alt=""></a>
+
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <nav class="header__menu">
+                    <ul>
+                        <li><a href="/products/1">의류</a></li>
+                        <li><a href="/products/2">잡화</a></li>
+                        <li><a href="/community">커뮤니티</a>
+                            <!--                            <ul class="header__menu__dropdown">-->
+                            <!--                                <li><a href="./shop-details.html">Shop Details</a></li>-->
+                            <!--                                <li><a href="./shoping-cart.html">Shoping Cart</a></li>-->
+                            <!--                                <li><a href="./checkout.html">Check Out</a></li>-->
+                            <!--                                <li><a href="./blog-details.html">Blog Details</a></li>-->
+                            <!--                            </ul>-->
+                        </li>
+                        <li><a href="/notices">고객센터</a></li>
+                        <!--                        <li><a href="./contact.html">Contact</a></li>-->
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__cart">
+                    <ul>
+<!--                        <li><a href="#"><img class="header-wish" src="/img/header/heart-icon.png" alt="">-->
+<!--&lt;!&ndash;                            <span>0</span>&ndash;&gt;-->
+<!--                        </a>-->
+                        </li>
+                        <li><a href="/cart"><img class="header-cart" src="/img/header/cart-icon.png"alt="">
+<!--                            <span>3</span>-->
+                        </a>
+                        </li>
+                        <li><a href="/mypage/profile"><img class="header-mypage-icon" src="/img/header/mypage-icon.png" alt=""></a></li>
+                        <li><a href="/login" id="loginText">Login</a></li>
+                        <li><a href="#" onclick="logout();" id="logoutText" style="display: none">Logout</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--        <div class="humberger__open">-->
+        <!--            <i class="fa fa-bars"></i>-->
+        <!--        </div>-->
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function loadPage() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/authorize', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    document.getElementById("loginText").style.display = "none";
+                    document.getElementById("logoutText").style.display = "block";
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await loadPage(); // 원래 요청을 다시 시도
+                    }
+                }
+            } catch (error) {
+                console.error('오류:', error);
+            }
+        });
+
+        async function logout() {
+            const accessToken = localStorage.getItem("accessToken");
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            try {
+                const response = await fetch('/signout', {
+                    method: 'GET',
+                    headers: headers,
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('accessToken');
+                    document.getElementById("loginText").style.display = "block";
+                    document.getElementById("logoutText").style.display = "none";
+                    window.location.href = '/';
+                } else if (response.status === 401 || response.status === 403) {
+                    const reissueResponse = await fetch('/reissue', {
+                        method: 'POST',
+                        credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+                    });
+
+                    if (reissueResponse.ok) {
+                        const reissuedData = await reissueResponse.json();
+                        localStorage.setItem('accessToken', reissuedData.accessToken);
+                        await logout(); // 원래 요청을 다시 시도
+                    } else {
+                        localStorage.removeItem('accessToken');
+                        document.getElementById("loginText").style.display = "block";
+                        document.getElementById("logoutText").style.display = "none";
+                        window.location.href = '/';
+                    }
+                } else {
+                    localStorage.removeItem('accessToken');
+                    document.getElementById("loginText").style.display = "block";
+                    document.getElementById("logoutText").style.display = "none";
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('오류:', error);
+                localStorage.removeItem('accessToken');
+                document.getElementById("loginText").style.display = "block";
+                document.getElementById("logoutText").style.display = "none";
+                window.location.href = '/';
+            }
+        }
+    </script>
+</header>
+<!-- Header Section End -->
+
+</html>

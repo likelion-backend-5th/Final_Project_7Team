@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../../css/notice.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div layout:fragment="content" class="notice-container">
+    <div style="position: relative;" class="mt-4">
+        <div class="content">
+            <div>
+                <div class="titleArea">
+                    <h2><font color="#555555">공지사항</font></h2>
+                    <hr>
+                    <p>공지사항입니다.</p>
+                </div>
+            </div>
+            <div>
+                <table class="notice-detail-table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">제목</th>
+                        <td th:text="${notice.title}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">작성일</th>
+                        <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="detail">
+                                <div class="fr-view fr-view-article">
+                                    <p th:each="content : ${notice.splitContent}" th:text="${content}"></p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <button id="searchBtn" th:onclick="|location.href='@{/notices}'|">목록</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}" type="text/css">
+    <script src="/js/authentication-mypage.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="mypage-container order-detail-container">
+    <th:block th:replace="~{common/fragments/mypage_category :: mypage-category}"></th:block>
+    <p class="mypage-title">주문 상세</p>
+    <ul class="order-detail-ul">
+        <li>주문번호</li>
+        <li th:text="${productList.content[0].orderNumber}"></li>
+        <li>주문일자</li>
+        <li th:text="${#temporals.format(productList.content[0].orderAt, 'yyyy-MM-dd HH:mm')}"></li>
+    </ul>
+
+    <p class="mypage-title">상품 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>상품정보</th>
+            <th>옵션</th>
+            <th>주문금액 (수량)</th>
+            <th>주문 상태</th>
+        </tr>
+        <tr th:each="product :${productList}">
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.size}+','+${product.color}"></td>
+            <td><div th:text="${product.amount}"></div><span th:text="'('+${product.quantity}+'개)'">(1개)</span></td></td>
+            <td th:text="${product.orderStatus}"></td>
+        </tr>
+    </table>
+
+    <p class="mypage-title">배송지 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>이름</th>
+            <th>연락처</th>
+            <th>배송지 주소</th>
+            <th>요청사항</th>
+        </tr>
+        <tr>
+            <td th:text="${productDetail.name}"></td>
+            <td th:text="${productDetail.phone}"></td>
+            <td th:text="${productDetail.address}"></td>
+            <td th:text="${productDetail.request}"></td>
+        </tr>
+    </table>
+
+    <p class="mypage-title">결제 정보</p>
+    <table class="mypage-table">
+        <tr>
+            <th>상품 합계</th>
+            <th>배송비</th>
+            <th>할인 합계</th>
+            <th>최종 결제 금액</th>
+            <th>결제 수단</th>
+        </tr>
+        <tr>
+            <td>65000원</td>
+            <td th:text="${productDetail.deliveryCharge}+'원'"></td>
+            <td th:text="${productDetail.discountAmount}+'원'"></td>
+            <td th:text="${productDetail.totalAmount}+'원'"></td>
+            <td th:text="${productDetail.cardCompany}"></td>
+        </tr>
+    </table>
+</div>
+</div>
+</body>
+</html>

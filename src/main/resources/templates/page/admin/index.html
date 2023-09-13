@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>관리자 메인페이지</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="../../../js/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/authentication.js"></script>
+  </head>
+  <body>
+    <!-- 헤더-->
+    <div th:include="common/fragments/admin-header :: header"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+    <!-- 사이드바 -->
+      <div th:include="common/fragments/admin-sidebar :: sidebar"></div>
+    <!-- 메인 -->
+      <div class="flex flex-col flex-1 w-full">
+        <!-- 헤더 -->
+        <header id="header"></header>
+
+        <main class="h-full overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              관리자 메인페이지
+            </h2>
+            <!-- CTA -->
+            <!-- Cards -->
+            <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    총 회원수
+                  </p>
+                  <p th:if="${counts.totalMemberCnt} > 1000" th:text="${#numbers.formatInteger(counts.totalMemberCnt, 3, 'COMMA') + '명'}"
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                  <p th:unless="${counts.totalMemberCnt} > 1000" th:text="|${counts.totalMemberCnt}명|"
+                     class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                </div>
+              </div>
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    총 판매수익
+                  </p>
+                  <p th:if="${counts.totalAmount} > 1000" th:text="${#numbers.formatInteger(counts.totalAmount, 3, 'COMMA') + '원'}"
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                  <p th:unless="${counts.totalAmount} > 1000" th:text="${counts.totalAmount + '원'}"
+                     class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                </div>
+              </div>
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-blue-500 bg-blue-100 rounded-full dark:text-blue-100 dark:bg-blue-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                   총 판매상품
+                  </p>
+                  <p th:if="${counts.totalProductCnt} > 1000" th:text="${#numbers.formatInteger(counts.totalProductCnt, 3, 'COMMA') + '개'}"
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                  <p th:unless="${counts.totalProductCnt} > 1000" th:text="${counts.totalProductCnt + '개'}"
+                     class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                </div>
+              </div>
+              <!-- Card -->
+              <div
+                class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
+              >
+                <div
+                  class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                  >
+                    미처리 문의 / 신고 횟수
+                  </p>
+                  <p th:text="|${counts.totalConsulCnt +'건'} / ${counts.totalReportCnt + '건'}|"
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- New Table -->
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                  <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                  >
+                    <th class="px-4 py-3">&nbsp&nbsp 번호
+                      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 아이디/닉네임</th>
+                    <th class="px-4 py-3">이름</th>
+                    <th class="px-4 py-3">회원 상태</th>
+                    <th class="px-4 py-3">가입일</th>
+                  </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <tbody
+                          class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                  <tr th:each="member : ${memberList}" class="text-gray-700 dark:text-gray-400" id="main">
+                    <td class="px-4 py-3">
+                      <div class="flex items-center text-sm">
+                        <div th:text="${member.id}"
+                             class="relative hidden w-8 h-5 ml-3 rounded-full md:block"
+                        >
+                          <div
+                                  class="absolute inset-0 rounded-full"
+                                  aria-hidden="true"
+                          ></div>
+                        </div>
+                        <input type="hidden" id="deleteId" th:value="${member.id}">
+                        <div style="padding-left: 16px;">
+                          <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                             th:href="@{/admin/members/{memberId}(memberId=${member.id})}">
+                            <p class="font-semibold" th:text="${member.loginId} + ' / ' +  ${member.nickname}">test-123412 / 헬로키티</p>
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm" th:text="${member.name}">
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        <span th:if="${member.blackListYn} == 'Y'"
+                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
+                        >
+                          블랙
+                        </span>
+                      <span th:unless="${member.blackListYn} == 'Y'"
+                            class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                      >
+                          회원
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm" th:text="${#strings.substring(member.createdAt,0,10)}">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div th:if="${!memberList.isEmpty()}"
+                   class="py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+              >
+                <span class="col-span-2"></span>
+                <!-- Pagination -->
+                <span class="flex mt-4 sm:mt-auto sm:justify-center">
+                  <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center"
+                        th:with="
+                      maxPage=${memberList.pageable.pageSize},
+                      start=${(memberList.number/ maxPage) * maxPage + 1},
+                      end=(${(memberList.totalPages == 0) ? 1 : (start + (maxPage - 1) < memberList.totalPages ? start + (maxPage - 1) : memberList.totalPages)})">
+                      <!-- 첫번째 페이지로 이동 -->
+                      <li>
+                        <button
+                                class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Previous"
+                                th:onclick="|navigateToPage(0)|"
+                        >
+                          <svg
+                                  aria-hidden="true"
+                                  class="w-4 h-4 fill-current"
+                                  viewBox="0 0 20 20"
+                          >
+                            <path
+                                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"
+                                    fill-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </button>
+                      </li>
+                      <!-- 페이지 표시 -->
+                      <li th:each="page: ${#numbers.sequence(start, end)}">
+                        <button th:text="${page}" th:onclick="|navigateToPage(${page - 1})|"
+                                class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
+                        >
+                        </button>
+                      </li>
+                      <!-- 마지막 페이지로 이동 -->
+                      <li>
+                        <button
+                                class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
+                                aria-label="Next"
+                                th:onclick="|navigateToPage(${memberList.totalPages - 1})|"
+                        >
+                          <svg
+                                  class="w-4 h-4 fill-current"
+                                  aria-hidden="true"
+                                  viewBox="0 0 20 20"
+                          >
+                            <path
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd"
+                                    fill-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </span>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+<script>
+  function navigateToPage(page) {
+    location.href = '/admin/main?page=' + page;
+  }
+</script>
+</html>

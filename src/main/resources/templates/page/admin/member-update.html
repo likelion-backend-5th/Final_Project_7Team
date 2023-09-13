@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원정보변경</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/authentication.js"></script>
+    <style>
+      input::placeholder {
+        color: darkgray;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+      <!-- 사이드지바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+    <!-- 메인 -->
+      <div class="flex flex-col flex-1 w-full">
+        <!-- 헤더 -->
+        <header id="header"></header>
+      
+        <!-- 테이블 시작 -->
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container grid px-6 mx-auto">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              회원정보변경
+            </h2>
+            <!-- With avatar -->
+          <div class="flex">
+            <h4
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+              회원정보
+            </h4>
+          </div>
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="pl-10 py-3" style="width: 10%;">아이디</th>
+                      <th class="pl-10 py-3" style="width: 10%;">이름</th>
+                      <th class="pl-10 py-3" style="width: 15%;">닉네임</th>
+                      <th class="pl-10 py-3" style="width: 20%;">연락처</th>
+                      <th class="pl-10 py-3" style="width: 20%;">이메일</th>
+                      <th class="py-3" style="width: 10%;">가입일</th>
+                      <th class="py-3" style="width: 5%;">신고</th>
+                      <th class="py-3" style="width: 10%;">회원상태</th>
+                    </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <!-- form 시작 -->
+                  <form id="registrationForm" th:action="@{/admin/members/{memberId}/modify(memberId=${memberId})}" th:object="${member}" method="post">
+                    <tbody
+                      class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                    >
+                    <tr class="text-gray-700 dark:text-gray-400" >
+                      <input type="hidden" id="memberId" th:value="${member.id}">
+                      <td class="pl-10 py-3 text-sm">
+                        <p class="font-semibold" th:text="${member.loginId}"></p>
+                      </td>
+                      <td class="pl-8 py-3 text-sm">
+                        <input style="border-radius: 4px; outline: 1px solid #d5d6d7; width: 80px"
+                               class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                               id="name" th:placeholder="${member.name}" th:field="*{name}" th:value="${member.name}">
+                      </td>
+                      <td class="pl-8 py-3 text-sm">
+                        <input style="border-radius: 4px; outline: 1px solid #d5d6d7;"
+                               class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                               id="nickname" th:placeholder="${member.nickname}" th:field="*{nickname}" th:value="${member.nickname}"
+                        >
+                      </td>
+                      <td class="pl-8 py-3 text-sm"
+                      >
+                        <input style="border-radius: 4px; outline: 1px solid #d5d6d7;"
+                               class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800" id="phone"
+                               th:placeholder="${#strings.substring(member.phone, 0, 3) + '-' + #strings.substring(member.phone, 3, 7) + '-' + #strings.substring(member.phone, 7)}"
+                               th:field="*{phone}" th:value="${member.phone}"
+                        >
+                      </td>
+                      <td class="pl-8 py-3 text-sm">
+                        <input style="border-radius: 4px; outline: 1px solid #d5d6d7;"
+                               class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                               th:placeholder="${member.email}" id="email"
+                               th:field="*{email}" th:value="${member.email}"
+                        >
+                      </td>
+                      <td class="py-3 text-sm" th:text="${#strings.substring(member.createdAt,0,10)}"></td>
+                      <td class="py-3 text-sm" th:text="|${member.totalReportCnt}회|"></td>
+                      <td class="py-3 text-sm">
+                          <select th:field="*{blackListYn}" id="blackListYn" th:value="${member.blackListYn}" style="width: 120px; margin-right: 10px" class="form-select text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple" aria-label="Default select example">
+                            <option selected value="N" th:selected="${member.blackListYn} == 'N'">회원</option>
+                            <option value="Y" th:selected="${member.blackListYn} == 'Y'">블랙리스트</option>
+                          </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="container grid px-6 mx-auto">
+            <!-- With avatar -->
+          <div class="flex">
+          </div>
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="pl-10 py-3" style="width: 15%;">주소</th>
+                      <th class="pl-10 py-3" style="width: 15%;">ROLE</th>
+                      <th class="pl-10 py-3" style="width: 15%;">적립금</th>
+                      <th class="pl-10 py-3" style="width: 15%;">누적 구매금액</th>
+                    </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <tbody
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-10 py-3 text-sm">
+                        <div>
+                          <p class="p font-semibold w-1" th:if="${member.address} != null" th:text="|${member.address} ${member.detailAddress}|"></p>
+                          <p class="p font-semibold w-1" th:unless="${member.address} != null">미입력</p>
+                        </div>
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.role.name()}">
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.formatPoint}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.formatAmount}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col text-center">
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" id="submitBnt" type="submit">
+              수정
+            </button>
+          </form>
+            &nbsp;&nbsp;&nbsp;
+            <button th:onclick="|location.href='@{/admin/members}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              취소
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+<script>
+  $(document).ready(function() {
+    $("#submitBnt").click(function(event) {
+      /// 폼 제출을 막음
+      event.preventDefault();
+
+      let email = $("#email").val();
+      let nickname = $("#nickname").val();
+      let memberId = $("#memberId").val();
+      let phone = $("#phone").val();
+      let name = $("#name").val();
+      let blackListYn = $("#blackListYn").val();
+
+      // 비어있지 않아야함
+      if(email && nickname && memberId && phone && name && blackListYn) {
+            $.ajax({
+              // AJAX 요청으로 중복 여부 확인
+              url: "/admin/members/check-duplicate",
+              method: "GET",
+              data: {email: email, nickname: nickname, memberId: memberId},
+              success: function(response) {
+                if (!response.duplicated) {
+                  alert("중복된 닉네임이나 이메일이 있습니다. 다시 확인해주세요.");
+                } else {
+                  updateMember(email, nickname, memberId, phone, name, blackListYn)
+                }
+              },
+              error: function() {
+                alert("오류가 발생했습니다. 다시 시도해주세요.");
+              }
+            });
+        } else {
+        alert("입력되지 않은 값이 있습니다. 다시 확인해주세요.");
+      }
+    });
+  });
+
+async function updateMember(email, nickname, memberId, phone, name, blackListYn) {
+
+    const requestData = {
+      email: email,
+      nickname: nickname,
+      phone : phone,
+      name : name,
+      blackListYn : blackListYn
+    };
+
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    };
+
+    try {
+      const response = await fetch(`/admin/members/${memberId}/modify`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(requestData),
+      });
+      if (response.ok) {
+        alert("수정되었습니다.");
+        window.location.href = '/admin/members';
+      } else if (response.status === 401 || response.status === 403) {
+        const reissueResponse = await fetch('/reissue', {
+          method: 'POST',
+          credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+        });
+        if (reissueResponse.ok) {
+          const reissuedData = await reissueResponse.json();
+          localStorage.setItem('accessToken', reissuedData.accessToken);
+          await updateMember(email, nickname, memberId, phone, name, blackListYn); // 원래 요청을 다시 시도
+        } else {
+          alert('토큰 재발급 실패');
+        }
+      }
+    } catch (error) {
+      alert("오류 발생!!");
+    }
+  }
+</script>
+</html>

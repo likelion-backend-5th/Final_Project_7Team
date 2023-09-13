@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QnA 상세</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/authentication.js"></script>
+  </head>
+  <body>
+
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+      <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+
+      <div class="flex flex-col flex-1">
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              QnA 상세
+            </h2>
+
+            <!-- General elements -->
+            <h4
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+              질문
+            </h4>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+            >
+              <input type="hidden" id="qnaId" th:value="${qnaId}">
+              <label class="text-sm">
+                <span class="text-gray-700 dark:text-gray-400">상품명</span>
+                <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                  th:value="${qna.productName}" style="border: none; width: 80%" readonly
+                />
+              </label>
+              <label class="text-sm">
+                <span class="text-gray-700 mt-6 dark:text-gray-400">제목</span>
+                <input class="block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700 focus:outline-none  dark:text-gray-300  form-input"
+                       th:value="${qna.title}" style="border: none; width: 80%" readonly
+                />
+              </label>
+              <div class="mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400">분류</span>
+                <div class="mt-2">
+                  <label  th:each="classification : ${classificationList}"
+                    class="inline-flex items-center text-gray-600 dark:text-gray-400 mr-3"
+                  >
+                    <input type="radio"
+                      class="text-purple-600 form-radio focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                      th:checked="${classification == qna.classification}" onclick="return(false);"
+                    />
+                    <span class="ml-2" th:text="${classification.getClassification()}"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="mt-4 text-sm flex">
+                <label class="inline-block text-sm">
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">이름</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${qna.writer}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class="text-gray-700 mt-6 dark:text-gray-400">연락처</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${#strings.substring(qna.phone, 0, 3) + '-' + #strings.substring(qna.phone, 3, 7) + '-' + #strings.substring(qna.phone, 7)}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">등록일시</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:value="${#temporals.format(qna.createdAt, 'yyyy-MM-dd HH:mm')}" style="border: none;" readonly
+                  />
+                </label>
+                <label class="inline-block text-sm">
+                  <span class="text-gray-700 mt-6 dark:text-gray-400">답변일시</span>
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:if="${qna.answeredAt} != null" th:value="${#temporals.format(qna.answeredAt, 'yyyy-MM-dd HH:mm')}" style="border: none;" readonly
+                  />
+                  <input class="block w-64 mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         th:unless="${qna.answeredAt} != null" value="미답변" style="border: none;" readonly
+                  />
+                </label>
+              </div>
+              <div class="mt-4 text-sm mb-8">
+                <label class="text-sm" >
+                  <span class=" text-gray-700 mt-6 dark:text-gray-400">질문</span>
+                  <textarea th:text="${qna.content}" rows="10" cols="100" class="w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none" readonly></textarea>
+                </label>
+              </div>
+            </div>
+            <!-- 답변 영역 -->
+            <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+              답변
+            </h4>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <label class="text-sm w-full">
+                <span class=" text-gray-700 mt-6 dark:text-gray-400">답변</span>
+                <textarea th:if="${qna.answer} != null" th:text="${qna.answer}" rows="10" name="answer" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+                <textarea th:unless="${qna.answer} != null" rows="10" name="answer" class="answer w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+              </label>
+            </div>
+          </div>
+          <!-- 버튼 영역 -->
+          <div class="col text-center">
+            <button th:onclick="'createQna(\'' + ${qna.id} + '\')'" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              확인
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button onclick="deleteQna()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              삭제
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button th:onclick="|location.href='@{/admin/qna}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              취소
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+<script>
+  async function createQna(qnaId) {
+    let answer = $('.answer').val();
+    if(answer) {
+      const requestBody = {
+        answer: answer
+      };
+
+      const accessToken = localStorage.getItem("accessToken");
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      };
+      try {
+        const response = await fetch(`/admin/qna/${qnaId}/update-answer`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(requestBody)
+        });
+        if (response.ok) {
+          alert("등록되었습니다.")
+          window.location.href = "/admin/qna";
+        } else if (response.status === 401 || response.status === 403) {
+          const reissueResponse = await fetch('/reissue', {
+            method: 'POST',
+            credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+          });
+          if (reissueResponse.ok) {
+            const reissuedData = await reissueResponse.json();
+            localStorage.setItem('accessToken', reissuedData.accessToken);
+            await createQna(qnaId); // 원래 요청을 다시 시도
+          } else {
+            alert('토큰 재발급 실패');
+          }
+        }
+      } catch (error) {
+        alert("오류 발생!!");
+      }
+    } else {
+      alert("답변이 작성되지 않았습니다. 다시 작성해주세요.")
+    }
+  }
+
+  // qna삭제
+  async function deleteQna() {
+    let selectedItems = [];
+    let id = $("#qnaId").val();
+    selectedItems.push({id: id});
+
+    if (selectedItems.length > 0) {
+      const accessToken = localStorage.getItem("accessToken");
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      };
+      try {
+        const response = await fetch("/admin/qna/delete-list", {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(selectedItems),
+        });
+
+        if (response.ok) {
+          alert("삭제되었습니다.")
+          window.location.href = "/admin/qna";
+        } else if (response.status === 401 || response.status === 403) {
+          const reissueResponse = await fetch('/reissue', {
+            method: 'POST',
+            credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+          });
+
+          if (reissueResponse.ok) {
+            const reissuedData = await reissueResponse.json();
+            localStorage.setItem('accessToken', reissuedData.accessToken);
+            await deleteQna(); // 원래 요청을 다시 시도
+          } else {
+            alert('토큰 재발급 실패');
+          }
+        }
+      } catch (error) {
+        alert("오류 발생");
+      }
+    }
+  }
+</script>
+</html>

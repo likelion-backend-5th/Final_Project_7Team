@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1:1 문의</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/consultationList.js"></script>
+    <script src="/js/authentication.js"></script>
+    <style>
+      p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-break:break-all;
+        width: 200px;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 헤더-->
+    <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+    <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+    <!-- 메인 -->
+      <div class="flex flex-col flex-1 w-full">
+        <!-- 헤더 -->
+        <header id="header"></header>
+
+        <!-- 테이블 시작 -->
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container grid px-6 mx-auto">
+            <div class="flex my-6 text-2xl">
+            <h2
+              class="font-semibold text-gray-700 dark:text-gray-200"
+            >
+              1:1 문의
+            </h2>
+            </div>
+          <div class="flex mb-6" style="margin-left: auto">
+              <button style="height: 30px" class="px-4 mr-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                      id="week"
+              >
+                1주일</button>
+              <button style="height: 30px" class="px-4 mr-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                      id="month"
+              >
+                1달</button>
+              <button style="height: 30px" class="px-4 mr-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                      id="3months"
+              >
+                3달</button>
+            <div>
+              <input class="fromDate text-gray-700 font-medium text-sm text-center"  type="date" style="height: 30px" th:value="${fromDate}">
+                <span class="text-white">~</span>
+              <input class="toDate text-gray-700 font-medium text-sm text-center"  type="date" style="height: 30px" th:value="${toDate}">
+            </div>
+          </div>
+            <!-- With avatar -->
+          <div class="flex">
+            <h4 th:text="|총 ${consultationList.totalElements}개|"
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+            </h4>
+            <div class="flex" style="margin-left: auto">
+              <div class="relative mr-5">
+                <button id="change-btn" style="height: 37px;" class="px-4 mr-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    onclick="deleteConsultationList()"
+                  >
+                  선택 삭제
+                </button>
+              </div>
+              <div class="relative mr-1">
+                <select id="filter" class="form-select text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple" aria-label="Default select example">
+                  <option th:selected="${filter == 'title'}" value="title">제목</option>
+                  <option th:selected="${filter == 'writer'}" value="writer">작성자</option>
+                  <option th:selected="${filter == 'classification'}" value="classification">분류</option>
+                </select>
+              </div>
+              <div class="relative w-56 max mr-1 focus-within:text-purple-500"
+                   style="margin-left: auto; margin-bottom: 10px;" id="searchDiv">
+                <div class="absolute inset-y-0 flex items-center pl-2">
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                  type="text"
+                  placeholder="검색어를 입력해주세요."
+                  aria-label="Search"
+                  id="keyword"
+                />
+                <input type="hidden" id="hidden" name="hidden" th:value="${keyword}">
+              </div>
+              <div class="relative w-56 max mr-1 focus-within:text-purple-500"
+                   style="margin-left: auto; margin-bottom: 10px; display: none;"
+                   id="selectDiv"
+              >
+                <select class="w-full text-center font-medium text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                        type="text" style="padding-right: 24px;" aria-label="Search"
+                        id="classification">
+                  <option th:each="classification : ${classificationList}"
+                          th:value="${classification}" th:text="${classification.getClassification()}" th:selected="${keyword == classification}"></option>
+                </select>
+              </div>
+              <div class="relative">
+                <button style="height: 37px;" class="px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                        id="search-bnt"
+                  > 검색
+                </button>
+              </div>
+            </div>
+          </div>
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table  style="width: 100%; table-layout: fixed;" class="whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="px-5 py-3 text-sm" style="width: 5%"><input type="checkbox" id="selectAll"></th>
+                      <th class="px-4 py-3 text-center" style="width: 5%">번호</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">분류</th>
+                      <th class="px-4 py-3 text-center" style="width: 20%">제목</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">이름</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">등록일시</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">답변일시</th>
+                      <th class="px-4 py-3 text-center" style="width: 15%">답변자</th>
+                    </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <tbody
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                    <tr th:if="${!consultationList.isEmpty()}" th:each="consultation : ${consultationList}" class="text-gray-700 dark:text-gray-400" id="main">
+                      <td class="px-5 py-3" style="width: 5%">
+                        <div class="flex items-center text-sm">
+                          <input type="checkbox" class="checkbox" th:value="${consultation.id}">
+                        </div>
+                      </td>
+                      <td class="px-5 py-3 text-sm" style="width: 5%" th:text="${consultation.id}"></td>
+                      <td class="px-5 py-3 text-center text-sm" style="width: 15%" th:text="${consultation.classification.getClassification()}"></td>
+                      <td class="px-4 py-3" style="width: 20%">
+                        <div class="text-center">
+                          <a class="inline-block text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                             th:onclick="|location.href='@{/admin/consultations/{consulId} (consulId=${consultation.id})}'|">
+                            <p class="font-semibold" th:text="${consultation.subject}"></p>
+                          </a>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${consultation.writer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:text="${#temporals.format(consultation.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:if="${consultation.answeredAt} != null" th:text="${#temporals.format(consultation.answeredAt, 'yyyy-MM-dd HH:mm')}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:unless="${consultation.answeredAt} != null">-</td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:if="${consultation.answerer} != null" th:text="${consultation.answerer}"></td>
+                      <td class="px-4 py-3 text-center text-sm" style="width: 15%" th:unless="${consultation.answerer} != null">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+
+              <div th:unless="${!consultationList.isEmpty()}" class="py-3 text-center text-sm font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                >
+                <span class="col-span-2">내역이 존재하지 않습니다.</span>
+              </div>
+
+              <div th:if="${!consultationList.isEmpty()}"
+                class="py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                >
+                <span class="col-span-2"></span>
+                <!-- Pagination -->
+                <span class="flex mt-4 sm:mt-auto sm:justify-center">
+                  <nav aria-label="Table navigation">
+                    <ul class="inline-flex items-center"
+                        th:with="
+                      maxPage=${consultationList.pageable.pageSize},
+                      start=${(consultationList.number/ maxPage) * maxPage + 1},
+                      end=(${(consultationList.totalPages == 0) ? 1 : (start + (maxPage - 1) < consultationList.totalPages ? start + (maxPage - 1) : consultationList.totalPages)})">
+                      <!-- 첫번째 페이지로 이동 -->
+                      <li>
+                        <button
+                          class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
+                          aria-label="Previous"
+                          th:onclick="|javascript:navigateToPage(0)|"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="w-4 h-4 fill-current"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                              clip-rule="evenodd"
+                              fill-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </button>
+                      </li>
+                      <!-- 페이지 표시 -->
+                      <li th:each="page: ${#numbers.sequence(start, end)}">
+                        <button th:text="${page}" th:onclick="|javascript:navigateToPage(${page} - 1)|"
+                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
+                        >
+                        </button>
+                      </li>
+                      <!-- 마지막 페이지로 이동 -->
+                      <li>
+                        <button
+                          class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
+                          aria-label="Next"
+                          th:onclick="|javascript:navigateToPage(${consultationList.totalPages - 1})|"
+                        >
+                          <svg
+                            class="w-4 h-4 fill-current"
+                            aria-hidden="true"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                              clip-rule="evenodd"
+                              fill-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </span>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

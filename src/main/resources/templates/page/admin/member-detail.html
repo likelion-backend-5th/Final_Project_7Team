@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원상세관리</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="/js/authentication.js"></script>
+  </head>
+  <body>
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+    <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+    <!-- 메인 -->
+      <div class="flex flex-col flex-1 w-full">
+        <!-- 헤더 -->
+        <header id="header"></header>
+      
+        <!-- 테이블 시작 -->
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container grid px-6 mx-auto">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              회원상세정보
+            </h2>
+            <!-- With avatar -->
+          <div class="flex">
+            <h4
+              class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300"
+            >
+              회원정보
+            </h4>
+          </div>
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="pl-10 py-3" style="width: 10%;">아이디</th>
+                      <th class="pl-10 py-3" style="width: 10%;">이름</th>
+                      <th class="pl-10 py-3" style="width: 10%;">닉네임</th>
+                      <th class="pl-10 py-3" style="width: 15%;">연락처</th>
+                      <th class="pl-10 py-3" style="width: 15%;">이메일</th>
+                      <th class="pl-10 py-3" style="width: 10%;">가입일</th>
+                      <th class="pl-10 py-3" style="width: 8%;">신고</th>
+                      <th class="pl-10 py-3" style="width: 10%;">회원상태</th>
+                    </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <tbody
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                    <tr class="text-gray-700 dark:text-gray-400" >
+                      <td class="pl-10 py-3 text-sm">
+                          <p class="font-semibold" th:text="${member.loginId}"></p>
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.name}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.nickname}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="${#strings.substring(member.phone, 0, 3) + '-' + #strings.substring(member.phone, 3, 7) + '-' + #strings.substring(member.phone, 7)}">
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.email}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="${#strings.substring(member.createdAt,0,10)}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="|${member.totalReportCnt}회|"></td>
+                      <td class="pl-10 py-3 text-sm">
+                        <span th:if="${member.blackListYn} == 'Y'"
+                              class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700"
+                        >
+                          블랙
+                        </span>
+                        <span th:unless="${member.blackListYn} == 'Y'"
+                              class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
+                        >
+                          회원
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="container grid px-6 mx-auto">
+            <!-- With avatar -->
+          <div class="flex">
+          </div>
+            <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
+                    >
+                      <th class="pl-10 py-3" style="width: 20%;">주소</th>
+                      <th class="pl-10 py-3" style="width: 15%;">ROLE</th>
+                      <th class="pl-10 py-3" style="width: 15%;">적립금</th>
+                      <th class="pl-10 py-3" style="width: 15%;">누적 구매금액</th>
+                    </tr>
+                  </thead>
+                  <!-- 반복되는 테이블 -->
+                  <tbody
+                    class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
+                  >
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-10 py-3 text-sm">
+                          <div>
+                            <p class="p font-semibold w-1" th:if="${member.address} != null" th:text="|${member.address} ${member.detailAddress}|"></p>
+                            <p class="p font-semibold w-1" th:unless="${member.address} != null">미입력</p>
+                          </div>
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.role.name()}">
+                      </td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.formatPoint}"></td>
+                      <td class="pl-10 py-3 text-sm" th:text="${member.formatAmount}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col text-center">
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  th:onclick="|location.href='@{/admin/members/{memberId}/modify-form (memberId=${member.id})}'|"
+            >
+              수정
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    onclick="history.back()"
+            >
+              취소
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

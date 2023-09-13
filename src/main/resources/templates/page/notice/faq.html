@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>자주묻는 질문(FAQ)</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../../css/notice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../../js/faq.js"></script>
+    <style>
+        /* 추가적인 CSS 스타일은 여기에 추가합니다. */
+        .faq-answer {
+            display: none;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .faq-question:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+  <div layout:fragment="content" class="notice-container">
+      <!-- 카테고리 -->
+    <th:block th:replace="~{common/fragments/notice-category :: notice-category}"></th:block>
+      <!-- 목록 리스트 -->
+    <table class="notice-table">
+      <tr style="width: 100%">
+        <th style="width: 10%">번호</th>
+        <th style="width: 20%">분류</th>
+        <th style="width: 70%">제목</th>
+      </tr>
+      <tr>
+        <td style="width: 10%">8</td>
+        <td style="width: 20%">[로그인/정보]</td>
+        <td style="width: 70%">
+            <a href="#" class="faq-question"><span>Q</span>아이디와 비밀번호가 기억나지 않아요.</a>
+        </td>
+      </tr>
+      <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p>로그인 화면에서 아이디 찾기/비밀번호 찾기를 통해 확인 가능합니다.</p>
+                <br>
+                <p>회원 정보에 등록된 본인의 이메일 주소를 인증하여 아이디와 비밀번호 찾기를 진행합니다.</p>
+
+            </td>
+      </tr>
+        <tr>
+            <td style="width: 10%">7</td>
+            <td style="width: 20%">[로그인/정보]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 회원 정보 수정은 어디서 하나요?</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p> 회원 정보 수정은 아래 경로로 직접 변경 가능합니다.</p>
+                    <br>
+                <p> ■ 회원 정보 수정 <br>
+                    마이페이지 > 회원정보 변경 <br>
+                    ※ 원활한 주문 및 배송을 위해 회원 정보를 정확하게 기재해 주세요.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">6</td>
+            <td style="width: 20%">[상품 문의]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 구매했을 때 보다 가격이 떨어졌어요 차액 환불이 되나요?</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p> 상품 금액은 온라인 판매처 특성상 유동적으로 변동될 수 있어 차액 환불은 가능하지 않습니다.</p>
+                <br><br>
+                <p> ※ 판매 가격 변동으로 인한 교환(환불) 신청 시 반품 배송비는 회원님 부담으로 진행됩니다. </p>
+                <br>   <br>
+                <p>※ 출고 처리중인 경우 취소는 가능하지 않습니다.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">5</td>
+            <td style="width: 20%">[교환&반품]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 교환&반품 방법을 알고 싶어요.</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p>수령하신 후 7일 이내에 교환 및 환불 신청을 통해 교환 및 환불 신청을합니다.</p>
+                <br>
+                <p>상품하자 및 배송중 파손 건에 대해서는 저희 캣독피아가 책임지고 환불 및 교환해 드리며,</p>
+                <br>
+                <p>고객님의 구매변심으로 인한 반품건에 대해서는 왕복택배비가 발생하는 점을 참고바랍니다.</p>
+                <br>
+                <p>상품의 훼손 및 개봉 후 드시거나 사용하신 경우에는 상품가치 훼손으로 인해 교환 및 반품이 불가능한 점 유의해 주시기 바랍니다.</p>
+                <br>
+                <p>반품및 교환으로 인한 회수는 저희 지정 택배를 이용하게 되며,</p>
+                <br>
+                <p>그외 택배로 고객님이 직접 보내실 경우 선불이 아닌 착불로 도착시 수취거부되어 반품 및 교환이 불가능 할수 있습니다. </p>
+                <br>
+                <p>꼭 저희 지정택배를 사용해 주시기 바랍니다.</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">4</td>
+            <td style="width: 20%">[교환&반품]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 반품을 했는데 물건이 도중에 파손되면 어떻게 하나요?</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p>물건이 파손되는 경우, 원래의 물건 제가치를 잃게 되어</p>
+                    <br>
+                <p>이 경우 저희쪽으로 상품이 안전하게 도착할 수 있도록 신경을 써주시지 못한 과실의 책임으로</p>
+                    <br>
+                <p>손상된 반품 상품은 환불해 드릴 수가 없습니다.</p>
+                    <br>
+                <p>맞교환으로 도착된 상품도 손상될 경우 상품의 가격을 부담해 주셔야 합니다.</p>
+                    <br>
+                <p>맞교환이나 반품을 보내실 때는 저희가 보내드렸던 상태와 동일하게 포장을 해 주시고,</p>
+                    <br>
+                <p>꼼꼼히 포장을 해서 파손이나 더 이상의 훼손이 되지 않도록 보내주시기 바랍니다.</p>
+
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">3</td>
+            <td style="width: 20%">[교환&반품]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 반품이나 교환이 불가능한 상품은 어떤 것이 있나요.</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p>제품 수령 후 7일이내에 청약철회를 하지 않은 경우 </p>
+                   <br>
+                <p>제품의 하자 없이 포장을 개봉한 경우 </p>
+                    <br>
+                <p>고객 부주의로 인한 상품의 변형, 훼손 또는 파손되는 경우 </p>
+                    <br>
+                <p>교환 및 반품 의사를 통보하지 않고 반품한 경우 </p>
+                    <br>
+                <p>위의 경우 반품/교환/환불 및 기타 처리가 되지 않습니다. </p>
+                    <br>
+                <p>자세한 문의는 Q&A나 고객센터로 문의해주세요. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">2</td>
+            <td style="width: 20%">[배송문의]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 배송은 얼마나 걸리나요?</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p> 주문서 작성 및 결제 확인 시점에서 부터 제품을 준비하는 기간과 제품이 배송되는 기간이 소요됩니다. </p>
+                    <br>
+                    <p>(제품의 재고 상황에 따라 배송시일은 달라질 수 있습니다) </p>
+                    <br>
+                    <p>1. 평균적으로 주문 후 빠르면 2~3일 늦으면 4~7일정도 걸립니다. (제주 도서 산간지방은 1~2일 추가) </p>
+                    <br><br>
+                     <p>2. 만약 주문하신 상품중에 주문폭주 상품이나 입고지연 상품의 경우엔 좀더 지연될 수 있습니다 </p>
+                    <br><br>
+                    <p>3. 묶음배송의 경우 입고지연상품과 함께 주문시 배송이 지연될 수 있습니다 </p>
+                    <br><br>
+                    <p>4. 수제화등의 제작상품은 공휴일 제외 14일정도 소요되오니 여유를 가지고 주문해주시기 바랍니다. 물론 거래처마다 입고날짜의 차이는 있을 수 있습니다. </p>
+                    <br><br>
+                    <p> 5. 스타일샵에서 제품 출고후에는 우체국 택배를 이용하여 1~2일내로 받아보실 수 있습니다. 다만, 연휴시즌에는 택배사 물량 폭주로 인하여 조금더 지연될 수 있습니다 </p>
+                    <br><br>
+                    <p>6. 배송조회는 우체국택배 집하 이후 가능합니다. 오후 12시 이후까지 배송추적이 되지않으실 경우에는 해당일날 제품이 출고 되지 않은것으로 고객센터로 문의바랍니다. </p>
+                    <br><br>
+                    <p>7. 갑작스럽게 입고가 지연 되거나 품절이 되는경우에는 개별연락을 드리도록 하겠습니다. </p>
+                    <br><br><br>
+                    <p> 최대한 빠른 배송으로 고객님의 만족을 위해 최선을 다하겠습니다. </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 10%">1</td>
+            <td style="width: 20%">[주문&결제]</td>
+            <td style="width: 70%">
+                <a href="#" class="faq-question"><span>Q</span> 반품주문상품 변경 및 배송 전 주문취소하고 싶어요.</a>
+            </td>
+        </tr>
+        <tr class="faq-answer">
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 70%">
+                <p> 제품이 배송전인 경우 고객센터를 통해 주문 변경 및 취소처리가 가능합니다. </p>
+                <br><br>
+                <p>입금이 확인된 경우에는 주문처리 상태가 배송전(배송준비중)이라도, 실제로는 출고작업 </p>
+                <p>(상품준비가 끝나고 포장작업) 중이라면 배송중으로 보고 있으며, </p>
+                <p>이때에는 시스템에 조금 늦게 반영이 되어 고객님께서 미리 확인이 어려우실 수 있습니다. </p>
+                <br><br>
+                <p>그러하므로 반드시 상담원과 이야기를 나누신후 처리해주시거나 </p>
+                <p>혹은 평일 오후 1시이전까지 란에 완료한 글에 한하여 처리됩니다. </p>
+                <br><br>
+                <p>이미 발송된 상품은 발송이 끝나 버렸기 때문에 제품 변경 및 취소가 불가하오니 양해 부탁드립니다. </p>
+                <p>발송이 된 상품은 수령 후 반품하시는 왕복 택배비는 고객님께서 부담하셔야 합니다. </p>
+            </td>
+        </tr>
+    </table>
+  </div>
+</body>
+</html>

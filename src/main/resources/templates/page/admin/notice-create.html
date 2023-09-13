@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공지사항 등록</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../css/tailwind.output.css" />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="/js/init-alpine.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/notice.js"></script>
+    <script src="/js/authentication.js"></script>
+  </head>
+  <body>
+
+  <!-- 헤더-->
+  <div th:insert="~{common/fragments/admin-header :: header}"></div>
+    <div
+      class="flex h-screen bg-gray-50 dark:bg-gray-900"
+      :class="{ 'overflow-hidden': isSideMenuOpen}"
+    >
+      <!-- 사이드바 -->
+      <div th:insert="~{common/fragments/admin-sidebar :: sidebar}"></div>
+
+      <div class="flex flex-col flex-1">
+        <main class="h-full pb-16 overflow-y-auto">
+          <div class="container px-6 mx-auto grid">
+            <h2
+              class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+            >
+              공지사항 등록
+            </h2>
+            <!-- General elements -->
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+            >
+              <div class="mt-4 text-sm">
+                <label class="inline-block text-sm w-full">
+                  <span class="text-gray-700 mt-6 dark:text-gray-400">제목</span>
+                  <input class="block w-full mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300  form-input"
+                         style="border: none;" id="title"
+                  />
+                </label>
+              </div>
+              <hr>
+             <div class="mt-4 text-sm">
+              <label class="mt-4 text-sm">
+                <span class="text-gray-700 mt-6 dark:text-gray-400">내용</span>
+                <textarea id="content" rows="10" cols="100" class="w-full block mt-1 mb-4 mr-3 text-sm dark:bg-gray-700  focus:outline-none  dark:text-gray-300" style="border: none; resize: none"></textarea>
+              </label>
+            </div>
+          </div>
+          <!-- 버튼 영역 -->
+          <div class="mt-4 col text-center">
+            <button onclick="createNotice()" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              등록
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button th:onclick="|location.href='@{/admin/notices}'|" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+              취소
+            </button>
+          </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

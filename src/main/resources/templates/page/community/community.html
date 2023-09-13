@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatDogPia</title>
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/community.js"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/community-page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <script th:inline="javascript">
+    //접근 권한 설정
+    document.addEventListener('DOMContentLoaded', async function loadPage() {
+      let currentURL = window.location.href;
+      let urlParams = new URLSearchParams(currentURL);
+      let categoryId = urlParams.get("categoryId");
+      let keyword = urlParams.get("keyword");
+      //검색시 인기글 안 보이게
+      if(keyword != null && keyword !== '') {
+        document.getElementById("hotArticle-part").style.display = "none";
+      }
+      //전체 카테고리 외 인기글 안 보이게
+      if(categoryId != null && categoryId !== '') {
+        document.getElementById("hotArticle-part").style.display = "none";
+      }
+      //현재 카테고리 위치 표시
+      if(categoryId == null || categoryId == '') {
+        document.getElementById("category0").style.color = "#ADC2A9";
+      } else {
+        document.getElementById('category' + categoryId).style.color = "#ADC2A9";
+      }
+
+      const accessToken = localStorage.getItem("accessToken");
+      const headers = {'Authorization': `Bearer ${accessToken}`};
+
+      try {
+        const response = await fetch('/authorize', {
+          method: 'GET',
+          headers: headers,
+        });
+
+        if (response.ok) {
+          document.getElementById("write-part").style.display = "block";
+        } else if (response.status === 401 || response.status === 403) {
+          const reissueResponse = await fetch('/reissue', {
+            method: 'POST',
+            credentials: 'same-origin' // 쿠키를 보내기 위해 필수
+          });
+          if (reissueResponse.ok) {
+            const reissuedData = await reissueResponse.json();
+            localStorage.setItem('accessToken', reissuedData.accessToken);
+            await loadPage(); // 원래 요청을 다시 시도
+          }
+        }
+      } catch (error) {
+        console.error('오류:', error);
+      }
+    });
+  </script>
+</head>
+<body>
+<div layout:fragment="content" class="community">
+  <!-- 카테고리 선택 -->
+  <div class="category-list">
+    <ul style="list-style-type: none; padding: 0; display: flex;">
+      <li><a th:href="@{${'community'}(page=0, categoryId=null, filter=null, keyword=null)}" id="category0">전체</a></li>
+      <th:block th:each="category : ${categoryList}">
+        <li><a th:href="@{${'community'}(page=0, categoryId=${category.id}, filter=null, keyword=null)}" th:text="${category.name}" th:id="'category' + ${category.id}"></a></li>
+      </th:block>
+    </ul>
+  </div>
+  <div class="hotArticle-part" id="hotArticle-part">
+    <h2>인기글</h2>
+    <div class="hotArticles">
+        <ul class="hotArticleList" style="list-style-type: none; padding: 0; display: flex;">
+          <li th:each="popularArticle : ${popularArticleList}">
+            <a th:href="@{/community/{articleId}(articleId=${popularArticle.id})}">
+              <img th:if="${popularArticle.attach.attachDetailList.size() != 0}" th:src="${popularArticle.attach.attachDetailList.get(0).fileUrl}" width="300" height="300">
+              <img th:if="${popularArticle.attach.attachDetailList.size() == 0}" th:src="@{/img/logo.png}" width="300" height="300">
+            </a>
+            <a th:href="@{/community/{articleId}(articleId=${popularArticle.id})}">
+              <span id="PATitleText" th:text="${popularArticle.title}"></span>
+            </a>
+            <span class="icon heart-icon"></span>
+            <p th:text="${popularArticle.likeCnt}" style="margin: 0 0 0 0"></p>
+          </li>
+        </ul>
+    </div>
+    <hr style="border: none; border-top: 2px solid #dddddd;">
+  </div>
+  <div class="search-part">
+    <select id="filter" name="filter">
+      <option>제목+내용</option>
+      <option>제목</option>
+      <option>내용</option>
+      <option>작성자</option>
+    </select>
+    <input id="keyword" type="text" name="keyword">
+    <button id="searchBtn" onclick="searchArticle()">검색</button>
+  </div>
+  <div class="article-part">
+    <table>
+      <tbody>
+      <tr th:each="article : ${articleList}">
+        <div class="left-part">
+            <td class="text-part">
+              <div class="articleTitle-part">
+              <span id="categoryText" th:each="category : ${categoryList}"
+                th:if="${category.id == article.categoryId}"
+                th:text="'[' + ${category.name} + ']'">
+              </span>
+                <a th:href="@{/community/{articleId}(articleId=${article.id})}">
+                  <span id="titleText" th:text="${article.title}"></span>
+                </a>
+              </div>
+              <div class="writerDate-part">
+                <span id="writer" th:text="${article.member.nickname}"></span>
+                <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+              </div>
+              <div class="cnt-part">
+                <span class="icon comment-icon"></span>
+                <span class="cnt-text" th:text="${article.commentCnt}"></span>
+                <span class="icon heart-icon"></span>
+                <span class="cnt-text" th:text="${article.likeCnt}"></span>
+                <span class="icon view-icon"></span>
+                <span class="cnt-text" th:text="${article.viewCnt}"></span>
+              </div>
+            </td>
+        </div>
+        <div class="right-part">
+          <td class="image-part">
+            <a th:href="@{/community/{articleId}(articleId=${article.id})}">
+              <img th:if="${article.attach.attachDetailList.size() != 0}" th:src="${article.attach.attachDetailList.get(0).fileUrl}" width="200" height="150">
+              <img th:if="${article.attach.attachDetailList.size() == 0}" th:src="@{/img/logo.png}" width="200" height="150">
+            </a>
+          </td>
+        </div>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="write-part" id="write-part" style="display: none">
+    <button type="button" class="writeBtn" id="writeBtn" onclick="location.href='/community/write'">글쓰기</button>
+  </div>
+  <!-- 페이지네이션 -->
+  <div class="community-pagination" th:if="${articleList.totalElements > 0}">
+    <span th:if="${articleList.hasPrevious()}">
+        <a th:href="@{${'community'}(page=0, categoryId=${categoryId}, filter=${filter}, keyword=${keyword})}">
+            <i class="fa fa-angle-double-left"></i>
+        </a>
+    </span>
+    <span th:if="${articleList.hasPrevious()}">
+        <a th:href="@{${'community'}(page=${articleList.number - 1}, categoryId=${categoryId}, filter=${filter}, keyword=${keyword})}">
+            <i class="fa fa-angle-left"></i>
+        </a>
+    </span>
+    <span th:each="i : ${#numbers.sequence(0, articleList.totalPages - 1)}">
+        <span th:if="${articleList.number == i}" th:classappend="${'current-page'}" th:text="${i + 1}"></span>
+        <a th:if="${articleList.number != i}" th:href="@{${'community'}(page=${i}, categoryId=${categoryId}, filter=${filter}, keyword=${keyword})}" th:text="${i + 1}"></a>
+    </span>
+    <span th:if="${articleList.hasNext()}">
+        <a th:href="@{${'community'}(page=${articleList.number + 1}, categoryId=${categoryId}, filter=${filter}, keyword=${keyword})}">
+            <i class="fa fa-angle-right"></i>
+        </a>
+    </span>
+    <span th:if="${articleList.hasNext()}">
+        <a th:href="@{${'community'}(page=${articleList.totalPages - 1}, categoryId=${categoryId}, filter=${filter}, keyword=${keyword})}">
+            <i class="fa fa-angle-double-right"></i>
+        </a>
+    </span>
+  </div>
+</div>
+</body>
+</html>

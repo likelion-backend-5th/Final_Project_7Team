@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>1:1문의 상세</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/notice.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div layout:fragment="content" class="notice-container">
+    <div style="position: relative;" class="mt-4">
+        <div class="content">
+            <div>
+                <div class="titleArea">
+                    <h2><font color="#555555">1:1문의</font></h2>
+                    <hr>
+                    <p>문의사항입니다.</p>
+                </div>
+            </div>
+            <div>
+                <table class="notice-detail-table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">제목</th>
+                        <td th:text="${consultation.subject}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">분류</th>
+                        <td th:text="${consultation.classification.getClassification()}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">작성자</th>
+                        <td th:text="${consultation.writer}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">상태</th>
+                        <td th:if="${consultation.answeredAt} != null">답변완료</td>
+                        <td th:unless="${consultation.answeredAt} != null">답변대기</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">작성일</th>
+                        <td th:text="${#temporals.format(consultation.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="detail">
+                                <div class="fr-view fr-view-article">
+                                    <p th:each="content : ${consultation.splitContent}" th:text="${content}"></p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:if="${consultation.splitAnswer} != null">
+                    <table class="notice-detail-table">
+                        <tr>
+                            <th scope="row">답변</th>
+                            <td colspan="2">
+                                <div class="detail">
+                                    <div class="fr-view fr-view-article">
+                                        <p th:each="answer : ${consultation.splitAnswer}" th:text="${answer}"></p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="searchBtn" th:onclick="|location.href='@{/notices/consultations-form}'|">목록</button>
+</div>
+</body>
+</html>

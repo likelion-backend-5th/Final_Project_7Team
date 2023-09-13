@@ -28,6 +28,31 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  
+	/* Thymeleaf Layout */
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	/* Email Verification */
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	/* JWT */
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	/* OAuth2 */
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// S3 의존성 추가
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// Querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	// -- QueryDSL ---
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -39,3 +64,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//querydsl 추가 시작 (선택 추가)
+
+clean {
+	delete file('src/main/generated')
+}
+//querydsl 추가 끝
