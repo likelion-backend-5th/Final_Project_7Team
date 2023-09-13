@@ -67,7 +67,7 @@ public class CommunityController {
     }
 
     //이미지 삭제
-    @PostMapping("/community/{articleId}/deleteImage")
+    @PostMapping("/{articleId}/deleteImage")
     public Map<String, String> deleteImage(@PathVariable("articleId") Long articleId, @RequestParam("fileName") String fileName) {
         Map<String, String> response = new HashMap<>();
         log.info(fileName);

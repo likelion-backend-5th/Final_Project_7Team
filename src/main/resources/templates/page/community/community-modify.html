@@ -198,7 +198,7 @@
             formData.append('fileName', deletedFileName);
 
             // 서버에 삭제할 이미지 파일 이름 전송
-            fetch(`/community/[[${articleId}]]/deleteImage`, {
+            fetch(`/[[${articleId}]]/deleteImage`, {
                 method: 'POST',
                 body: formData
             })
