@@ -49,8 +49,8 @@ public class OrderHistoryService {
     }
 
     // 주문 상세 조회 > 특정 주문 번호의 상품들 조회
-    public Page<OrderListDto> getOrder(String loginId, Long orderId, Integer page) {
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public Page<OrderListDto> getOrder(Long orderId, Integer page) {
+//        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
         Page<OrderListDto> orderListPage = orderRepository.findAllByOrderId(pageable, orderId);
@@ -59,11 +59,11 @@ public class OrderHistoryService {
     }
 
     // 주문 상세 조회 > 배송지 정보, 결제 정보
-    public OrderDetailDto getDetail(String loginId, Long orderId) {
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        if (optionalMember.isEmpty()) {
-            new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+    public OrderDetailDto getDetail(Long orderId) {
+//        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+//        if (optionalMember.isEmpty()) {
+//            new ResponseStatusException(HttpStatus.FORBIDDEN);
+//        }
         Optional<Orders> optionalOrders = orderRepository.findById(orderId);
         if (optionalOrders.isEmpty()) {
             new ResponseStatusException(HttpStatus.NOT_FOUND);

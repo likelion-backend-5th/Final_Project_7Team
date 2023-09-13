@@ -181,22 +181,22 @@ public class MypageController {
     }
 
     // 주문 상세 페이지
-    @GetMapping("/order-detail/{orderId}/data")
-    public Map<String, Object> orderDetailPage(@PathVariable Long orderId, @RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
-
-        Map<String, Object> response = new HashMap<>();
-
-        String token = accessToken.split(" ")[1];
-        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
-
-        Page<OrderListDto> productList = orderHistoryService.getOrder(loginId, orderId, page);
-        OrderDetailDto productDetail = orderHistoryService.getDetail(loginId, orderId);
-
-        response.put("productList", productList);
-        response.put("productDetail", productDetail);
-
-        return response;
-    }
+//    @GetMapping("/order-detail/{orderId}/data")
+//    public Map<String, Object> orderDetailPage(@PathVariable Long orderId, @RequestHeader("Authorization") String accessToken, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+//
+//        Map<String, Object> response = new HashMap<>();
+//
+//        String token = accessToken.split(" ")[1];
+//        String loginId = jwtTokenProvider.parseClaims(token).getSubject();
+//
+//        Page<OrderListDto> productList = orderHistoryService.getOrder(loginId, orderId, page);
+//        OrderDetailDto productDetail = orderHistoryService.getDetail(loginId, orderId);
+//
+//        response.put("productList", productList);
+//        response.put("productDetail", productDetail);
+//
+//        return response;
+//    }
 
     // 적립금 페이지
     @GetMapping("/point/data")

@@ -22,15 +22,8 @@ public class MypageUIController {
 
     private final AddressService addressService;
     private final OrderHistoryService orderHistoryService;
-    private final PointService pointService;
     private final ReviewService reviewService;
-    private final PetService petService;
     private final ProfileService profileService;
-    private final MemberArticleService memberArticleService;
-
-    private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
 
     // 프로필 페이지
     @GetMapping("/profile")
@@ -92,8 +85,8 @@ public class MypageUIController {
     // 주문 상세 페이지
     @GetMapping("/order-detail/{orderId}")
     public String orderDetailPage(Model model, @PathVariable Long orderId, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
-        model.addAttribute("productList", orderHistoryService.getOrder("testtest", orderId, page));
-        model.addAttribute("productDetail", orderHistoryService.getDetail("testtest", orderId));
+        model.addAttribute("productList", orderHistoryService.getOrder(orderId, page));
+        model.addAttribute("productDetail", orderHistoryService.getDetail(orderId));
         return "page/mypage/order_detail.html";
     }
 
