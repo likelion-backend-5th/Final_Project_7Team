@@ -47,7 +47,7 @@ public class JwtTokenProvider {
         if(optionalRefreshToken.isEmpty()) throw new ForbiddenException("리프레시 토큰 확인 실패");
         RefreshToken checkRefreshToken = optionalRefreshToken.get();
         if (!refreshToken.equals(checkRefreshToken.getToken())) throw new ForbiddenException("리프레시 토큰 확인 실패");
-        String newAccessToken = createToken(userDetails, 30);
+        String newAccessToken = createToken(userDetails, 1800);
         String newRefreshToken = createToken(userDetails, 3600);
         optionalRefreshToken.get().setRefreshToken(newRefreshToken);
         return new JwtTokenResponseDto(newAccessToken, newRefreshToken);
@@ -57,7 +57,7 @@ public class JwtTokenProvider {
     @Transactional
     public JwtTokenResponseDto createTokensByLogin(String loginId) {
         UserDetails userDetails = manager.loadUserByUsername(loginId);
-        String accessToken = createToken(userDetails, 30);
+        String accessToken = createToken(userDetails, 1800);
         String refreshToken = createToken(userDetails, 3600);
         Optional<RefreshToken> optionalRefreshToken = tokenRepository.findByLoginId(loginId);
         if (optionalRefreshToken.isPresent()) {
