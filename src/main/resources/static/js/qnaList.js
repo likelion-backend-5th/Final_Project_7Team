@@ -139,7 +139,8 @@ async function deleteQnaList() {
     if (selectedItems.length > 0) {
         const accessToken = localStorage.getItem("accessToken");
         const headers = {
-            'Authorization': `Bearer ${accessToken}`
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
         };
         try {
             const response = await fetch("/admin/qna/delete-list", {

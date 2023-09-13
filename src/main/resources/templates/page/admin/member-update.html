@@ -145,8 +145,8 @@
                     <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-10 py-3 text-sm">
                         <div>
-                          <p class="font-semibold w-1" th:if="${member.address == null and member.address == ''}" th:text="${member.address}"></p>
-                          <p class="font-semibold w-1" th:unless="${member.address == null and member.address == ''}">미입력</p>
+                          <p class="p font-semibold w-1" th:if="${member.address} != null" th:text="|${member.address} ${member.detailAddress}|"></p>
+                          <p class="p font-semibold w-1" th:unless="${member.address} != null">미입력</p>
                         </div>
                       </td>
                       <td class="pl-10 py-3 text-sm" th:text="${member.role.name()}">
