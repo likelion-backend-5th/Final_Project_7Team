@@ -44,7 +44,7 @@ public class NoticeController {
         return "page/notice/notices";
     }
 
-    // 공지사항 상세 조회
+    // 공지사항 상세 조회정
     @GetMapping("/{noticeId}")
     public String noticeDetails(@PathVariable Long noticeId, Model model) {
         model.addAttribute("notice", noticeService.findNotice(noticeId));
