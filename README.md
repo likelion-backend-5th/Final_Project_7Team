@@ -1,7 +1,8 @@
 # 🐶 CATDOGPIA
-반려동물 패션 커뮤니티 커머스
+반려동물 패션 커뮤니티 커머스  
+#### - 💻 [배포링크](http://ec2-3-35-49-238.ap-northeast-2.compute.amazonaws.com/)   
 <br>
-<br>
+
 ## 👨‍👩‍👧‍👦 어금지
 |팀장|팀원|팀원|팀원|
 |:---:|:---:|:---:|:---:|
@@ -49,6 +50,7 @@ https://www.erdcloud.com/d/nL2CXshZxY9vNDQSx
 #### - DBMS : MySQL
 #### - 프레임워크 : Spring Boot
 #### - 클라우드 플랫폼 : RDS, S3
+#### - 배포 : EC2, Docker
 <br>
 
 ## 📝 주요 기능
