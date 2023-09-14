@@ -33,7 +33,8 @@
 
 ## ⚙ 아키텍처, ERD
 ### - 아키텍처
-![](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/115778770/14fed56a-8245-4041-ad72-445181001b0b)
+![2c8ca1c54b8db9f6](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/87765888/d249204b-59ab-44c2-9f78-75e3baf9174e)
+
 
 ### - ERD
 ![](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/115778770/67e22a02-737d-4d68-88e3-de101c170c19)
