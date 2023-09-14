@@ -24,7 +24,7 @@ public class LoginController {
     //로그인 UI
     @GetMapping("/login")
     public String loginForm() {
-        return "/page/login/login-form";
+        return "page/login/login-form";
     }
 
     //로그인
@@ -65,7 +65,7 @@ public class LoginController {
     //아이디찾기 UI
     @GetMapping("/find/id")
     public String findIdForm() {
-        return "/page/login/findId-form";
+        return "page/login/findId-form";
     }
 
     //아이디찾기
@@ -81,7 +81,7 @@ public class LoginController {
     //비밀번호찾기 UI
     @GetMapping("/find/password")
     public String findPwForm() {
-        return "/page/login/findPw-form";
+        return "page/login/findPw-form";
     }
 
     //비밀번호찾기 (계정 확인)

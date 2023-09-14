@@ -22,10 +22,10 @@
 
 <body>
     <!-- 공통 header -->
-    <header th:replace="~{/common/fragments/header :: header}"></header>
+    <header th:replace="~{common/fragments/header :: header}"></header>
     <!-- 페이지마다 교체될 본문 영역 -->
     <th:block layout:fragment="content"></th:block>
     <!-- 공통 footer -->
-    <footer th:replace="~{/common/fragments/footer :: footer}"></footer>
+    <footer th:replace="~{common/fragments/footer :: footer}"></footer>
 </body>
 </html>

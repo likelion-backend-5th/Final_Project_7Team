@@ -13,12 +13,12 @@ public class ErrorController {
     @RequestMapping("/admin/error-page/404")
     public String errorPage404(HttpServletRequest request, HttpServletResponse response){
         log.info("404-error");
-        return "/page/admin/error-page/404";
+        return "page/admin/error-page/404";
     }
 
     @RequestMapping("/admin/error-page/500")
     public String errorPage500(HttpServletRequest request, HttpServletResponse response){
         log.info("500-error");
-        return "/page/admin/error-page/500";
+        return "page/admin/error-page/500";
     }
 }

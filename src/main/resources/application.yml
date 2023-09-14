@@ -1,4 +1,6 @@
 spring:
+  thymeleaf:
+    prefix: classpath:/templates/
   profiles:
     active: secret
   servlet:
