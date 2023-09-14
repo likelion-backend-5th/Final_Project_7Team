@@ -41,26 +41,26 @@ public class NoticeController {
         model.addAttribute("filter", filter);
         model.addAttribute("keyword", keyword);
         model.addAttribute("noticeList", noticeService.findNoticeList(pageable, filter, keyword));
-        return "/page/notice/notices";
+        return "page/notice/notices";
     }
 
     // 공지사항 상세 조회
     @GetMapping("/{noticeId}")
     public String noticeDetails(@PathVariable Long noticeId, Model model) {
         model.addAttribute("notice", noticeService.findNotice(noticeId));
-        return "/page/notice/notice-detail";
+        return "page/notice/notice-detail";
     }
 
     // faq 목록
     @GetMapping("faq")
     public String faqList() {
-        return "/page/notice/faq";
+        return "page/notice/faq";
     }
 
 
     @GetMapping("/consultations-form")
     public String consultationForm() {
-        return "/page/notice/consultations";
+        return "page/notice/consultations";
     }
 
     // 1:1 문의 목록
@@ -86,14 +86,14 @@ public class NoticeController {
     @GetMapping("/consultations/{consulId}")
     public String consultationDetails(@PathVariable Long consulId, Model model) {
         model.addAttribute("consultation", adminService.findConsultation(consulId));
-        return "/page/notice/consultation-detail";
+        return "page/notice/consultation-detail";
     }
 
     // 1:1 문의 등록 페이지
     @GetMapping("/consultations/create-form")
     public String consultationCreateForm(Model model) {
         model.addAttribute("classificationList", Arrays.asList(ConsulClassification.values()));
-        return "/page/notice/consultation-create";
+        return "page/notice/consultation-create";
     }
 
     // 1:1 문의 등록 페이지

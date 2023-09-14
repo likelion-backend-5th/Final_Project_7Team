@@ -32,7 +32,7 @@ public class SignupController {
     //회원가입 UI
     @GetMapping("/signup")
     public String signupForm() {
-        return "/page/signup/signup-form";
+        return "page/signup/signup-form";
     }
 
     //회원가입

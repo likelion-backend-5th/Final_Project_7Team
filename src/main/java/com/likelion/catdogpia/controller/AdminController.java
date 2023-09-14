@@ -40,7 +40,7 @@ public class AdminController {
     public String mainPage(Model model, @PageableDefault(page = 0, size = 10) Pageable pageable) {
         model.addAttribute("counts", adminService.findTotalCounts());
         model.addAttribute("memberList", adminService.findMemberList(pageable, null, null));
-        return "/page/admin/index";
+        return "page/admin/index";
     }
 
     // 관리자 회원관리 목록
@@ -54,7 +54,7 @@ public class AdminController {
         model.addAttribute("memberList", adminService.findMemberList(pageable, filter, keyword));
         model.addAttribute("filter",filter);
         model.addAttribute("keyword",keyword);
-        return "/page/admin/members";
+        return "page/admin/members";
     }
 
     // 관리자 회원 관리 상세
@@ -66,7 +66,7 @@ public class AdminController {
         member.changeFormat(member);
         log.info("member : " + member.toString());
         model.addAttribute("member", member);
-        return "/page/admin/member-detail";
+        return "page/admin/member-detail";
     }
 
     // 관리자 회원 수정 페이지
@@ -76,7 +76,7 @@ public class AdminController {
 
         member.changeFormat(member);
         model.addAttribute("member", member);
-        return "/page/admin/member-update";
+        return "page/admin/member-update";
     }
 
     // 사용자 정보 수정
@@ -138,7 +138,7 @@ public class AdminController {
         model.addAttribute("productList", adminService.findProductList(pageable, filter, keyword));
         model.addAttribute("filter",filter);
         model.addAttribute("keyword",keyword);
-        return "/page/admin/products";
+        return "page/admin/products";
     }
 
     // 상품 등록 페이지
@@ -147,7 +147,7 @@ public class AdminController {
         List<CategoryDto> categoryList = adminService.findCategory();
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("productDto", new ProductDto());
-        return "/page/admin/product-create";
+        return "page/admin/product-create";
     }
 
     // 상품 등록
@@ -187,7 +187,7 @@ public class AdminController {
         model.addAttribute("productDto", adminService.findProduct(productId));
         model.addAttribute("categoryList", adminService.findCategory());
         log.info("product : " + adminService.findProduct(productId).toString());
-        return "/page/admin/product-modify";
+        return "page/admin/product-modify";
     }
 
     // 상품 수정
@@ -269,7 +269,7 @@ public class AdminController {
         model.addAttribute("fromDate",fromDate);
         model.addAttribute("orderStatus", orderStatus);
         model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
-        return "/page/admin/orders";
+        return "page/admin/orders";
     }
 
     // 주문 상태 변경
@@ -309,7 +309,7 @@ public class AdminController {
         model.addAttribute("orderStatusList", Arrays.asList(OrderStatus.values()));
         model.addAttribute("order", order);
 
-        return "/page/admin/order-modify";
+        return "page/admin/order-modify";
     }
 
     // 커뮤니티 목록
@@ -324,7 +324,7 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("communityList", adminService.findCommunityList(pageable, filter, keyword));
 
-        return "/page/admin/communities";
+        return "page/admin/communities";
     }
 
     // 커뮤니티 삭제
@@ -358,7 +358,7 @@ public class AdminController {
             @PathVariable Long communityId,
             Model model) {
         model.addAttribute("community", adminService.findCommunity(communityId));
-        return "/page/admin/community-detail";
+        return "page/admin/community-detail";
     }
 
     // 커뮤니티 댓글 조회
@@ -414,7 +414,7 @@ public class AdminController {
         model.addAttribute("toDate", toDate);
         model.addAttribute("fromDate", fromDate);
         model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
-        return "/page/admin/qna";
+        return "page/admin/qna";
     }
 
     // QnA 삭제
@@ -447,7 +447,7 @@ public class AdminController {
     public String qnaDetails(@PathVariable Long qnaId, Model model) {
         model.addAttribute("classificationList", Arrays.asList(QnAClassification.values()));
         model.addAttribute("qna", adminService.findQna(qnaId));
-        return "/page/admin/qna-detail";
+        return "page/admin/qna-detail";
     }
 
     // QnA 답변 등록 / 업데이트
@@ -482,7 +482,7 @@ public class AdminController {
         model.addAttribute("toDate", toDate);
         model.addAttribute("fromDate", fromDate);
         model.addAttribute("classificationList", Arrays.asList(ConsulClassification.values()));
-        return "/page/admin/consultations";
+        return "page/admin/consultations";
     }
 
     // 1:1 문의 삭제
@@ -519,7 +519,7 @@ public class AdminController {
     public String consultationDetails(@PathVariable Long consulId, Model model) {
         model.addAttribute("classificationList", Arrays.asList(ConsulClassification.values()));
         model.addAttribute("consultation", adminService.findConsultation(consulId));
-        return "/page/admin/consultation-detail";
+        return "page/admin/consultation-detail";
     }
 
     // 1:1 문의 답변 등록 / 업데이트
@@ -558,7 +558,7 @@ public class AdminController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("toDate", toDate);
         model.addAttribute("fromDate", fromDate);
-        return "/page/admin/reports";
+        return "page/admin/reports";
     }
 
     // 신고 삭제
@@ -594,7 +594,7 @@ public class AdminController {
     @GetMapping("/reports/{reportId}")
     public String reportDetails(@PathVariable Long reportId, Model model) {
         model.addAttribute("report", adminService.findReport(reportId));
-        return "/page/admin/report-detail";
+        return "page/admin/report-detail";
     }
 
     // 신고 처리
@@ -626,7 +626,7 @@ public class AdminController {
         model.addAttribute("filter", filter);
         model.addAttribute("keyword", keyword);
         model.addAttribute("noticeList", noticeService.findNoticeList(pageable, filter, keyword));
-        return "/page/admin/notices";
+        return "page/admin/notices";
     }
 
     // 공지사항 등록 페이지
@@ -655,14 +655,14 @@ public class AdminController {
     @GetMapping("/notices/{noticeId}")
     public String noticeDetails(@PathVariable Long noticeId, Model model) {
         model.addAttribute("notice", noticeService.findNotice(noticeId));
-        return "/page/admin/notice-detail";
+        return "page/admin/notice-detail";
     }
 
     // 공지사항 수정 페이지
     @GetMapping("/notices/{noticeId}/modify-form")
     public String noticeModifyForm(@PathVariable Long noticeId, Model model) {
         model.addAttribute("notice", noticeService.findNotice(noticeId));
-        return "/page/admin/notice-modify";
+        return "page/admin/notice-modify";
     }
 
     // 공지사항 수정
