@@ -78,7 +78,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
 
-        String targetUrl = "http://localhost:8080";
+        String targetUrl = "http://ec2-3-35-49-238.ap-northeast-2.compute.amazonaws.com/";
         // 실제 Redirect 응답 생성
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
