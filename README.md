@@ -16,17 +16,6 @@
 <br>
 <br>
 
-## ✨ 대표 페이지
-### - 메인 페이지
-![메인](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/115778770/1d4d7c8b-ae89-44b3-a9e1-6180c48dfdeb)
-
-### - 커뮤니티 페이지
-![커뮤니티](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/115778770/d263664e-0e48-4e6f-ba93-6b71098cbe29)
-
-### - 관리자 페이지
-![관리자](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/115778770/430440df-8e8c-4b03-bad7-80035a1bf332)
-
-
 ## 🗓 프로젝트 기간
 2023.08.03 ~ 2023.09.15
 <br>
@@ -34,7 +23,7 @@
 
 ## ⚙ 아키텍처, ERD
 ### - 아키텍처
-![2c8ca1c54b8db9f6](https://github.com/likelion-backend-5th/Final_Project_7Team/assets/87765888/d249204b-59ab-44c2-9f78-75e3baf9174e)
+<img src="https://github.com/juhwan-Ki/catdogpia/blob/main/2c8ca1c54b8db9f6.png" width="600" height="500"/>
 
 
 ### - ERD
