@@ -1,6 +1,6 @@
 package com.likelion.catdogpia.repository;
 
-import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.dto.community.HotArticleListDto;
 import com.likelion.catdogpia.domain.dto.mypage.MemberArticleListDto;
 import com.likelion.catdogpia.domain.entity.community.Article;
 import org.springframework.data.domain.Page;
@@ -20,8 +20,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     int updateViewCnt(@Param("id") Long id);
 
     //일주일 내에 작성된 글 중 좋아요 수 상위 3개만 조회
-    @Query("SELECT new com.likelion.catdogpia.domain.dto.community.ArticleListDto(a.id, a.category.id, a.title, a.member, a.attach, a.viewCnt, COUNT(DISTINCT l), COUNT(DISTINCT c), a.createdAt) FROM Article a LEFT JOIN LikeArticle l ON a.id = l.article.id LEFT JOIN Comment c ON a.id = c.article.id WHERE a.createdAt >= :oneWeekAgo GROUP BY a.id ORDER BY COUNT(DISTINCT l) DESC, a.viewCnt DESC limit 3")
-    List<ArticleListDto> findTop3PopularArticlesWithinOneWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo);
+    @Query("SELECT new com.likelion.catdogpia.domain.dto.community.HotArticleListDto(a.id, a.title, a.attach, count(la.id) as cnt, a.createdAt)" +
+            "FROM Article a " +
+            "JOIN LikeArticle la on la.article.id = a.id " +
+            "WHERE a.createdAt >= :oneWeekAgo " +
+            "GROUP BY a.id, a.title, a.attach, a.createdAt, a.category.id, a.content, a.deletedAt, a.member, a.updatedAt, a.viewCnt, a.attach " +
+            "ORDER BY cnt DESC limit 3")
+    List<HotArticleListDto> findTop3PopularArticlesWithinOneWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo);
 
     // 특정 회원 게시물 목록
     @Query("SELECT new com.likelion.catdogpia.domain.dto.mypage.MemberArticleListDto(a.id, ca.name, a.title, COUNT(c), a.viewCnt, COUNT(l), a.createdAt)" +

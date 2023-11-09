@@ -3,6 +3,7 @@ package com.likelion.catdogpia.service;
 import com.likelion.catdogpia.domain.dto.admin.CategoryDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleDto;
 import com.likelion.catdogpia.domain.dto.community.ArticleListDto;
+import com.likelion.catdogpia.domain.dto.community.HotArticleListDto;
 import com.likelion.catdogpia.domain.dto.community.LikeArticleDto;
 import com.likelion.catdogpia.domain.entity.CategoryEntity;
 import com.likelion.catdogpia.domain.entity.attach.Attach;
@@ -287,7 +288,7 @@ public class CommunityService {
     }
 
     //인기글 조회
-    public List<ArticleListDto> findPopularArticlesWithinOneWeek() {
+    public List<HotArticleListDto> findPopularArticlesWithinOneWeek() {
         // 현재 시간에서 일주일 전의 시간 계산
         LocalDateTime oneWeekAgo = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
 
